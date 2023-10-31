@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mewsicat-dev-150313-authRole",
+      "UnauthRoleArn": "arn:aws:iam::717783484026:role/amplify-mewsicat-dev-150313-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::717783484026:role/amplify-mewsicat-dev-150313-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-mewsicat-dev-150313-deployment",
+      "UnauthRoleName": "amplify-mewsicat-dev-150313-unauthRole",
+      "StackName": "amplify-mewsicat-dev-150313",
+      "StackId": "arn:aws:cloudformation:us-east-1:717783484026:stack/amplify-mewsicat-dev-150313/4acaae90-7839-11ee-92d7-0a7b55c5ce4f",
+      "AmplifyAppId": "d3msh4sazyvyil"
+    },
+    "categories": {
+      "api": {
+        "mewsicat": {}
+      },
+      "auth": {
+        "mewsicata219e2b4": {}
+      }
+    }
+  }
+}
