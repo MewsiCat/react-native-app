@@ -1,9 +1,16 @@
+// import React, { useState, useRef } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+// import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
+import GrayScreen from './screens/GrayScreen.js'
 import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
+  Button,
   Pressable,
   SafeAreaView,
 } from 'react-native';
@@ -32,76 +39,67 @@ const SignOutButton = () => {
     </Pressable>
   );
 };
+// const initialFormState = {name: '', description: ''};
 
-const initialFormState = {name: '', description: ''};
+
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [formState, setFormState] = useState(initialFormState);
-  const [todos, setTodos] = useState([]);
-
-  useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  function setInput(key, value) {
-    setFormState({...formState, [key]: value});
-  }
-
-  async function fetchTodos() {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listTodos));
-      const todos = todoData.data.listTodos.items;
-      setTodos(todos);
-    } catch (err) {
-      console.log('error fetching todos');
-    }
-  }
-
-  async function addTodo() {
-    try {
-      if (!formState.name || !formState.description) return;
-      const todo = {...formState};
-      setTodos([...todos, todo]);
-      setFormState(initialFormState);
-      await API.graphql(graphqlOperation(createTodo, {input: todo}));
-    } catch (err) {
-      console.log('error creating todo:', err);
-    }
-  }
+  // const [formState, setFormState] = useState(initialFormState);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <SignOutButton />
-        <TextInput
-          onChangeText={value => setInput('name', value)}
-          style={styles.input}
-          value={formState.name}
-          placeholder="Name"
-        />
-        <TextInput
-          onChangeText={value => setInput('description', value)}
-          style={styles.input}
-          value={formState.description}
-          placeholder="Description"
-        />
-        <Pressable onPress={addTodo} style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Create todo</Text>
-        </Pressable>
-        {todos.map((todo, index) => (
-          <View key={todo.id ? todo.id : index} style={styles.todo}>
-            <Text style={styles.todoName}>{todo.name}</Text>
-            <Text style={styles.todoDescription}>{todo.description}</Text>
-          </View>
-        ))}
-      </View>
-    </SafeAreaView>
+    
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="GrayScreen" component={GrayScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
+}
+
+function HomeScreen({ navigation }) {
+  return (
+    <SafeAreaView style={styles.container}>
+
+    <View style={styles.container}>
+      <SignOutButton />
+      <Text>Open up App.js to start working on your app!</Text>
+      <StatusBar style="auto" />
+      <Button
+        onPress={() => {
+          navigation.navigate('GrayScreen');
+        }}
+        title="Press Me"
+      />
+    </View>
+    </SafeAreaView>
+
+  );
+}
 
 export default withAuthenticator(App);
 
+
 const styles = StyleSheet.create({
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: '#785',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // grayContainer: {
+  //   flex: 1,
+  //   backgroundColor: 'gray',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // touchCircle: {
+  //   position: 'absolute',
+  //   width: 30,
+  //   height: 30,
+  //   borderRadius: 15,
+  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
   container: {width: 400, flex: 1, padding: 20, alignSelf: 'center'},
   todo: {marginBottom: 15},
   input: {backgroundColor: '#ddd', marginBottom: 10, padding: 8, fontSize: 18},
@@ -113,3 +111,4 @@ const styles = StyleSheet.create({
   },
   buttonText: {color: 'white', padding: 16, fontSize: 18},
 });
+
