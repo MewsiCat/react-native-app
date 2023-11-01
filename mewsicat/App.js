@@ -60,9 +60,9 @@ const App = () => {
 
 function HomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container2}>
 
-    <View style={styles.container}>
+    <View style={styles.container2}>
       <SignOutButton />
       <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
@@ -82,25 +82,26 @@ export default withAuthenticator(App);
 
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: '#785',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
-  // grayContainer: {
-  //   flex: 1,
-  //   backgroundColor: 'gray',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
-  // touchCircle: {
-  //   position: 'absolute',
-  //   width: 30,
-  //   height: 30,
-  //   borderRadius: 15,
-  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  container: {width: 400, flex: 1, padding: 20, alignSelf: 'center'},
+  container: {
+    flex: 1,
+    backgroundColor: '#785',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  grayContainer: {
+    flex: 1,
+    backgroundColor: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  touchCircle: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  container2: {width: 400, flex: 1, padding: 20, alignSelf: 'center'},
   todo: {marginBottom: 15},
   input: {backgroundColor: '#ddd', marginBottom: 10, padding: 8, fontSize: 18},
   todoName: {fontSize: 20, fontWeight: 'bold'},

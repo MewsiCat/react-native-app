@@ -4,9 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
 
-export default function GrayScreen({ navigation }) {
+export default function GrayScreen({navigation}) {
     const [touches, setTouches] = useState([]);
-      const opacities = useRef([]).current;
   
     const panResponder = useRef(
       PanResponder.create({
@@ -14,40 +13,66 @@ export default function GrayScreen({ navigation }) {
         onMoveShouldSetPanResponder: () => false,
         onPanResponderGrant: (evt) => {
           const { pageX, pageY } = evt.nativeEvent;
-          setTouches((prevTouches) => [...prevTouches, { x: pageX, y: pageY }]);
+          const opacity = new Animated.Value(1);
+          const scale = new Animated.Value(1);
+          
+          setTouches((prevTouches) => [...prevTouches, { x: pageX, y: pageY, opacity, scale }]);
+          
+          // Fade out and scale up animation
+          Animated.parallel([
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: 200, // 0.2 seconds
+              useNativeDriver: true,
+            }),
+            Animated.timing(scale, {
+              toValue: 1.5, // scale up to double the size
+              duration: 200, // 0.2 seconds
+              useNativeDriver: true,
+            }),
+          ]).start();
         },
       })
     ).current;
+  
     return (
       <View 
-        style={styles.grayContainer} 
+        style={styles.container} 
         {...panResponder.panHandlers}
       >
+        <Text style={styles.welcomeText}>Welcome!</Text>
+        <Image 
+          source={require('../assets/blackcat.jpg')} 
+          style={styles.catImage} 
+        /><View {...panResponder.panHandlers}>
+        <Button
+            onPress={() => {
+              navigation.navigate('Home');
+            }}
+            title="Press Me"
+          /></View>
         {touches.map((touch, index) => (
-          <View
+          <Animated.Image
             key={index}
+            source={require('../assets/catpaw.png')}
             style={[
               styles.touchCircle,
-              { top: touch.y - 100, left: touch.x - 15 },
+              {
+                top: touch.y - 30,
+                left: touch.x,
+                opacity: touch.opacity,
+                transform: [{ scale: touch.scale }],
+              },
             ]}
           />
         ))}
-        <Text>This is the Gray Screen</Text>
-        <Button
-          onPress={() => {
-            navigation.navigate('Home');
-          }}
-          title="Press Me"
-        />
       </View>
-      
     );
-    
   }
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#785',
+      backgroundColor: '#ffffff',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -59,9 +84,21 @@ export default function GrayScreen({ navigation }) {
     },
     touchCircle: {
       position: 'absolute',
-      width: 30,
-      height: 30,
-      borderRadius: 15,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    }
+      width: 40,
+      height: 36,
+      resizeMode: 'cover',
+    },
+    catImage: {
+      marginBottom: 20,
+      width: 450,  
+      height: 450, 
+      resizeMode: 'contain',
+    },
+    welcomeText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      position: 'absolute',
+      top: 40,
+    },
   });
