@@ -1,9 +1,11 @@
 // import React, { useState, useRef } from 'react';
+import { SpotifyAPIController } from "./backend/api/spotifyAPIController";
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 // import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
-import GrayScreen from './screens/GrayScreen.js'
+import GrayScreen from './screens/GrayScreen.js';
+import LoginScreen from './screens/LoginScreen.js';
 import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
@@ -22,9 +24,39 @@ import {
   useAuthenticator,
 } from '@aws-amplify/ui-react-native';
 
-import { Amplify } from 'aws-amplify';
+import { Amplify, Auth } from 'aws-amplify';
 import awsExports from './src/aws-exports';
 Amplify.configure(awsExports);
+
+const spotifyController = new SpotifyAPIController();
+
+async function currentUserInfo () {
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+    const result = await Auth.currentUserInfo();
+    console.log(result); // SUCCESS
+  } catch(err) {
+    console.log(err);
+  }
+};
+
+async function handleSignUp() {
+  try {
+    await Auth.signUp({
+      username: 'jdoe',
+      password: 'mysecurerandompassword#123',
+      attributes: {
+        email: 'me@domain.com',
+        phone_number: '+12128601234', // E.164 number convention
+        given_name: 'Jane',
+        family_name: 'Doe',
+        nickname: 'Jane',
+      }
+    });
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 // retrieves only the current value of 'user' from 'useAuthenticator'
 const userSelector = (context) => [context.user]
@@ -45,14 +77,37 @@ const SignOutButton = () => {
 const Stack = createStackNavigator();
 
 const App = () => {
-  // const [formState, setFormState] = useState(initialFormState);
 
+  const [spotifyToken, setSpotifyToken] = useState("");
+
+  async function getSpotifyToken(){
+    try{
+      const currentUserInfo = await Auth.currentUserInfo();
+      const token = currentUserInfo.attributes['custom:spotify_token'];
+      //console.log("spotify token!: " + spotify_token);
+      setSpotifyToken(token);
+    } catch(err){
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    getSpotifyToken();
+  }, []);
+  
+  // const [formState, setFormState] = useState(initialFormState);
+  //handleSignUp();
+  //console.log(currentUserInfo());
+  //getSpotifyToken();
+  //console.log("Spotify token!: " + spotifyToken);
+  spotifyController.getUser(spotifyToken);
   return (
     
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="GrayScreen" component={GrayScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -71,6 +126,12 @@ function HomeScreen({ navigation }) {
           navigation.navigate('GrayScreen');
         }}
         title="Press Me"
+      />
+      <Button
+        onPress={() => {
+          navigation.navigate('LoginScreen');
+        }}
+        title="Beepbap"
       />
     </View>
     </SafeAreaView>
