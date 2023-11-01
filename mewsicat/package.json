@@ -12,6 +12,8 @@
     "@aws-amplify/ui-react-native": "^1.2.28",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-community/netinfo": "^9.4.1",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/stack": "^6.3.20",
     "amazon-cognito-identity-js": "^6.3.6",
     "aws-amplify": "^5.3.11",
     "expo": "~49.0.15",

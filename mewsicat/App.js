@@ -34,7 +34,7 @@ const SignOutButton = () => {
   return (
     <Pressable onPress={signOut} style={styles.buttonContainer}>
       <Text style={styles.buttonText}>
-        Hello, ! Click here to sign out!
+        Hello, {user?.username}! Click here to sign out!
       </Text>
     </Pressable>
   );
