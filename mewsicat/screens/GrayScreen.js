@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import Playlist from '../screens/Playlist'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
@@ -51,12 +52,7 @@ export default function GrayScreen({navigation}) {
             }}
             title="Press Me"
           />
-          <Button
-            onPress={() => {
-              navigation.navigate('Playlist');
-            }}
-            title="Press Me"
-          /></View>
+          <Playlist /></View>
         {touches.map((touch, index) => (
           <Animated.Image
             key={index}
