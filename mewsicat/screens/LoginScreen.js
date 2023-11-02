@@ -1,5 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
+import * as Linking from 'expo-linking';
+
 import React from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Text } from "react-native";
 import { Button, Image } from "react-native-elements";
@@ -50,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
       // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
       // this must be set to false
       usePKCE: false,
-      redirectUri: "exp://localhost:19002/--/spotify-auth-callback",
+      redirectUri: Linking.createURL("/spotify-auth-callback"), 
     },
     discovery
   );
