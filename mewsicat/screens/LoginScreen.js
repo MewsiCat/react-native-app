@@ -52,7 +52,9 @@ const LoginScreen = ({ navigation }) => {
       // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
       // this must be set to false
       usePKCE: false,
+
       redirectUri: Linking.createURL("/spotify-auth-callback"), 
+
     },
     discovery
   );
