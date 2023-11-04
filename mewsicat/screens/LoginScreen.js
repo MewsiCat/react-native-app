@@ -52,8 +52,9 @@ const LoginScreen = ({ navigation }) => {
       // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
       // this must be set to false
       usePKCE: false,
-
-      redirectUri: Linking.createURL("/spotify-auth-callback"), 
+      // In the future will do this: Linking.createURL("/spotify-auth-callback"), as it changes the IP address depending on your wifi, 
+      // also be sure to check the warnings if there are issues before production
+      redirectUri: "exp://localhost:19002/--/spotify-auth-callback", 
 
     },
     discovery

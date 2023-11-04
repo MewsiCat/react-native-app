@@ -9,14 +9,15 @@
       "UnauthRoleName": "amplify-mewsicat-dev-150313-unauthRole",
       "StackName": "amplify-mewsicat-dev-150313",
       "StackId": "arn:aws:cloudformation:us-east-1:717783484026:stack/amplify-mewsicat-dev-150313/4acaae90-7839-11ee-92d7-0a7b55c5ce4f",
-      "AmplifyAppId": "d3msh4sazyvyil"
+      "AmplifyAppId": "d3msh4sazyvyil",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-mewsicat-dev-150313-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
-      "api": {
-        "mewsicat": {}
-      },
       "auth": {
         "mewsicata219e2b4": {}
+      },
+      "api": {
+        "mewsicatuserstest": {}
       }
     }
   }
