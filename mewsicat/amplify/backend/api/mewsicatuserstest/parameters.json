@@ -1,5 +1,5 @@
 {
-  "AppSyncApiName": "mewsicat",
+  "AppSyncApiName": "mewsicatuserstest",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false
 }

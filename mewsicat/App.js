@@ -16,9 +16,13 @@ import {
   Pressable,
   SafeAreaView,
 } from 'react-native';
-import {API, graphqlOperation} from 'aws-amplify';
-import {createTodo} from './src/graphql/mutations';
-import {listTodos} from './src/graphql/queries';
+
+import { API, graphqlOperation } from 'aws-amplify'
+import { createUser, updateUser, deleteUser } from './src/graphql/mutations'
+import { listUsers, getUser, userByName } from './src/graphql/queries'
+
+import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB } from './backend/api/amplifyDBFunctions'
+
 import {
   withAuthenticator,
   useAuthenticator,
@@ -30,33 +34,6 @@ Amplify.configure(awsExports);
 
 const spotifyController = new SpotifyAPIController();
 
-async function currentUserInfo () {
-  try {
-    const user = await Auth.currentAuthenticatedUser();
-    const result = await Auth.currentUserInfo();
-    console.log(result); // SUCCESS
-  } catch(err) {
-    console.log(err);
-  }
-};
-
-async function handleSignUp() {
-  try {
-    await Auth.signUp({
-      username: 'jdoe',
-      password: 'mysecurerandompassword#123',
-      attributes: {
-        email: 'me@domain.com',
-        phone_number: '+12128601234', // E.164 number convention
-        given_name: 'Jane',
-        family_name: 'Doe',
-        nickname: 'Jane',
-      }
-    });
-  } catch (e) {
-    console.log(e)
-  }
-}
 
 // retrieves only the current value of 'user' from 'useAuthenticator'
 const userSelector = (context) => [context.user]
@@ -80,19 +57,12 @@ const App = () => {
 
   const [spotifyToken, setSpotifyToken] = useState("");
 
-  async function getSpotifyToken(){
-    try{
-      const currentUserInfo = await Auth.currentUserInfo();
-      const token = currentUserInfo.attributes['custom:spotify_token'];
-      //console.log("spotify token!: " + spotify_token);
-      setSpotifyToken(token);
-    } catch(err){
-      console.log(err);
-    }
-  }
 
   useEffect(() => {
-    getSpotifyToken();
+    //getSpotifyToken();
+    createUserInDB();
+    addFriend("babeboop");
+    //updateFriends();
   }, []);
   
   // const [formState, setFormState] = useState(initialFormState);
@@ -100,7 +70,7 @@ const App = () => {
   //console.log(currentUserInfo());
   //getSpotifyToken();
   //console.log("Spotify token!: " + spotifyToken);
-  spotifyController.getUser(spotifyToken);
+  //spotifyController.getUser(spotifyToken);
   return (
     
     <NavigationContainer>
