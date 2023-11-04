@@ -24,7 +24,7 @@ export default function PlaylistButton() {
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
@@ -49,12 +49,12 @@ export default function PlaylistButton() {
   
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
+
       backgroundColor: 'black',
     },
     header: {
       alignItems: 'center',
-      marginTop: 30,
+    //   marginTop: 30,
     },
     title: {
       fontSize: 24,
@@ -69,12 +69,11 @@ export default function PlaylistButton() {
     modalContainer: {
         flex: 1,
         backgroundColor: 'black',
-        marginTop: 50, 
-        marginBottom: 50, 
-        marginLeft: 20, 
-        marginRight: 20,
-        borderRadius: 20,
-        padding: 20,
+        // marginTop: 50, 
+        // marginBottom: 50, 
+        // marginLeft: 20, 
+        // marginRight: 20,
+        // borderRadius: 20,
       },
   });
   
