@@ -92,9 +92,7 @@ export default function FriendsList() {
   
   const styles = StyleSheet.create({
     container: {
-
-      backgroundColor: 'black',
-
+      backgroundColor: '#f0d396',
     },
     header: {
       alignItems: 'center'
@@ -103,7 +101,7 @@ export default function FriendsList() {
     title: {
       fontSize: 50,
       fontWeight: 'bold',
-      color: '#1ed760',
+      color: '#783621',
     },
     playlistContainer: {
       flexDirection: 'row',
@@ -113,7 +111,7 @@ export default function FriendsList() {
     },
     modalContainer: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#f0d396',
         // marginTop: 50, 
         // marginBottom: 50, 
         // marginLeft: 20, 

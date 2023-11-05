@@ -52,15 +52,9 @@ export default function Modules({ navigation }) {
         <Pressable onPress={toggleFriends} style={styles.buttonContainer}>
             <Image source={require('../assets/friendsIcon.png')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={friendsVisible} onBackdropPress={toggleFriends} overlayStyle={{height:'90%', backgroundColor:'black', paddingBottom: 30, borderRadius: 20}}>
+        <Overlay isVisible={friendsVisible} onBackdropPress={toggleFriends} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
             <FriendsList />
         </Overlay>
-        <Button
-        onPress={() => {
-          navigation.navigate('GrayScreen');
-        }}
-        title="Press Me"
-        />
     </View>
     );
 };

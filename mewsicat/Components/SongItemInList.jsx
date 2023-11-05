@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   number: {
-    color: 'gray',
+    color: '#783621',
     fontWeight: 'bold',
     fontSize: 18,
     width: 30,
@@ -47,23 +47,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   songName: {
-    color: 'white',
+    color: '#783621',
     fontWeight: 'bold',
     marginBottom: 5,
   },
   artist: {
-    color: 'gray',
+    color: '#d0a060',
     fontSize: 14,
   },
   placeholderSong: {
-    backgroundColor: 'gray',
+    backgroundColor: '#783621',
     borderRadius: 5,
     width: 96,
     height: 20,
     marginBottom: 5,
   },
   placeholderArtist: {
-    backgroundColor: 'gray',
+    backgroundColor: '#d0a060',
     borderRadius: 5,
     width: 80,
     height: 16,

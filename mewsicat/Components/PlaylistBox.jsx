@@ -18,6 +18,7 @@ export default function PlaylistBox({ songs }) {
   return (
     <View style={styles.container}>
       <FlatList
+        showsVerticalScrollIndicator={'false'}
         data={songs}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
@@ -34,9 +35,10 @@ export default function PlaylistBox({ songs }) {
         <TextInput
           style={styles.input}
           placeholder="Type your playlist URL here."
+          placeholderTextColor={'#d0a060'}
           onChangeText={handleInputChange}
         />
-        <Button title="→" onPress={handleSubmit} style={styles.button} />
+        <Button title="➪" onPress={handleSubmit} color='#783621' style={styles.button} />
       </View>
     </View>
   );
@@ -48,12 +50,12 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 30,
     borderWidth: 4,
-    borderColor: '#1ed760',
+    borderColor: '#783621',
   },
   emptyText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'gray',
+    color: '#783621',
     textAlign: 'center',
     marginVertical: 20,
   },
@@ -67,10 +69,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#1ed760',
+    borderColor: '#783621',
   },
   button: {
-    backgroundColor: '#1ed760',
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 15,
     marginLeft: 10,
