@@ -45,6 +45,7 @@ export class SpotifyAPIController {
 //     console.log("acces token func " + this.accessToken);
 //   }
 
+
   async getSong(trackEndPoint) {
     await this.getAccessToken();
     console.log("song func " + this.accessToken);

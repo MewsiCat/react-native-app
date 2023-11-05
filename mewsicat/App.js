@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
 import GrayScreen from './screens/GrayScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
+import FriendsList from "./screens/FriendsList.js";
+import PlaylistButton from "./screens/Playlist.js";
 import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
@@ -21,7 +23,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser, deleteUser } from './src/graphql/mutations'
 import { listUsers, getUser, userByName } from './src/graphql/queries'
 
-import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser } from './backend/api/amplifyDBFunctions'
+import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends } from './backend/api/amplifyDBFunctions'
 
 import {
   withAuthenticator,
@@ -61,7 +63,9 @@ const App = () => {
   useEffect(() => {
     //getSpotifyToken();
     checkUser();
-    addFriend("babeboop");
+    // addFriend("bbbbbb");
+    listFriends();
+    checkFriend("bbbbbb");
     //updateFriends();
   }, []);
   

@@ -22,6 +22,19 @@ export async function currentUserInfo () {
     }
   };
 
+  export async function listFriends(){
+    const currentUserInfo = await Auth.currentUserInfo();
+    const currentUser = currentUserInfo.username;
+  
+    const params = {
+    name: currentUser
+    };
+    const result = await API.graphql(graphqlOperation(userByName, params));
+    const friendsID = result.data.userByName.items[0].id;
+    const friends = result.data.userByName.items[0].friends;
+    console.log("Your friends: " + friends);
+  }
+
 export async function checkFriend(friendName){
   const currentUserInfo = await Auth.currentUserInfo();
   const currentUser = currentUserInfo.username;
