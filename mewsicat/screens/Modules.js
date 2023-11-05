@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {StyleSheet, View, Pressable, Text, Button, Image} from 'react-native';
 import {Overlay} from 'react-native-elements'
 import FriendsList from './FriendsList';
+import Settings from './Settings';
 
 export default function Modules({ navigation }) {
     const [musicVisible, setMusicVisible] = useState(false);
@@ -39,13 +40,8 @@ export default function Modules({ navigation }) {
         <Pressable onPress={toggleSettings} style={styles.buttonContainer}>
             <Image source={require('../assets/settingsIcon.jpg')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={settingsVisible} onBackdropPress={toggleSettings}>
-            <Text style={styles.textPrimary}>Settings Page</Text>
-            <Text style={styles.textSecondary}>
-                Welcome to React Native Elements
-            </Text>
-            <Pressable style={styles.button} onPress={toggleSettings}>
-            </Pressable>
+        <Overlay isVisible={settingsVisible} onBackdropPress={toggleSettings} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+            <Settings />
         </Overlay>
 
         {/* Friends */}
