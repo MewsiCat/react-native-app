@@ -57,7 +57,7 @@ async function generateFriendsList(){
 }
 
 export default function FriendsList() {
-    const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
+    const [modalVisible, setModalVisible] = useState(true); // State to control modal visibility
     useEffect(() => {
         generateFriendsList();
       }, []);
@@ -65,26 +65,26 @@ export default function FriendsList() {
   
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <Modal
+        {/* <TouchableWithoutFeedback onPress={() => setModalVisible(false)}> */}
+          {/* <Modal
             animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
               setModalVisible(!modalVisible);
             }}
-          >
+          > */}
             <View style={styles.modalContainer}>
               <View style={styles.header}>
-                <Text style={styles.title}>Your Playlists</Text>
+                <Text style={styles.title}>  Friends List  </Text>
               </View>
               <View style={styles.playlistContainer}>
                 <Playlistbox songs={friendsData} />
               </View>
             </View>
-          </Modal>
-        </TouchableWithoutFeedback>
-        <Button title="Open Playlists" onPress={() => setModalVisible(true)} />
+          {/* </Modal> */}
+        {/* </TouchableWithoutFeedback> */}
+        {/* <Button title="Open Playlists" onPress={() => setModalVisible(true)} /> */}
       </View>
     );
 }
@@ -94,13 +94,14 @@ export default function FriendsList() {
     container: {
 
       backgroundColor: 'black',
+
     },
     header: {
-      alignItems: 'center',
+      alignItems: 'center'
     //   marginTop: 30,
     },
     title: {
-      fontSize: 24,
+      fontSize: 50,
       fontWeight: 'bold',
       color: '#1ed760',
     },
@@ -108,6 +109,7 @@ export default function FriendsList() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       margin: 20,
+      height: '90%',
     },
     modalContainer: {
         flex: 1,

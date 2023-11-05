@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {StyleSheet, View, Pressable, Text, Button, Image} from 'react-native';
 import {Overlay} from 'react-native-elements'
+import FriendsList from './FriendsList';
 
 export default function Modules({ navigation }) {
     const [visible, setVisible] = useState(false);
@@ -10,12 +11,13 @@ export default function Modules({ navigation }) {
     };
 
     return (
-    <View style={styles.container}>
+    <View style={{flex: 1}}>
+        {/* Music reccomend
         <Pressable onPress={toggleOverlay}>
             <Image source={require('../assets/MagGlass.png')} style={styles.img}/>
         </Pressable>
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-            <Text style={styles.textPrimary}>Hello!</Text>
+            <Text style={styles.textPrimary}>Music Reccomendation Page</Text>
             <Text style={styles.textSecondary}>
                 Welcome to React Native Elements
             </Text>
@@ -23,21 +25,40 @@ export default function Modules({ navigation }) {
             </Pressable>
         </Overlay>
 
+        {/* Settings */}
+        {/* <Pressable onPress={toggleOverlay}>
+            <Image source={require('../assets/MagGlass.png')} style={styles.img}/>
+        </Pressable>
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+            <Text style={styles.textPrimary}>Settings Page</Text>
+            <Text style={styles.textSecondary}>
+                Welcome to React Native Elements
+            </Text>
+            <Pressable style={styles.button} onPress={toggleOverlay}>
+            </Pressable>
+        </Overlay> */}
+
+        {/* Friends */}
+        <Pressable onPress={toggleOverlay}>
+            <Image source={require('../assets/MagGlass.png')} style={styles.img}/>
+        </Pressable>
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{height:'90%', backgroundColor:'black', paddingBottom: 30, borderRadius: 20}}>
+            <FriendsList />
+        </Overlay>
+
         <Button
         onPress={() => {
           navigation.navigate('GrayScreen');
         }}
         title="Press Me"
-      />
+        />
     </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        alignSelf: 'center',
         padding: 10,
-        backgroundColor: '#fff',
     },
     button: {
     margin: 10,
@@ -64,5 +85,9 @@ const styles = StyleSheet.create({
     img: {
         width:50,
         height:50
+    },
+    overlay: {
+        width:'50%',
+        height:'50%'
     }
 });
