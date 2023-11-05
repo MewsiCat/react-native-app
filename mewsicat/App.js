@@ -65,7 +65,6 @@ const App = () => {
 
 
   useEffect(() => {
-    //getSpotifyToken();
     checkUser();
     // addFriend("bbbbbb");
     listFriends();
