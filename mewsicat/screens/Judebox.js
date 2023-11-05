@@ -1,15 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { Overlay } from 'react-native-elements';
+import MusicRec from './MusicRec';
 
-export default function MusicRec() {
+export default function Judebox() {
+
+    const [recVisible, setRecVisible] = useState(false);
+
+    const toggleRec = () => {
+        setRecVisible(!recVisible);
+    };
     
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Music Reccomendation!</Text>
+            <Text style={styles.title}>Judebox</Text>
             <Image source={require('../assets/judebox.gif')} style={styles.img} />
-            <Pressable style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>Return Home</Text>
+            <Pressable style={styles.buttonContainer} onPress={toggleRec}>
+                <Text style={styles.buttonText}>Get Song</Text>
             </Pressable>
+            <Overlay isVisible={recVisible} onBackdropPress={toggleRec} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                <MusicRec />
+            </Overlay>
         </View>
     );
 }
