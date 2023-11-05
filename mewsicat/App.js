@@ -6,8 +6,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
 import GrayScreen from './screens/GrayScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
+
 import FriendsList from "./screens/FriendsList.js";
 import PlaylistButton from "./screens/Playlist.js";
+
+import Modules from './screens/Modules.js';
+
 import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
@@ -82,6 +86,7 @@ const App = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="GrayScreen" component={GrayScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="Modules" component={Modules} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -106,6 +111,12 @@ function HomeScreen({ navigation }) {
           navigation.navigate('LoginScreen');
         }}
         title="Beepbap"
+      />
+      <Button 
+        onPress={() => {
+          navigation.navigate('Modules');
+        }}
+        title="Modules"
       />
     </View>
     </SafeAreaView>
