@@ -1,17 +1,70 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Image, Button } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { SpotifyAPIController } from '../backend/api/spotifyAPIController';
+
+import { API, graphqlOperation } from 'aws-amplify'
+
+import {
+    withAuthenticator,
+    useAuthenticator,
+  } from '@aws-amplify/ui-react-native';
+  
+import { Amplify, Auth } from 'aws-amplify';
+import awsExports from '../src/aws-exports';
+Amplify.configure(awsExports);
+
+import { createUser, updateUser, deleteUser } from '../src/graphql/mutations'
+import { listUsers, getUser, userByName } from '../src/graphql/queries'
+
+var songName;
+var artistName;
+var imageName;
+
+async function generateSong(){
+    try{
+    const currentUserInfo = await Auth.currentUserInfo();
+    const access_token = currentUserInfo.attributes['custom:spotify_token'];
+    console.log("access token: " + access_token);
+
+    var result = await fetch(
+        `https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA&limit=1`,
+        {
+            method: "GET",
+            headers: { Authorization: "Bearer " + access_token },
+        },
+        )
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data.tracks[0].name)
+            console.log(data.tracks[0].artists[0].name)
+            console.log(data.tracks[0].album.images[0].url)
+            songName = data.tracks[0].name;
+            artistName = data.tracks[0].artists[0].name;
+            imageName = data.tracks[0].album.images[0].url;
+        });
+    } catch(err) {
+        console.log(err);
+      } 
+}
 
 export default function MusicRec() {
     const song = "Plaechold";
     const artist = "mommy"
+
+    console.log("song name " + songName);
+
+    useEffect(() => {
+        generateSong();
+        
+      }, []);
     
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Music Reccomendation!</Text>
-            <Image source={require('../assets/wife.jpg')} style={styles.img} />
-            <Text style={styles.song}>{song}</Text>
-            <Text style={styles.artist}>{artist}</Text>
+            <Image source={{uri: imageName,}} style={styles.img} />
+            <Text style={styles.song}>{songName}</Text>
+            <Text style={styles.artist}>{artistName}</Text>
             <Slider
                 style={{width: '90%', height: '90%', alignSelf:'center', paddingTop:0}}
                 minimumValue={0}
