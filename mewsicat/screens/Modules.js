@@ -4,14 +4,19 @@ import {Overlay} from 'react-native-elements'
 import FriendsList from './FriendsList';
 import Settings from './Settings';
 import MusicRec from './MusicRec';
+import Judebox from './Judebox';
 
 export default function Modules({ navigation }) {
     const [musicVisible, setMusicVisible] = useState(false);
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [friendsVisible, setFriendsVisible] = useState(false);
+    const [recVisible, setRecVisible] = useState(false);
 
     const toggleMusic = () => {
         setMusicVisible(!musicVisible);
+    };
+    const toggleRec = () => {
+        setRecVisible(!recVisible);
     };
 
     const toggleSettings = () => {
@@ -29,7 +34,7 @@ export default function Modules({ navigation }) {
             <Image source={require('../assets/musicIcon.jpg')} style={styles.img}/>
         </Pressable>
         <Overlay isVisible={musicVisible} onBackdropPress={toggleMusic} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
-            <MusicRec />
+            <Judebox />
         </Overlay>
 
         {/* Settings */}
