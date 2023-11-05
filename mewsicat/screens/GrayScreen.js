@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Animated, Button, ImageBackground, TouchableOpacity, Dimensions, Easing } from 'react-native';
 const scale = 3;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+import Modules from './Modules';
 
 
 const Cat = ({ source, onMoveEnd }) => {
@@ -175,6 +176,7 @@ export default function GrayScreen({ navigation }) {
       source={require('../assets/catbackground.png')}
       style={styles.container}
     >
+      <Modules/>
       <View style={styles.container}>
       <Cat
         source={spriteSheetSource}
