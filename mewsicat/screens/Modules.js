@@ -4,48 +4,57 @@ import {Overlay} from 'react-native-elements'
 import FriendsList from './FriendsList';
 
 export default function Modules({ navigation }) {
-    const [visible, setVisible] = useState(false);
+    const [musicVisible, setMusicVisible] = useState(false);
+    const [settingsVisible, setSettingsVisible] = useState(false);
+    const [friendsVisible, setFriendsVisible] = useState(false);
 
-    const toggleOverlay = () => {
-        setVisible(!visible);
+    const toggleMusic = () => {
+        setMusicVisible(!musicVisible);
     };
 
+    const toggleSettings = () => {
+        setSettingsVisible(!settingsVisible);
+    }
+
+    const toggleFriends = () => {
+        setFriendsVisible(!friendsVisible);
+    }
+
     return (
-    <View style={{flex: 1}}>
-        {/* Music reccomend
-        <Pressable onPress={toggleOverlay}>
-            <Image source={require('../assets/MagGlass.png')} style={styles.img}/>
+    <View style={styles.container}>
+        {/* Music reccomend*/}
+        <Pressable onPress={toggleMusic} style={styles.buttonContainer}>
+            <Image source={require('../assets/musicIcon.jpg')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Overlay isVisible={musicVisible} onBackdropPress={toggleMusic}>
             <Text style={styles.textPrimary}>Music Reccomendation Page</Text>
             <Text style={styles.textSecondary}>
                 Welcome to React Native Elements
             </Text>
-            <Pressable style={styles.button} onPress={toggleOverlay}>
+            <Pressable style={styles.button} onPress={toggleMusic}>
             </Pressable>
         </Overlay>
 
         {/* Settings */}
-        {/* <Pressable onPress={toggleOverlay}>
-            <Image source={require('../assets/MagGlass.png')} style={styles.img}/>
+        <Pressable onPress={toggleSettings} style={styles.buttonContainer}>
+            <Image source={require('../assets/settingsIcon.jpg')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Overlay isVisible={settingsVisible} onBackdropPress={toggleSettings}>
             <Text style={styles.textPrimary}>Settings Page</Text>
             <Text style={styles.textSecondary}>
                 Welcome to React Native Elements
             </Text>
-            <Pressable style={styles.button} onPress={toggleOverlay}>
+            <Pressable style={styles.button} onPress={toggleSettings}>
             </Pressable>
-        </Overlay> */}
-
-        {/* Friends */}
-        <Pressable onPress={toggleOverlay}>
-            <Image source={require('../assets/MagGlass.png')} style={styles.img}/>
-        </Pressable>
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{height:'90%', backgroundColor:'black', paddingBottom: 30, borderRadius: 20}}>
-            <FriendsList />
         </Overlay>
 
+        {/* Friends */}
+        <Pressable onPress={toggleFriends} style={styles.buttonContainer}>
+            <Image source={require('../assets/friendsIcon.png')} style={styles.img}/>
+        </Pressable>
+        <Overlay isVisible={friendsVisible} onBackdropPress={toggleFriends} overlayStyle={{height:'90%', backgroundColor:'black', paddingBottom: 30, borderRadius: 20}}>
+            <FriendsList />
+        </Overlay>
         <Button
         onPress={() => {
           navigation.navigate('GrayScreen');
@@ -59,6 +68,7 @@ export default function Modules({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         padding: 10,
+        gap:10,
     },
     button: {
     margin: 10,
@@ -74,9 +84,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     },
     buttonContainer: {
-        backgroundColor: 'black',
-        padding: 15,
-        alignContent: 'center'
+        padding: 5,
+        marginLeft: 'auto',
     },
     buttonText: {
         color: 'white', 
@@ -84,7 +93,8 @@ const styles = StyleSheet.create({
     },
     img: {
         width:50,
-        height:50
+        height:50,
+        borderRadius: 20
     },
     overlay: {
         width:'50%',
