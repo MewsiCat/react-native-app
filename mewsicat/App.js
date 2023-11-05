@@ -21,7 +21,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser, deleteUser } from './src/graphql/mutations'
 import { listUsers, getUser, userByName } from './src/graphql/queries'
 
-import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB } from './backend/api/amplifyDBFunctions'
+import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser } from './backend/api/amplifyDBFunctions'
 
 import {
   withAuthenticator,
@@ -60,7 +60,7 @@ const App = () => {
 
   useEffect(() => {
     //getSpotifyToken();
-    createUserInDB();
+    checkUser();
     addFriend("babeboop");
     //updateFriends();
   }, []);
