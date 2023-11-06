@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {
     withAuthenticator,
     useAuthenticator,
 } from '@aws-amplify/ui-react-native';
+import { Button } from 'react-native-elements';
+import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
+import { ResponseType, useAuthRequest } from "expo-auth-session";
 
 const userSelector = (context) => [context.user]
 
@@ -19,8 +22,61 @@ const SignOutButton = () => {
     );
   };
 
+  const discovery = {
+    authorizationEndpoint: "https://accounts.spotify.com/authorize",
+    tokenEndpoint: "https://accounts.spotify.com/api/token",
+  };
+  
+  async function updateUserAttributes (access_token) {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      const result = await Auth.updateUserAttributes(user, {
+        "custom:spotify_token" : access_token
+      });
+      console.log(result); // SUCCESS
+    } catch(err) {
+      console.log(err);
+    }
+  };
+
 export default function Settings() {
-    
+    const spotifyController = new SpotifyAPIController();
+    //const dispatch = useDispatch();
+    const [token, setToken] = useState("");
+    const [request, response, promptAsync] = useAuthRequest(
+      {
+        responseType: ResponseType.Token,
+        clientId: "88c17d6f25cc43eaad226930c216ae5b",
+        scopes: [
+          "user-read-currently-playing",
+          "user-read-recently-played",
+          "user-read-playback-state",
+          "user-top-read",
+          "user-modify-playback-state",
+          "streaming",
+          "user-read-email",
+          "user-read-private",
+        ],
+        // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
+        // this must be set to false
+        usePKCE: false,
+        // In the future will do this: Linking.createURL("/spotify-auth-callback"), as it changes the IP address depending on your wifi, 
+        // also be sure to check the warnings if there are issues before production
+        redirectUri: "exp://localhost:19002/--/spotify-auth-callback", 
+  
+      },
+      discovery
+    );
+
+    useEffect(() => {
+        if (response?.type === "success") {
+          const { access_token } = response.params;
+          console.log(access_token);
+          updateUserAttributes(access_token);
+          spotifyController.getUser(access_token);
+          setToken(access_token);
+        }
+      }, [response]);
 
     return (
         <View style={styles.container}>
@@ -49,7 +105,14 @@ export default function Settings() {
                 thumbTintColor='#783621'
             />
 
-            <SignOutButton style={styles.signout}/>
+            <View style={styles.toBottom}>
+                <Pressable style={styles.buttonContainer} onPress={() => {promptAsync();}}>
+                    <Text style={styles.buttonText}>Login with Spotify</Text>
+                </Pressable>
+
+                <SignOutButton style={styles.signout}/>
+            </View>
+
         </View>
     );
 }
@@ -58,12 +121,11 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignSelf: 'center',
         backgroundColor: '#f0d396',
-        borderColor:'#783621',
+        borderColor:'#d0a060',
         paddingHorizontal: 8,
         borderWidth:2,
         borderRadius: 10,
-        width: '90%',
-        marginTop: 'auto'
+        width: '90%'
       },
     container: {
         backgroundColor: '#f0d396',
@@ -95,4 +157,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf:'center'
     },
+    toBottom: {
+        gap: 20,
+        marginTop: 'auto'
+    }
 })

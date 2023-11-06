@@ -4,7 +4,7 @@ import Slider from '@react-native-community/slider';
 import { Overlay } from 'react-native-elements';
 import MusicRec from './MusicRec';
 
-export default function Judebox() {
+export default function Jukebox() {
 
     const [recVisible, setRecVisible] = useState(false);
 
@@ -14,7 +14,7 @@ export default function Judebox() {
     
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Judebox</Text>
+            <Text style={styles.title}>Jukebox</Text>
             <Image source={require('../assets/judebox.gif')} style={styles.img} />
             <Pressable style={styles.buttonContainer} onPress={toggleRec}>
                 <Text style={styles.buttonText}>Get Song</Text>
