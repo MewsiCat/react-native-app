@@ -20,15 +20,17 @@ import { listUsers, getUser, userByName } from '../src/graphql/queries'
 var songName;
 var artistName;
 var imageName;
+var topArtists;
+var topArtistsGenres;
+var topTracks;
 
-async function generateSong(){
+async function getTopTracks(){
     try{
     const currentUserInfo = await Auth.currentUserInfo();
     const access_token = currentUserInfo.attributes['custom:spotify_token'];
     console.log("access token: " + access_token);
-
-    var result = await fetch(
-        `https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA&limit=1`,
+    var userRes = await fetch(
+        `https://api.spotify.com/v1/me/top/tracks`,
         {
             method: "GET",
             headers: { Authorization: "Bearer " + access_token },
@@ -36,6 +38,61 @@ async function generateSong(){
         )
         .then((res) => res.json())
         .then((data) => {
+            console.log("top tracks in function: " + data.items[0].name);
+            topTracks = data.items[0].uri;
+            topTracks = topTracks.substring(14);
+            console.log(topTracks)
+        });
+    }catch(err) {
+        console.log(err);
+      } 
+}
+
+
+
+async function getTopArtists(){
+    try{
+    const currentUserInfo = await Auth.currentUserInfo();
+    const access_token = currentUserInfo.attributes['custom:spotify_token'];
+    console.log("access token: " + access_token);
+    var userRes = await fetch(
+        `https://api.spotify.com/v1/me/top/artists`,
+        {
+            method: "GET",
+            headers: { Authorization: "Bearer " + access_token },
+        },
+        )
+        .then((res) => res.json())
+        .then((data) => {
+            console.log("top artist in function: " + data.items[0].name);
+            topArtists = data.items[0].uri;
+            topArtists = topArtists.substring(15);
+            // topArtistsGenres = data.items[0].genre;
+            // console.log("top artists genres in function: " + topArtistsGenres);
+        });
+    }catch(err) {
+        console.log(err);
+      } 
+}
+async function generateSong(){
+    try{
+    await getTopTracks();
+    await getTopArtists();
+    const currentUserInfo = await Auth.currentUserInfo();
+    const access_token = currentUserInfo.attributes['custom:spotify_token'];
+    console.log("access token: " + access_token);
+    console.log("top tracks " + topTracks);
+    console.log("top artists: "  + topArtists);
+    var result = await fetch(
+        `https://api.spotify.com/v1/recommendations?seed_artists=${topArtists}&seed_tracks=${topTracks}&linit=1`,
+        {
+            method: "GET",
+            headers: { Authorization: "Bearer " + access_token },
+        },
+        )
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
             console.log(data.tracks[0].name)
             console.log(data.tracks[0].artists[0].name)
             console.log(data.tracks[0].album.images[0].url)
@@ -43,6 +100,7 @@ async function generateSong(){
             artistName = data.tracks[0].artists[0].name;
             imageName = data.tracks[0].album.images[0].url;
         });
+        console.log("top artist: " + topArtists);
     } catch(err) {
         console.log(err);
       } 
