@@ -8,6 +8,7 @@ import {
 import { Button } from 'react-native-elements';
 import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
 import { ResponseType, useAuthRequest } from "expo-auth-session";
+import { Amplify, Auth } from 'aws-amplify';
 
 const userSelector = (context) => [context.user]
 
