@@ -86,7 +86,7 @@ export async function getSpotifyToken(){
     }
   }
 
-export async function setSpotifyConnected(){
+export async function checkSpotifyConnected(){
   try{
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
@@ -97,7 +97,7 @@ export async function setSpotifyConnected(){
     const result = await API.graphql(graphqlOperation(userByName, params));
     const spotifyConnected = result.data.userByName.items[0].spotifyConnected;
 
-    if(friends == true){
+    if(spotifyConnected == true){
       return true;
     }
     else{
@@ -109,7 +109,7 @@ export async function setSpotifyConnected(){
   }
 }
 
-export async function checkSpotifyConnected(){
+export async function setSpotifyConnected(){
   try{
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
