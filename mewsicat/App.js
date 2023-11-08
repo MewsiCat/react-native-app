@@ -10,6 +10,9 @@ import LoginScreen from './screens/LoginScreen.js';
 import FriendsList from "./screens/FriendsList.js";
 import PlaylistButton from "./screens/Playlist.js";
 
+import { Audio } from 'expo-av';
+
+
 import Modules from './screens/Modules.js';
 
 import React, {useEffect, useState} from 'react';
@@ -63,9 +66,22 @@ const App = () => {
 
   const [spotifyToken, setSpotifyToken] = useState("");
 
+  const [sound, setSound] = React.useState();
+
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync( require('./assets/mewsound.mp3')
+    );
+    setSound(sound);
+
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
+
 
   useEffect(() => {
     checkUser();
+    playSound();
     // addFriend("bbbbbb");
     listFriends();
     checkFriend("bbbbbb");
