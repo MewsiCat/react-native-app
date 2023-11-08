@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         gap:10,
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        marginTop: 80
     },
     button: {
     margin: 10,
