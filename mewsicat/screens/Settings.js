@@ -10,6 +10,7 @@ import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
 import { ResponseType, useAuthRequest } from "expo-auth-session";
 import { Amplify, Auth } from 'aws-amplify';
 import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
+import Loading from './Loading.js';
 
 const userSelector = (context) => [context.user]
 

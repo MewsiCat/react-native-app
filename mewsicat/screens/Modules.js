@@ -5,6 +5,7 @@ import FriendsList from './FriendsList';
 import Settings from './Settings';
 import MusicRec from './MusicRec';
 import Jukebox from './Jukebox';
+import Loading from './Loading';
 
 export default function Modules({ navigation }) {
     const [musicVisible, setMusicVisible] = useState(false);
@@ -51,6 +52,7 @@ export default function Modules({ navigation }) {
         </Pressable>
         <Overlay isVisible={friendsVisible} onBackdropPress={toggleFriends} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
             <FriendsList />
+            {/* <Loading /> */}
         </Overlay>
     </View>
     );
