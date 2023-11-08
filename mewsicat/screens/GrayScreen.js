@@ -2,9 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Animated, Button, ImageBackground, TouchableOpacity, Dimensions, Easing } from 'react-native';
 const scale = 3;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-
-// import SoundPlayer from 'react-native-sound';
 import Modules from './Modules';
+import { Audio } from 'expo-av';
+
+async function playSound() {
+  const { sound } = await Audio.Sound.createAsync(
+     require('../assets/mewsound.mp3')
+  );
+
+  await sound.playAsync();
+}
 
 
 const Cat = ({ source, onMoveEnd }) => {
@@ -32,11 +39,7 @@ const Cat = ({ source, onMoveEnd }) => {
   const sittingFrameCount = 6
 
   const handlePressCat = () => {
-    try {
-      SoundPlayer.playSoundFile('mewsound', 'mp3');
-    } catch (e) {
-      console.log(`Cannot play the sound file`, e);
-    }
+    playSound();
     stopAnimationAndListeners();
 
     setSpriteStartX(32);
@@ -56,7 +59,6 @@ const Cat = ({ source, onMoveEnd }) => {
   };
 
   const moveToNewPosition = () => {
-    console.log(position.x, position.y)
   
     setIsMoving(true);
     setFrameCount(4);
