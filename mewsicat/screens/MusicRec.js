@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         width: 200,
         height: 250,
         margin: 50,
-        marginBottom:5
+        marginBottom:5,
     },
     song: {
         alignSelf:'center',
