@@ -6,6 +6,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
 import GrayScreen from './screens/GrayScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
+
+import FriendsList from "./screens/FriendsList.js";
+import PlaylistButton from "./screens/Playlist.js";
+
+import Modules from './screens/Modules.js';
+
 import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
@@ -21,7 +27,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser, deleteUser } from './src/graphql/mutations'
 import { listUsers, getUser, userByName } from './src/graphql/queries'
 
-import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser } from './backend/api/amplifyDBFunctions'
+import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends } from './backend/api/amplifyDBFunctions'
 
 import {
   withAuthenticator,
@@ -59,9 +65,10 @@ const App = () => {
 
 
   useEffect(() => {
-    //getSpotifyToken();
     checkUser();
-    addFriend("babeboop");
+    // addFriend("bbbbbb");
+    listFriends();
+    checkFriend("bbbbbb");
     //updateFriends();
   }, []);
   
@@ -78,6 +85,7 @@ const App = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="GrayScreen" component={GrayScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="Modules" component={Modules} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -102,6 +110,12 @@ function HomeScreen({ navigation }) {
           navigation.navigate('LoginScreen');
         }}
         title="Beepbap"
+      />
+      <Button 
+        onPress={() => {
+          navigation.navigate('Modules');
+        }}
+        title="Modules"
       />
     </View>
     </SafeAreaView>
