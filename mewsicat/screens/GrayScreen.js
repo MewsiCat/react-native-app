@@ -2,140 +2,224 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Animated, Button, ImageBackground, TouchableOpacity, Dimensions, Easing } from 'react-native';
 const scale = 3;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+// import SoundPlayer from 'react-native-sound';
 import Modules from './Modules';
 
 
 const Cat = ({ source, onMoveEnd }) => {
   const scale = 3;
-  const speed = 100; // pixels per second
+  const speed = 100;
   const frameWidth = 32;
   const frameHeight = 32;
   const frameDuration = 150;
-  const [spriteStartY, setSpriteStartY] = useState(32); // Initial startX for sprite animation
 
+  const [lastDirectionIndex, setLastDirectionIndex] = useState(0);
+  const [spriteStartX, setSpriteStartX] = useState(384);
+  const [spriteStartY, setSpriteStartY] = useState(32);
+  const [frameCount, setFrameCount] = useState(4);
+  const [isMoving, setIsMoving] = useState(false);
 
-  // Position state
-  const translateX = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
-  // Random destination point
-  const getRandomPoint = () => ({
-    x: (Math.random()-0.5) * (screenWidth - frameWidth * scale),
-    y: (Math.random()-0.5) * (screenHeight - frameHeight * scale),
-  });
+  let directionIndex = 0;
+
+  const x = useRef(new Animated.Value(0)).current;
+  const y = useRef(new Animated.Value(0)).current;
+  const position = useRef({ x: 0, y: 0 }).current; 
+
+  const movingStartX = 384;
+  const sittingStartX = 0;
+  const sittingStartY = 32;
+  const sittingFrameCount = 6
+
+  const handlePressCat = () => {
+    try {
+      SoundPlayer.playSoundFile('mewsound', 'mp3');
+    } catch (e) {
+      console.log(`Cannot play the sound file`, e);
+    }
+    stopAnimationAndListeners();
+
+    setSpriteStartX(32);
+    setSpriteStartY(64 + lastDirectionIndex * 64);
+    setFrameCount(1);
+    setIsMoving(false);
+
+    const pauseDuration = Math.random() * 2000 + sittingFrameCount * frameDuration + 1000;
+    timeoutId.current = setTimeout(moveToNewPosition, pauseDuration);
+  };
+
+  const stopAnimationAndListeners = () => {
+    x.stopAnimation();
+    y.stopAnimation();
+      clearTimeout(timeoutId.current);
+    
+  };
 
   const moveToNewPosition = () => {
-    const newPoint = getRandomPoint();
-    const xDistance = newPoint.x - translateX._value;
-    const yDistance = newPoint.y - translateY._value;
+    console.log(position.x, position.y)
   
-    // Calculate the angle in radians and normalize it to a 0-360 range
-    let angle = Math.atan2(yDistance, xDistance) * (180 / Math.PI);
-    if (angle < 0) {
-      angle += 360;
+    setIsMoving(true);
+    setFrameCount(4);
+    setSpriteStartX(384);
+    stopAnimationAndListeners();
+
+  
+    directionIndex = Math.floor(Math.random() * 8);
+    let maxDistance, distance;
+    const minTravelDistance = 50;
+    const halfScreenWidth = screenWidth / 2;
+    const halfScreenHeight = screenHeight / 2;
+    const directions = [
+      { x: 0, y: 1 },
+      { x: -1, y: 1 },
+      { x: -1, y: 0 },
+      { x: -1, y: -1 },
+      { x: 0, y: -1 },
+      { x: 1, y: -1 },
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+    ];
+  
+    let validDirection = false;
+    while (!validDirection) {
+      const direction = directions[directionIndex];
+      let maxDistanceX;
+      let maxDistanceY;
+      
+  
+      if (direction.x !== 0) {
+        maxDistanceX = direction.x > 0 ? (halfScreenWidth - position.x- frameWidth*scale/2) : (halfScreenWidth + position.x-frameWidth*scale/2);
+      } else {
+        maxDistanceX = Infinity;
+      }
+  
+      if (direction.y !== 0) {
+        maxDistanceY = direction.y > 0 ? (halfScreenHeight - position.y-frameHeight*scale/2) : (halfScreenHeight + position.y - frameHeight*scale/2);
+      } else {
+        maxDistanceY = Infinity;
+      }
+  
+      maxDistance = Math.min(maxDistanceX, maxDistanceY);
+      if (direction.x !== 0 && direction.y !== 0) {
+        // Adjust for diagonal movement
+        maxDistance = maxDistance / Math.sqrt(2);
+      }
+  
+      if (maxDistance >= minTravelDistance) {
+        validDirection = true;
+      } else {
+        directionIndex = (directionIndex + 1) % 8; 
+      }
     }
   
-    // Map the angle to one of the 8 directions (0 to 7)
-    const directionIndex = Math.round(angle / 45) % 8;
-    
-    // Update startY to change the animation based on direction
-    setSpriteStartY(32 + directionIndex * 64); // Assuming each direction's animation frames are 64 pixels apart on the Y axis
+    const chosenDirection = directions[directionIndex];
+    setSpriteStartY(32 + directionIndex * 64);
+    distance = minTravelDistance + Math.random() * (maxDistance - minTravelDistance);
+    setLastDirectionIndex(directionIndex);
+    const newx = position.x + chosenDirection.x * distance;
+    const newy = position.y + chosenDirection.y * distance;
+    const duration = (distance / speed) * 1000;
   
-    // Calculate the direction vector for the sprite based on the directionIndex
-    const directionVector = {
-      x: Math.cos(directionIndex * Math.PI / 4),
-      y: Math.sin(directionIndex * Math.PI / 4)
-    };
+    position.x = newx;
+    position.y = newy;
   
-    // Calculate the distance the sprite should actually move
-    const moveX = directionVector.x * Math.sign(xDistance) * Math.min(Math.abs(xDistance), Math.abs(yDistance));
-    const moveY = directionVector.y * Math.sign(yDistance) * Math.min(Math.abs(xDistance), Math.abs(yDistance));
-  
-    const distance = Math.sqrt(moveX ** 2 + moveY ** 2);
-    let duration = (distance / speed) * 1000; // Convert speed to duration
-  
-    // Start the animations with no easing
-    Animated.timing(translateX, {
-      toValue: translateX._value + moveX,
-      duration: duration,
-      useNativeDriver: true,
-      easing: Easing.linear // Linear movement
-    }).start();
-  
-    Animated.timing(translateY, {
-      toValue: translateY._value + moveY,
-      duration: duration,
-      useNativeDriver: true,
-      easing: Easing.linear // Linear movement
-    }).start(({ finished }) => {
-      // Callback when animation is finished
+    Animated.parallel([
+      Animated.timing(x, { toValue: newx, duration, useNativeDriver: true, easing: Easing.linear }),
+      Animated.timing(y, { toValue: newy, duration, useNativeDriver: true, easing: Easing.linear }),
+    ]).start(({ finished }) => {
       if (finished) {
-        onMoveEnd && onMoveEnd();
-        // Wait for a random amount of time before moving again
-        timeoutId.current = setTimeout(moveToNewPosition, Math.random() * 5000); // Random delay between 0 to 5 seconds
+        setIsMoving(false);
+        setSpriteStartX(0);
+        setSpriteStartY(32+directionIndex*64);
+        setFrameCount(6); 
+
+        const pauseDuration = Math.random() * 2000+sittingFrameCount*frameDuration+1000;
+        timeoutId.current = setTimeout(moveToNewPosition, pauseDuration);
+        timeoutId.current = setTimeout(stopAnimationFrame, (sittingFrameCount-1)*frameDuration);
+
       }
+      onMoveEnd?.();
     });
   };
   
+  const stopAnimationFrame = () =>{
+      setSpriteStartX(32); 
+      setSpriteStartY(64+directionIndex*64);
+    setFrameCount(1);
+  }
 
   const timeoutId = useRef(null);
 
   useEffect(() => {
-    // Start moving when the component mounts
     moveToNewPosition();
 
-    // Cleanup function to clear the timeout when the component unmounts
     return () => {
-      if (timeoutId.current) {
-        clearTimeout(timeoutId.current);
-      }
+      stopAnimationAndListeners();
     };
   }, []);
-  
 
   return (
     <Animated.View
       style={{
         transform: [
-          { translateX: translateX },
-          { translateY: translateY },
+          { translateX: x },
+          { translateY: y },
         ],
       }}
     >
-      <TouchableOpacity onPress={moveToNewPosition}>
-      <SpriteAnimator
-  source={source}
-  frameCount={4}
-  frameDuration={frameDuration}
-  startX={384} // Use state variable here
-  startY={spriteStartY}
-  frameWidth={frameWidth}
-  frameHeight={frameHeight}
-/>
-
+      <TouchableOpacity onPress={handlePressCat}>
+        <SpriteAnimator
+          source={source}
+          frameCount={frameCount}
+          frameDuration={frameDuration}
+          startX={spriteStartX}
+          startY={spriteStartY}
+          frameWidth={frameWidth}
+          frameHeight={frameHeight}
+        />
       </TouchableOpacity>
     </Animated.View>
   );
 };
 
-const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, frameWidth, frameHeight, position }) => {
+
+const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, frameWidth, frameHeight }) => {
   const animation = useState(new Animated.Value(0))[0];
+
+  useEffect(() => {
+    animation.setValue(0);
+  }, [startX, startY]);
+
   const inputRange = Array.from({ length: frameCount }, (_, i) => i);
   const translateXOutputRange = inputRange.map(index => -(startX + (index % 4) * frameWidth));
   const translateYOutputRange = inputRange.map(index => -(startY + Math.floor(index / 4) * frameHeight));
 
   useEffect(() => {
     let currentFrame = 0;
-    const frameUpdateInterval = setInterval(() => {
-      currentFrame = currentFrame >= frameCount - 1 ? 0 : currentFrame + 1;
-      animation.setValue(currentFrame);
-    }, frameDuration);
-    return () => clearInterval(frameUpdateInterval);
+    if (frameCount > 1) {
+      const frameUpdateInterval = setInterval(() => {
+        currentFrame = (currentFrame + 1) % frameCount;
+        animation.setValue(currentFrame);
+      }, frameDuration);
+      return () => clearInterval(frameUpdateInterval);
+    } else {
+      animation.setValue(frameCount - 1);
+    }
+
   }, [animation, frameCount, frameDuration]);
+
+
+  const adjustedInputRange = frameCount > 1 ? inputRange : [0, 1];
+
+  const adjustedTranslateXOutputRange = frameCount > 1 ? translateXOutputRange : [translateXOutputRange[0], translateXOutputRange[0]];
+  const adjustedTranslateYOutputRange = frameCount > 1 ? translateYOutputRange : [translateYOutputRange[0], translateYOutputRange[0]];
+
 
   const frameStyle = {
     height: frameHeight * scale,
     width: frameWidth * scale,
-    overflow:'hidden',
+
+    overflow: 'hidden',
   };
 
   const imageStyle = {
@@ -145,15 +229,15 @@ const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, fra
     transform: [
       {
         translateX: animation.interpolate({
-          inputRange,
-          outputRange: translateXOutputRange.map(value => value * scale),
+          inputRange: adjustedInputRange,
+          outputRange: adjustedTranslateXOutputRange.map(value => value * scale),
           extrapolate: 'clamp'
         }),
       },
       {
         translateY: animation.interpolate({
-          inputRange,
-          outputRange: translateYOutputRange.map(value => value * scale),
+          inputRange: adjustedInputRange,
+          outputRange: adjustedTranslateYOutputRange.map(value => value * scale),
           extrapolate: 'clamp'
         }),
       },
@@ -178,12 +262,12 @@ export default function GrayScreen({ navigation }) {
     >
       <Modules/>
       <View style={styles.container}>
-      <Cat
-        source={spriteSheetSource}
-        onMoveEnd={() => {
-          console.log('dest');
-        }}
-      />
+        <Cat
+          source={spriteSheetSource}
+          onMoveEnd={() => {
+            // console.log('dest');
+          }}
+        />
       </View>
       <View>
         <Button
@@ -229,10 +313,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cat: {
-    width: 32 * scale, // Scale up the frame width
-    height: 32 * scale, // Scale up the frame height
+    width: 32 * scale, 
+    height: 32 * scale, 
     overflow: 'hidden',
-
-    // Add other styles if necessary
   },
 });
