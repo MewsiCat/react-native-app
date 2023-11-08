@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {
     withAuthenticator,
@@ -9,6 +9,7 @@ import { Button } from 'react-native-elements';
 import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
 import { ResponseType, useAuthRequest } from "expo-auth-session";
 import { Amplify, Auth } from 'aws-amplify';
+import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
 
 const userSelector = (context) => [context.user]
 
@@ -79,6 +80,17 @@ export default function Settings() {
         }
       }, [response]);
 
+      var isLoggedIn = false;
+      var logText = "";
+    
+      if (checkSpotifyConnected) {
+        logText = "Logged into Spotify"
+        isLoggedIn = true;
+      } else {
+        logText = "Log into Spotify"
+        isLoggedIn = false;
+      }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Settings</Text>
@@ -107,11 +119,12 @@ export default function Settings() {
             />
 
             <View style={styles.toBottom}>
-                <Pressable style={styles.buttonContainer} onPress={() => {promptAsync();}}>
-                    <Text style={styles.buttonText}>Login with Spotify</Text>
+                <Pressable style={styles.buttonContainer} onPress={() => {promptAsync();}} disabled={isLoggedIn}>
+                    <Text style={styles.buttonText}>{logText}</Text>
                 </Pressable>
 
                 <SignOutButton style={styles.signout}/>
+              
             </View>
 
         </View>

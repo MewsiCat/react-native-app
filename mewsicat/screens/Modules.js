@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         gap:10,
+        marginLeft: 'auto'
     },
     button: {
     margin: 10,
