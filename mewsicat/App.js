@@ -99,10 +99,8 @@ const App = () => {
     
     <NavigationContainer>
 
-      <Stack.Navigator initialRouteName="Home" screenOptions={{
-    header: (props) => <CustomHeader {...props} />,
-  }}> 
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator initialRouteName="GrayScreen" screenOptions={{header: (props) => <CustomHeader {...props} />,}}>
+        {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
         <Stack.Screen name="GrayScreen" component={GrayScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="Modules" component={Modules} />
