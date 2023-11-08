@@ -136,6 +136,12 @@ export default function MusicRec() {
                 <Button title="▶" color='#783621' style={styles.button} />
                 <Button title='⏩' color='#783621' style={styles.button} />
             </View>
+                <Pressable style={styles.buttonContainer}>
+                    <Text style={styles.buttonText}>Return Home</Text>
+                </Pressable>
+            <View>
+
+            </View>
         </View>
     );
 }
