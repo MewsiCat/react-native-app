@@ -5,7 +5,10 @@ export default function Loading() {
     
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/loading.gif')} style={styles.img} />
+            <View style={styles.content}>
+                <Image source={require('../assets/loading.gif')} style={styles.img} />
+                <Text style={styles.text}>Loading...</Text>
+            </View>
         </View>
     );
 }
@@ -14,13 +17,19 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f0d396',
         padding: 20,
-        flexDirection: 'column',
         flex: 1,
+        justifyContent: 'center',
     },
     img: {
         alignSelf:'center',
         width: 300,
         height: 250,
-        margin: 150
-    }
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        padding: 10,
+        color: '#783621'
+    },
 })
