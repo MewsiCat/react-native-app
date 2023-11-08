@@ -7,7 +7,7 @@ import { Audio } from 'expo-av';
 
 async function playSound() {
   const { sound } = await Audio.Sound.createAsync(
-     require('../assets/mewsound.mp3')
+    require('../assets/mewsound.mp3')
   );
 
   await sound.playAsync();
@@ -31,7 +31,7 @@ const Cat = ({ source, onMoveEnd }) => {
 
   const x = useRef(new Animated.Value(0)).current;
   const y = useRef(new Animated.Value(0)).current;
-  const position = useRef({ x: 0, y: 0 }).current; 
+  const position = useRef({ x: 0, y: 0 }).current;
 
   const movingStartX = 384;
   const sittingStartX = 0;
@@ -54,18 +54,18 @@ const Cat = ({ source, onMoveEnd }) => {
   const stopAnimationAndListeners = () => {
     x.stopAnimation();
     y.stopAnimation();
-      clearTimeout(timeoutId.current);
-    
+    clearTimeout(timeoutId.current);
+
   };
 
   const moveToNewPosition = () => {
-  
+
     setIsMoving(true);
     setFrameCount(4);
     setSpriteStartX(384);
     stopAnimationAndListeners();
 
-  
+
     directionIndex = Math.floor(Math.random() * 8);
     let maxDistance, distance;
     const minTravelDistance = 50;
@@ -81,39 +81,39 @@ const Cat = ({ source, onMoveEnd }) => {
       { x: 1, y: 0 },
       { x: 1, y: 1 },
     ];
-  
+
     let validDirection = false;
     while (!validDirection) {
       const direction = directions[directionIndex];
       let maxDistanceX;
       let maxDistanceY;
-      
-  
+
+
       if (direction.x !== 0) {
-        maxDistanceX = direction.x > 0 ? (halfScreenWidth - position.x- frameWidth*scale/2) : (halfScreenWidth + position.x-frameWidth*scale/2);
+        maxDistanceX = direction.x > 0 ? (halfScreenWidth - position.x - frameWidth * scale / 2) : (halfScreenWidth + position.x - frameWidth * scale / 2);
       } else {
         maxDistanceX = Infinity;
       }
-  
+
       if (direction.y !== 0) {
-        maxDistanceY = direction.y > 0 ? (halfScreenHeight - position.y-frameHeight*scale/2) : (halfScreenHeight + position.y - frameHeight*scale/2);
+        maxDistanceY = direction.y > 0 ? (halfScreenHeight - position.y - frameHeight * scale / 2) : (halfScreenHeight + position.y - frameHeight * scale / 2);
       } else {
         maxDistanceY = Infinity;
       }
-  
+
       maxDistance = Math.min(maxDistanceX, maxDistanceY);
       if (direction.x !== 0 && direction.y !== 0) {
         // Adjust for diagonal movement
         maxDistance = maxDistance / Math.sqrt(2);
       }
-  
+
       if (maxDistance >= minTravelDistance) {
         validDirection = true;
       } else {
-        directionIndex = (directionIndex + 1) % 8; 
+        directionIndex = (directionIndex + 1) % 8;
       }
     }
-  
+
     const chosenDirection = directions[directionIndex];
     setSpriteStartY(32 + directionIndex * 64);
     distance = minTravelDistance + Math.random() * (maxDistance - minTravelDistance);
@@ -121,10 +121,10 @@ const Cat = ({ source, onMoveEnd }) => {
     const newx = position.x + chosenDirection.x * distance;
     const newy = position.y + chosenDirection.y * distance;
     const duration = (distance / speed) * 1000;
-  
+
     position.x = newx;
     position.y = newy;
-  
+
     Animated.parallel([
       Animated.timing(x, { toValue: newx, duration, useNativeDriver: true, easing: Easing.linear }),
       Animated.timing(y, { toValue: newy, duration, useNativeDriver: true, easing: Easing.linear }),
@@ -132,21 +132,21 @@ const Cat = ({ source, onMoveEnd }) => {
       if (finished) {
         setIsMoving(false);
         setSpriteStartX(0);
-        setSpriteStartY(32+directionIndex*64);
-        setFrameCount(6); 
+        setSpriteStartY(32 + directionIndex * 64);
+        setFrameCount(6);
 
-        const pauseDuration = Math.random() * 2000+sittingFrameCount*frameDuration+1000;
+        const pauseDuration = Math.random() * 2000 + sittingFrameCount * frameDuration + 1000;
         timeoutId.current = setTimeout(moveToNewPosition, pauseDuration);
-        timeoutId.current = setTimeout(stopAnimationFrame, (sittingFrameCount-1)*frameDuration);
+        timeoutId.current = setTimeout(stopAnimationFrame, (sittingFrameCount - 1) * frameDuration);
 
       }
       onMoveEnd?.();
     });
   };
-  
-  const stopAnimationFrame = () =>{
-      setSpriteStartX(32); 
-      setSpriteStartY(64+directionIndex*64);
+
+  const stopAnimationFrame = () => {
+    setSpriteStartX(32);
+    setSpriteStartY(64 + directionIndex * 64);
     setFrameCount(1);
   }
 
@@ -262,7 +262,9 @@ export default function GrayScreen({ navigation }) {
       source={require('../assets/catbackground.png')}
       style={styles.container}
     >
-      <Modules/>
+      <View style={styles.modulesContainer}>
+        <Modules />
+      </View>
       <View style={styles.container}>
         <Cat
           source={spriteSheetSource}
@@ -315,8 +317,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cat: {
-    width: 32 * scale, 
-    height: 32 * scale, 
+    width: 32 * scale,
+    height: 32 * scale,
     overflow: 'hidden',
   },
+  modulesContainer: {
+    zIndex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  
 });
