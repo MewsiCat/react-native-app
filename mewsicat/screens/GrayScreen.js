@@ -262,7 +262,9 @@ export default function GrayScreen({ navigation }) {
       source={require('../assets/catbackground.png')}
       style={styles.container}
     >
-      <Modules/>
+      <View style={styles.modulesContainer}>
+    <Modules/>
+  </View>
       <View style={styles.container}>
         <Cat
           source={spriteSheetSource}
@@ -318,5 +320,12 @@ const styles = StyleSheet.create({
     width: 32 * scale, 
     height: 32 * scale, 
     overflow: 'hidden',
+  },
+  modulesContainer: {
+    position: 'absolute', // Take Modules out of the normal flow and position it over other content
+    top: 0, // Position at the top of the parent container
+    left: 0, // Position at the left of the parent container
+    right: 0, // Ensuring it's stretched across the parent container
+    zIndex: 1, // Makes sure Modules appears on top of other components
   },
 });
