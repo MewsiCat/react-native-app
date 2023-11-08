@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
 import GrayScreen from './screens/GrayScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
+import CustomHeader from './Components/CustomHeader.jsx'
 
 import FriendsList from "./screens/FriendsList.js";
 import PlaylistButton from "./screens/Playlist.js";
@@ -97,7 +98,10 @@ const App = () => {
   return (
     
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+
+      <Stack.Navigator initialRouteName="Home" screenOptions={{
+    header: (props) => <CustomHeader {...props} />,
+  }}> 
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="GrayScreen" component={GrayScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
