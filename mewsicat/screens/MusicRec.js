@@ -23,6 +23,8 @@ var imageName;
 var topArtists;
 var topArtistsGenres;
 var topTracks;
+var songPrev;
+import { Audio } from 'expo-av';
 
 async function getTopTracks(){
     try{
@@ -48,8 +50,6 @@ async function getTopTracks(){
       } 
 }
 
-
-
 async function getTopArtists(){
     try{
     const currentUserInfo = await Auth.currentUserInfo();
@@ -74,6 +74,7 @@ async function getTopArtists(){
         console.log(err);
       } 
 }
+
 async function generateSong(){
     try{
     await getTopTracks();
@@ -96,6 +97,8 @@ async function generateSong(){
             console.log(data.tracks[0].name)
             console.log(data.tracks[0].artists[0].name)
             console.log(data.tracks[0].album.images[0].url)
+            console.log(data.tracks[0].preview_url)
+            songPrev = data.tracks[0].preview_url;
             songName = data.tracks[0].name;
             artistName = data.tracks[0].artists[0].name;
             imageName = data.tracks[0].album.images[0].url;
@@ -106,6 +109,18 @@ async function generateSong(){
       } 
 }
 
+async function playSong() {
+    const {sound} = await Audio.Sound.createAsync(
+        {uri: songPrev},
+        {shouldPlay: true},
+    )
+
+    sound.setVolumeAsync(0.3)
+    
+    await sound.playAsync();
+}
+
+
 export default function MusicRec() {
     const song = "Plaechold";
     const artist = "mommy"
@@ -114,7 +129,6 @@ export default function MusicRec() {
 
     useEffect(() => {
         generateSong();
-        
       }, []);
     
     return (
@@ -133,8 +147,9 @@ export default function MusicRec() {
             />
             <View style={{flexDirection:'row', justifyContent:'center'}}>
                 <Button title='⏪' color='#783621' style={styles.button} />
-                <Button title="▶" color='#783621' style={styles.button} />
+                <Button title="▶️" color='#783621' style={styles.button} onPress={() => {playSong()}}/>
                 <Button title='⏩' color='#783621' style={styles.button} />
+                
             </View>
                 <Pressable style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>Return Home</Text>

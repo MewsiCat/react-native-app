@@ -11,6 +11,15 @@ import { ResponseType, useAuthRequest } from "expo-auth-session";
 import { Amplify, Auth } from 'aws-amplify';
 import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
 import Loading from './Loading.js';
+import { Audio } from 'expo-av';
+
+async function playSound() {
+  const { sound } = await Audio.Sound.createAsync(
+    require('../assets/mewsound.mp3')
+  );
+
+  await sound.playAsync();
+}
 
 const userSelector = (context) => [context.user]
 
@@ -120,11 +129,11 @@ export default function Settings() {
             />
 
             <View style={styles.toBottom}>
-                <Pressable style={styles.buttonContainer} onPress={() => {promptAsync();}} disabled={isLoggedIn}>
+                <Pressable style={styles.buttonContainer} onPress={() => {promptAsync(); playSound();}}>
                     <Text style={styles.buttonText}>{logText}</Text>
                 </Pressable>
 
-                <SignOutButton style={styles.signout}/>
+                <SignOutButton style={styles.signout} onPress={() => {playSound();}}/>
               
             </View>
 
