@@ -7,11 +7,24 @@ import {
 } from '@aws-amplify/ui-react-native';
 import { Button } from 'react-native-elements';
 import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
-import { ResponseType, useAuthRequest } from "expo-auth-session";
+import { ResponseType, exchangeCodeAsync, useAuthRequest } from "expo-auth-session";
 import { Amplify, Auth } from 'aws-amplify';
 import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
 import Loading from './Loading.js';
 import { Audio } from 'expo-av';
+import { TokenResponse, refreshAsync} from 'expo-auth-session';
+import defaultUser from '../assets/default_user.jpg'
+
+const default_user_uri = Image.resolveAssetSource(defaultUser).uri;
+
+
+
+
+
+
+const client_id = "88c17d6f25cc43eaad226930c216ae5b";
+const client_secret = "55c8fe6737b44bf39b7671aec4572402";
+const redirect_uri = "exp://localhost:19002/--/spotify-auth-callback";
 
 async function playSound() {
   const { sound } = await Audio.Sound.createAsync(
@@ -38,12 +51,56 @@ const SignOutButton = () => {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
-  
-  async function updateUserAttributes (access_token) {
+
+  async function updateSpotifyConnected (val) {
     try {
       const user = await Auth.currentAuthenticatedUser();
       const result = await Auth.updateUserAttributes(user, {
-        "custom:spotify_token" : access_token
+        "custom:spotifyConnected"	: val,
+      });
+      console.log(result); // SUCCESS
+    } catch(err) {
+      console.log(err);
+    }
+  };
+
+  async function getSpotifyConnected(){
+    try{
+    const currentUserInfo = await Auth.currentUserInfo();
+    const spotify_connected = currentUserInfo.attributes["custom:spotifyConnected"];
+    console.log("spotify connected: " + spotify_connected);
+    if(spotify_connected == "1"){
+      return true;
+    }
+    else{
+      return false;
+    }
+    }catch(err) {
+      console.log(err);
+    } 
+}
+
+async function checkTokenStatus(){
+    const currentUserInfo = await Auth.currentUserInfo();
+    const access_token = currentUserInfo.attributes['custom:spotify_token'];
+    const tokenStatus = await isTokenFresh(access_token);
+    if(tokenStatus){
+      console.log("token fresh");
+      return true;
+    }
+    else{
+      console.log("token not fresh");
+      return false;
+    }
+}
+
+
+async function updateUserAttributes (access_token, refresh_token) {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      const result = await Auth.updateUserAttributes(user, {
+        "custom:spotify_token" : access_token,
+        "custom:refresh_token" : refresh_token
       });
       console.log(result); // SUCCESS
     } catch(err) {
@@ -54,7 +111,8 @@ const SignOutButton = () => {
   var userName = "";
   var userPic = "";
 
-  async function getUser(){
+
+async function getUser(){
     try{
     const currentUserInfo = await Auth.currentUserInfo();
     const access_token = currentUserInfo.attributes['custom:spotify_token'];
@@ -79,13 +137,44 @@ const SignOutButton = () => {
       } 
 }
 
+async function getNewToken(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const refresh_token = currentUserInfo.attributes['custom:refresh_token'];
+  const codeRes = await refreshAsync(
+    {
+        clientId: client_id,
+        clientSecret: client_secret,
+        refreshToken: refresh_token
+    },
+    discovery
+)
+  const tokenConfig = codeRes?.getRequestConfig();
+  console.log("access token in new token func: " + tokenConfig.accessToken);
+  console.log("refresh token in new token func: " + refresh_token);
+  updateUserAttributes(tokenConfig.accessToken, refresh_token);
+}
+
+async function getToken (code) {
+  const codeRes = await exchangeCodeAsync(
+      {
+          code: code,
+          redirectUri: redirect_uri,
+          clientId: client_id,
+          clientSecret: client_secret
+      },
+      discovery
+    
+  )
+  const tokenConfig = codeRes?.getRequestConfig();
+  console.log("access token: " + tokenConfig.accessToken);
+  updateUserAttributes(tokenConfig.accessToken, tokenConfig.refreshToken)
+}
 export default function Settings() {
     const spotifyController = new SpotifyAPIController();
-    //const dispatch = useDispatch();
     const [token, setToken] = useState("");
-    const [request, response, promptAsync] = useAuthRequest(
+      const [request, response, promptAsync] = useAuthRequest(
       {
-        responseType: ResponseType.Token,
+        responseType: ResponseType.Code,
         clientId: "88c17d6f25cc43eaad226930c216ae5b",
         scopes: [
           "user-read-currently-playing",
@@ -107,21 +196,33 @@ export default function Settings() {
       },
       discovery
     );
+    //const dispatch = useDispatch();
 
     useEffect(() => {
-        if (response?.type === "success") {
-          const { access_token } = response.params;
-          console.log(access_token);
-          updateUserAttributes(access_token);
-          spotifyController.getUser(access_token);
-          setToken(access_token);
+       if(!getSpotifyConnected()){
+         if (response?.type === "success") {
+          console.log("using auth code");
+           const { code } = response.params;
+           console.log("code " + code);
+           getToken(code);
+           updateSpotifyConnected("1");
+         }
         }
+     
+        //  if(!checkTokenStatus()){
+          getNewToken();
+        //  }
       }, [response]);
+  
 
       getUser();
 
       var isLoggedIn = false;
       var logText = "";
+
+      if(userPic == ""){
+        userPic = default_user_uri;
+      }
     
       if (checkSpotifyConnected) {
         logText = "Logged in as: " + userName;
@@ -159,9 +260,9 @@ export default function Settings() {
             />
 
             <View style={styles.toBottom}>
-                <Pressable style={styles.welcome} onPress={() => {promptAsync(); playSound();}}>
+                <Pressable style={styles.welcome} onPress={() => {promptAsync(); playSound();}} disabled={isLoggedIn}>
                   <Text style={styles.buttonText}>{logText}</Text>
-                  <Image source={{uri: userPic}} style={styles.img}/>
+                  <Image source={{uri: userPic }} style={styles.img}/>
                 </Pressable>
 
                 <SignOutButton style={styles.signout} onPress={() => {playSound();}}/>
