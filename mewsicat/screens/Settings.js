@@ -211,7 +211,8 @@ export default function Settings() {
            getToken(code);
            updateSpotifyConnected("1");
          }
-        // }else{
+        }
+        else{
           getNewToken();
         }
       }, [response]);
