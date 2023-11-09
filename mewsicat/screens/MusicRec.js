@@ -75,7 +75,7 @@ async function getTopArtists(){
       } 
 }
 
-async function generateSong(){
+export async function generateSong(){
     try{
     await getTopTracks();
     await getTopArtists();

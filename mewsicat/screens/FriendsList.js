@@ -26,7 +26,7 @@ const songData = Array.from({ length: tempMusic + 10 }, (_, num) => ({
 
 var friendsData;
 
-async function generateFriendsList(){
+export async function generateFriendsList(){
     try{
     // const [friends, setFriends] = useState([]);
     // const [friendsLength, setFriendsLength] = useState();

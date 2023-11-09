@@ -66,7 +66,7 @@ const SignOutButton = () => {
     }
   };
 
-  async function getSpotifyConnected(){
+  export async function getSpotifyConnected(){
     try{
     const currentUserInfo = await Auth.currentUserInfo();
     const spotify_connected = currentUserInfo.attributes["custom:spotifyConnected"];
