@@ -99,7 +99,7 @@ const App = () => {
         checkUser();
         getSpotifyConnected();
         generateFriendsList();
-        generateSong();
+        //generateSong();
         // addFriend("bbbbbb");
         listFriends();
         checkFriend("bbbbbb");

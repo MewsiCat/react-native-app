@@ -4,6 +4,7 @@ import Slider from '@react-native-community/slider';
 import { Overlay } from 'react-native-elements';
 import MusicRec from './MusicRec';
 import { Audio } from 'expo-av';
+import { generateSong, stopMusic } from './MusicRec';
 
 async function playMeow() {
     const { sound } = await Audio.Sound.createAsync(
@@ -18,6 +19,9 @@ export default function Jukebox() {
     const [recVisible, setRecVisible] = useState(false);
 
     const toggleRec = () => {
+        if(recVisible == true){
+            stopMusic();
+        }
         setRecVisible(!recVisible);
     };
     
@@ -25,7 +29,7 @@ export default function Jukebox() {
         <View style={styles.container}>
             <Text style={styles.title}>Jukebox</Text>
             <Image source={require('../assets/judebox.gif')} style={styles.img} />
-            <Pressable style={styles.buttonContainer} onPress={() => {toggleRec(); playMeow();}}>
+            <Pressable style={styles.buttonContainer} onPress={async () => {await generateSong(); toggleRec(); playMeow();}}>
                 <Text style={styles.buttonText}>Get Song</Text>
             </Pressable>
             <Overlay isVisible={recVisible} onBackdropPress={toggleRec} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
