@@ -86,28 +86,29 @@ export async function getSpotifyToken(){
     }
   }
 
-export async function checkSpotifyConnected(){
-  try{
-    const currentUserInfo = await Auth.currentUserInfo();
-    const currentUser = currentUserInfo.username;
+// not gonna work cause you can't return things in async functions
+// export async function checkSpotifyConnected(){
+//   try{
+//     const currentUserInfo = await Auth.currentUserInfo();
+//     const currentUser = currentUserInfo.username;
 
-    const params = {
-    name: currentUser
-    };
-    const result = await API.graphql(graphqlOperation(userByName, params));
-    const spotifyConnected = result.data.userByName.items[0].spotifyConnected;
+//     const params = {
+//     name: currentUser
+//     };
+//     const result = await API.graphql(graphqlOperation(userByName, params));
+//     const spotifyConnected = result.data.userByName.items[0].spotifyConnected;
 
-    if(spotifyConnected == true){
-      return true;
-    }
-    else{
-      return false;
-    }
+//     if(spotifyConnected == true){
+//       return true;
+//     }
+//     else{
+//       return false;
+//     }
     
-  }catch(err){
-    console.log(err);
-  }
-}
+//   }catch(err){
+//     console.log(err);
+//   }
+// }
 
 export async function setSpotifyConnected(){
   try{

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, Image, Button } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { SpotifyAPIController } from '../backend/api/spotifyAPIController';
@@ -24,7 +24,12 @@ var topArtists;
 var topArtistsGenres;
 var topTracks;
 var songPrev;
+
+var soundPlaying;
+const sound = new Audio.Sound()
+
 import { Audio } from 'expo-av';
+import { pauseBGM, toggleBGM } from '../App';
 
 async function getTopTracks(){
     try{
@@ -75,15 +80,19 @@ async function getTopArtists(){
       } 
 }
 
-async function generateSong(){
+export async function stopMusic(){
+    await sound.unloadAsync();
+}
+
+export async function generateSong(){
     try{
     await getTopTracks();
     await getTopArtists();
     const currentUserInfo = await Auth.currentUserInfo();
     const access_token = currentUserInfo.attributes['custom:spotify_token'];
-    console.log("access token: " + access_token);
-    console.log("top tracks " + topTracks);
-    console.log("top artists: "  + topArtists);
+    // console.log("access token: " + access_token);
+    // console.log("top tracks " + topTracks);
+    // console.log("top artists: "  + topArtists);
     var result = await fetch(
         `https://api.spotify.com/v1/recommendations?seed_artists=${topArtists}&seed_tracks=${topTracks}&linit=1`,
         {
@@ -93,43 +102,48 @@ async function generateSong(){
         )
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
-            console.log(data.tracks[0].name)
-            console.log(data.tracks[0].artists[0].name)
-            console.log(data.tracks[0].album.images[0].url)
-            console.log(data.tracks[0].preview_url)
+            // console.log(data);
+            // console.log(data.tracks[0].name)
+            // console.log(data.tracks[0].artists[0].name)
+            // console.log(data.tracks[0].album.images[0].url)
+            // console.log(data.tracks[0].preview_url)
             songPrev = data.tracks[0].preview_url;
             songName = data.tracks[0].name;
             artistName = data.tracks[0].artists[0].name;
             imageName = data.tracks[0].album.images[0].url;
         });
-        console.log("top artist: " + topArtists);
+        await sound.unloadAsync();
+        await sound.loadAsync({
+            uri: songPrev
+        })
+        // console.log("top artist: " + topArtists);
     } catch(err) {
         console.log(err);
       } 
 }
 
-async function playSong() {
-    const {sound} = await Audio.Sound.createAsync(
-        {uri: songPrev},
-        {shouldPlay: true},
-    )
-
-    sound.setVolumeAsync(0.3)
-    
-    await sound.playAsync();
+export async function playPauseSong() {
+    if(soundPlaying == false){
+        await sound.playAsync();
+        soundPlaying = true;
+    }
+    else if(soundPlaying == true){
+        await sound.pauseAsync();
+        soundPlaying = false;
+    }
 }
 
-
 export default function MusicRec() {
+
+    useEffect(() => {
+        pauseBGM();
+        soundPlaying = false;
+    }, []);
+
     const song = "Plaechold";
     const artist = "mommy"
 
     console.log("song name " + songName);
-
-    useEffect(() => {
-        generateSong();
-      }, []);
     
     return (
         <View style={styles.container}>
@@ -147,7 +161,7 @@ export default function MusicRec() {
             />
             <View style={{flexDirection:'row', justifyContent:'center'}}>
                 <Button title='⏪' color='#783621' style={styles.button} />
-                <Button title="▶️" color='#783621' style={styles.button} onPress={() => {playSong()}}/>
+                <Button title="▶️" color='#783621' style={styles.button} onPress={() => {playPauseSong()}}/>
                 <Button title='⏩' color='#783621' style={styles.button} />
                 
             </View>

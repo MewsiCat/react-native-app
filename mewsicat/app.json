@@ -4,10 +4,10 @@
     "slug": "mewsicat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/loading.gif",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/loading.gif",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

@@ -78,8 +78,12 @@ const songData = Array.from({ length: tempMusic + 10 }, (_, num) => ({
 
 var friendsData;
 
-async function generateFriendsList() {
-  try {
+
+export async function generateFriendsList(){
+    try{
+    // const [friends, setFriends] = useState([]);
+    // const [friendsLength, setFriendsLength] = useState();
+
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
 

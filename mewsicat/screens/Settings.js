@@ -9,7 +9,7 @@ import { Button } from 'react-native-elements';
 import { SpotifyAPIController } from "../backend/api/spotifyAPIController";
 import { ResponseType, exchangeCodeAsync, useAuthRequest } from "expo-auth-session";
 import { Amplify, Auth } from 'aws-amplify';
-import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
+// import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
 import Loading from './Loading.js';
 import { Audio } from 'expo-av';
 import { TokenResponse, refreshAsync} from 'expo-auth-session';
@@ -52,6 +52,8 @@ const SignOutButton = () => {
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
 
+  var spotifyConnected = false;
+
   async function updateSpotifyConnected (val) {
     try {
       const user = await Auth.currentAuthenticatedUser();
@@ -64,16 +66,16 @@ const SignOutButton = () => {
     }
   };
 
-  async function getSpotifyConnected(){
+  export async function getSpotifyConnected(){
     try{
     const currentUserInfo = await Auth.currentUserInfo();
     const spotify_connected = currentUserInfo.attributes["custom:spotifyConnected"];
     console.log("spotify connected: " + spotify_connected);
     if(spotify_connected == "1"){
-      return true;
+      spotifyConnected = true;
     }
     else{
-      return false;
+      spotifyConnected = false;
     }
     }catch(err) {
       console.log(err);
@@ -199,7 +201,9 @@ export default function Settings() {
     //const dispatch = useDispatch();
 
     useEffect(() => {
-       if(!getSpotifyConnected()){
+      getSpotifyConnected();
+      console.log("spotify connected var " + spotifyConnected);
+       if(!spotifyConnected){
          if (response?.type === "success") {
           console.log("using auth code");
            const { code } = response.params;
@@ -208,10 +212,9 @@ export default function Settings() {
            updateSpotifyConnected("1");
          }
         }
-     
-        //  if(!checkTokenStatus()){
+        else{
           getNewToken();
-        //  }
+        }
       }, [response]);
   
 
@@ -224,7 +227,7 @@ export default function Settings() {
         userPic = default_user_uri;
       }
     
-      if (checkSpotifyConnected) {
+      if (spotifyConnected) {
         logText = "Logged in as: " + userName;
         isLoggedIn = true;
       } else {
