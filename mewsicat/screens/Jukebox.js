@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Overlay } from 'react-native-elements';
@@ -6,6 +6,7 @@ import MusicRec from './MusicRec';
 import { Audio } from 'expo-av';
 import { generateSong, stopMusic } from './MusicRec';
 import Loading from './Loading';
+import { playBGM, toggleBGM } from '../App';
 
 async function playMeow() {
     const { sound } = await Audio.Sound.createAsync(
@@ -31,6 +32,7 @@ export default function Jukebox() {
 
     const toggleRec = async () => {
         if(recVisible == true){
+            playBGM();
             stopMusic();
         }
         setRecVisible(!recVisible);
