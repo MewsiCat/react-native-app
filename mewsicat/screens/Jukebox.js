@@ -5,6 +5,7 @@ import { Overlay } from 'react-native-elements';
 import MusicRec from './MusicRec';
 import { Audio } from 'expo-av';
 import { generateSong, stopMusic } from './MusicRec';
+import Loading from './Loading';
 
 async function playMeow() {
     const { sound } = await Audio.Sound.createAsync(
@@ -17,8 +18,18 @@ async function playMeow() {
 export default function Jukebox() {
 
     const [recVisible, setRecVisible] = useState(false);
+    const [loadVisible, setLoadVisible] = useState(false);
 
-    const toggleRec = () => {
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
+
+    const toggleRec = async () => {
         if(recVisible == true){
             stopMusic();
         }
@@ -29,11 +40,20 @@ export default function Jukebox() {
         <View style={styles.container}>
             <Text style={styles.title}>Jukebox</Text>
             <Image source={require('../assets/judebox.gif')} style={styles.img} />
-            <Pressable style={styles.buttonContainer} onPress={async () => {await generateSong(); toggleRec(); playMeow();}}>
+            <Pressable style={styles.buttonContainer} onPress={async () => {
+                toggleLoad();
+                await generateSong();
+                toggleLoadFalse();
+                toggleRec(); 
+                playMeow();
+            }}>
                 <Text style={styles.buttonText}>Get Song</Text>
             </Pressable>
             <Overlay isVisible={recVisible} onBackdropPress={toggleRec} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
                 <MusicRec />
+            </Overlay>
+            <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                <Loading />
             </Overlay>
         </View>
     );
