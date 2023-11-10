@@ -1,15 +1,15 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 
 export default function Loading() {
 
-    useEffect(() => {
-        moveToNewPosition();
+    // useEffect(() => {
+    //     moveToNewPosition();
     
-        return () => {
-          stopAnimationAndListeners();
-        };
-      }, []);
+    //     return () => {
+    //       stopAnimationAndListeners();
+    //     };
+    //   }, []);
     
     return (
         <View style={styles.container}>

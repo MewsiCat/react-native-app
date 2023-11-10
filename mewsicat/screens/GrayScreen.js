@@ -273,12 +273,6 @@ export default function GrayScreen({ navigation }) {
           }}
         />
       </View>
-      <View>
-        <Button
-          onPress={() => navigation.navigate('Home')}
-          title="Press Me"
-        />
-      </View>
       {touches.map((touch, index) => (
         <Animated.Image
           key={index}
