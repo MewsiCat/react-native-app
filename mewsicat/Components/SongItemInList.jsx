@@ -1,23 +1,50 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
-export default function SongItemInList({ number, image, artist, songName }) {
+
+export default function SongItemInList({ profilePicture, name, active }) {
+  const [isActive, setIsActive] = useState(active);
+  const handleActiveIndicatorPress = () => {
+    setIsActive(!isActive);
+    Toast.show({
+      type: 'friendNotification',
+      position: 'bottom',
+      text1: `${!isActive ? 'Unmuted recommendation' : 'Muted recommendation'}`,
+      text1Style: {
+        fontSize: 15,
+      },
+      visibilityTime: 1200,
+    });
+  };
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.number}>{number}</Text>
-      <Image source={{ uri: image }} style={styles.image} />
-      <View style={styles.details}>
-        {songName ? (
-          <Text style={styles.songName}>{songName}</Text>
-        ) : (
-          <View style={styles.placeholderSong} />
-        )}
-        {artist ? (
-          <Text style={styles.artist}>{artist}</Text>
-        ) : (
-          <View style={styles.placeholderArtist} />
-        )}
-      </View>
+
+      {/* Image */}
+      <Image source={{ uri: profilePicture }} style={styles.image} />
+
+      {/* User Name */}
+      <Text style={styles.userName}>
+        {name.length > 18 ? `${name.substring(0, 16)}...` : name}
+      </Text>
+
+      {/* Notification indicator */}
+      <TouchableOpacity onPress={handleActiveIndicatorPress}>
+        <MaterialCommunityIcons
+          name={isActive ? "fish" : "fish-off"}
+          size={24}
+          // color={isActive ? '#00ff00' : '#ff0000'}
+          style={styles.activeIndicator}
+        />
+      </TouchableOpacity>
+
+      {/* Send Music Button */}
+      <TouchableOpacity style={styles.sendMusicButton}>
+        <Text style={styles.sendMusicButtonText}>Send</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -27,45 +54,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+    justifyContent: 'space-between', 
   },
-  number: {
-    color: '#783621',
-    fontWeight: 'bold',
-    fontSize: 18,
-    width: 30,
-    textAlign: 'center',
+  activeIndicator: {
+    marginRight: 10, 
   },
   image: {
-    width: 56,
-    height: 56,
-    marginHorizontal: 10,
-    borderRadius: 7,
+    width: 50,
+    height: 50,
+    borderRadius: 8, 
   },
-  details: {
-    flex: 1,
-  },
-  songName: {
+  userName: {
+    flex: 1, 
+    marginLeft: 10, 
     color: '#783621',
     fontWeight: 'bold',
-    marginBottom: 5,
   },
-  artist: {
-    color: '#d0a060',
-    fontSize: 14,
+  sendMusicButton: {
+      backgroundColor: '#f0d396',
+      borderColor:'#d0a060',
+      paddingHorizontal: 8,
+      borderWidth:2,
+      borderRadius: 10,
+    
   },
-  placeholderSong: {
-    backgroundColor: '#783621',
-    borderRadius: 5,
-    width: 96,
-    height: 20,
-    marginBottom: 5,
-  },
-  placeholderArtist: {
-    backgroundColor: '#d0a060',
-    borderRadius: 5,
-    width: 80,
-    height: 16,
+  sendMusicButtonText: {
+    color: '#783621',
+    fontWeight: '600',
   },
 });

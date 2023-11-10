@@ -1,44 +1,63 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import SongItemInList from '../Components/SongItemInList.jsx';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function PlaylistBox({ songs }) {
-  const [playlistArtists, setPlaylistArtists] = useState([]);
+
+export default function PlaylistBox({ friendlist }) {
+  const [searchText, setSearchText] = useState('');
+  const filteredFriends = searchText
+    ? friendlist.filter(friend =>
+      friend.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+    : friendlist;
+
 
   const handleInputChange = (value) => {
-    // Handle input change if needed
-    console.log(value);
+    setSearchText(value);
   };
 
   const handleSubmit = () => {
-    // Handle submit logic here
-    console.log("Submitted");
+    console.log("Search submitted for: ", searchText);
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        showsVerticalScrollIndicator={'false'}
-        data={songs}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <SongItemInList
-            number={index + 1}
-            image={item.image}
-            artist={item.artist}
-            songName={item.songName}
-          />
-        )}
-        ListEmptyComponent={<Text style={styles.emptyText}>No playlist selected</Text>}
-      />
+      {/* Search bar at the top */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Type your playlist URL here."
+          placeholder="Search a friend..."
           placeholderTextColor={'#d0a060'}
           onChangeText={handleInputChange}
+          value={searchText}
         />
-        <Button title="➪" onPress={handleSubmit} color='#783621' style={styles.button} />
+        <TouchableOpacity onPress={handleSubmit} style={styles.searchButton}>
+          <Ionicons name="ios-search" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.horizontalLine} />
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={filteredFriends}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <SongItemInList
+            profilePicture={item.profilePicture}
+            name={item.name}
+            active={item.active}
+          />
+        )}
+        ListEmptyComponent={<Text style={styles.emptyText}>No friends found</Text>}
+      />
+      <View style={styles.horizontalLine}/>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => console.log('Add')}>
+          <Text style={styles.buttonText}>Add</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => console.log('Remove')}>
+          <Text style={styles.buttonText}>Remove</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -47,7 +66,7 @@ export default function PlaylistBox({ songs }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    // padding: 20,
     borderRadius: 30,
     borderWidth: 4,
     borderColor: '#783621',
@@ -60,9 +79,9 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   inputContainer: {
+    padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
   },
   input: {
     flex: 1,
@@ -70,11 +89,45 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#783621',
+    marginRight: 10, 
   },
   button: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 15,
-    marginLeft: 10,
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginHorizontal: 30,
+    backgroundColor: '#f0d396',
+      borderColor:'#d0a060',
+      paddingHorizontal: 8,
+      borderWidth:2,
+      borderRadius: 30,
+  },
+  buttonText: {
+    color: '#783621',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly', 
+    paddingVertical: 7, 
+  },
+  buttonWrapper: {
+    flex: 1, 
+    marginHorizontal: 30, 
+  },
+  searchButton: {
+    backgroundColor: '#783621',
+    borderRadius: 20, 
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  horizontalLine: {
+    borderBottomColor: '#783621', 
+    borderBottomWidth: 1, 
+    marginHorizontal: 5,
   },
 });
