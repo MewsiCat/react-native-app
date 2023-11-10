@@ -29,6 +29,7 @@ var soundPlaying;
 const sound = new Audio.Sound()
 
 import { Audio } from 'expo-av';
+import { pauseBGM, toggleBGM } from '../App';
 
 async function getTopTracks(){
     try{
@@ -132,24 +133,10 @@ export async function playPauseSong() {
     }
 }
 
-_onPlayPausePressed = () => {
-    if (this.playbackInstance != null) {
-      if (this.state.isPlaying) {
-        this.playbackInstance.pauseAsync();
-      } else {
-        this.playbackInstance.playAsync();
-      }
-    }
-  };
-
-
 export default function MusicRec() {
 
-    const [Loaded, SetLoaded] = useState(false);
-    const [Loading, SetLoading] = useState(false);
-    const sound = useRef(new Audio.Sound());
-
     useEffect(() => {
+        pauseBGM();
         soundPlaying = false;
     }, []);
 

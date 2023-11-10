@@ -72,6 +72,23 @@ const SignOutButton = () => {
 
 const Stack = createStackNavigator();
 
+const bgmSound = new Audio.Sound();
+
+async function getBGM(){
+  await bgmSound.loadAsync(require('./assets/spring-time.wav'))
+  console.log("get bgm done.")
+}
+
+export async function playBGM(){
+  await bgmSound.setVolumeAsync(0.1);
+  await bgmSound.playAsync();
+  await bgmSound.setIsLoopingAsync(true);
+}
+
+export async function pauseBGM(){
+    await bgmSound.pauseAsync();
+}
+
 const App = () => {
 
   const [spotifyToken, setSpotifyToken] = useState("");
@@ -91,7 +108,6 @@ const App = () => {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
-    playSound();
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
@@ -99,6 +115,9 @@ const App = () => {
         checkUser();
         getSpotifyConnected();
         generateFriendsList();
+        await getBGM();
+        playBGM();
+        playSound();
         //generateSong();
         // addFriend("bbbbbb");
         listFriends();
