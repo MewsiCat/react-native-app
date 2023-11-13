@@ -9,8 +9,9 @@ export const createUser = /* GraphQL */ `
     createUser(input: $input, condition: $condition) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename
@@ -25,8 +26,9 @@ export const updateUser = /* GraphQL */ `
     updateUser(input: $input, condition: $condition) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename
@@ -41,8 +43,9 @@ export const deleteUser = /* GraphQL */ `
     deleteUser(input: $input, condition: $condition) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename

@@ -4,6 +4,7 @@ const scale = 3;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import Modules from './Modules';
 import { Audio } from 'expo-av';
+import { generateFriendRequestsList } from './FriendRequestsList';
 
 async function playSound() {
   const { sound } = await Audio.Sound.createAsync(
@@ -256,6 +257,10 @@ const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, fra
 export default function GrayScreen({ navigation }) {
   const [touches, setTouches] = useState([]);
   const spriteSheetSource = require('../assets/black_0.png');
+
+  useEffect(() => {
+    generateFriendRequestsList();
+  }, []);
 
   return (
     <ImageBackground

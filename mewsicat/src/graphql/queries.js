@@ -6,8 +6,9 @@ export const getUser = /* GraphQL */ `
     getUser(id: $id) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename
@@ -24,8 +25,9 @@ export const listUsers = /* GraphQL */ `
       items {
         id
         name
-        description
         friends
+        cat
+        friendRequests
         createdAt
         updatedAt
         __typename
@@ -53,8 +55,9 @@ export const userByName = /* GraphQL */ `
       items {
         id
         name
-        description
         friends
+        cat
+        friendRequests
         createdAt
         updatedAt
         __typename
