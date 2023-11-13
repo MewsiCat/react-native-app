@@ -2,10 +2,24 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import { acceptFriendRequest, addFriend } from '../backend/api/amplifyDBFunctions';
+import Loading from '../screens/Loading';
+import { Overlay } from 'react-native-elements';
 
 
 export default function SongItemInList({ profilePicture, name, active }) {
   const [isActive, setIsActive] = useState(active);
+
+  const [loadVisible, setLoadVisible] = useState(false);
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
   const handleActiveIndicatorPress = () => {
     setIsActive(!isActive);
     Toast.show({
@@ -41,9 +55,13 @@ export default function SongItemInList({ profilePicture, name, active }) {
         />
       </TouchableOpacity>
 
+      <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+        <Loading />
+      </Overlay>
+
       {/* Send Music Button */}
       <TouchableOpacity style={styles.sendMusicButton}>
-        <Text style={styles.sendMusicButtonText}>Send</Text>
+        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await acceptFriendRequest(name); toggleLoadFalse();}}>Accept</Text>
       </TouchableOpacity>
     </View>
   );

@@ -140,6 +140,134 @@ export async function setSpotifyConnected(){
   }
 }
 
+export async function sendFriendRequest(newFriend){
+  try{
+    const currentUserInfo = await Auth.currentUserInfo();
+    const currentUser = currentUserInfo.username;
+    
+    const params = {
+    name: newFriend
+    };
+    const result = await API.graphql(graphqlOperation(userByName, params));
+    const friendsID = result.data.userByName.items[0].id;
+    const friendRequests = result.data.userByName.items[0].friendRequests;
+    console.log("friend requests" + friendRequests)
+    var newFriendRequests = [""];
+    
+    if(friendRequests == null){
+      newFriendRequests.push(currentUser);
+    }
+    else{
+      newFriendRequests = friendRequests;
+      newFriendRequests.push(currentUser);
+    }
+
+    const res = await API.graphql({
+    query: updateUser, 
+    variables: {
+      input: {
+        id: friendsID,
+        friendRequests: newFriendRequests
+      }
+    }
+    })
+    console.log(res);
+  } catch(err){
+    console.log(err);
+  }
+}
+
+export async function acceptFriendRequest(newFriend){
+  try{
+    const currentUserInfo = await Auth.currentUserInfo();
+      const currentUser = currentUserInfo.username;
+
+      const currUserParams = {
+      name: currentUser
+      };
+      const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
+      const currUserID = currUserResult.data.userByName.items[0].id;
+      const currUserFriends = currUserResult.data.userByName.items[0].friends;
+      const currUserFriendRequests = currUserResult.data.userByName.items[0].friendRequests;
+      var newCurrUserFriends = [];
+      var newCurrUserFriendRequests = [];
+    
+    // if(currUserFriends == null){
+    //   newCurrUserFriends.push(newFriend);
+    // }
+    // else{
+      newCurrUserFriends = currUserFriends;
+      newCurrUserFriends.push(newFriend);
+      newCurrUserFriendRequests = currUserFriendRequests;
+      const newFriendIndex = newCurrUserFriendRequests.indexOf(newFriend);
+          if (newFriendIndex > -1) { // only splice array when item is found
+            newCurrUserFriendRequests.splice(newFriendIndex, 1); // 2nd parameter means remove one item only
+          }
+    // }
+
+      // newFriends.push(friendName);
+      // console.log("New Friends: " + newFriends);
+
+      const currUserRes = await API.graphql({
+      query: updateUser, 
+      variables: {
+        input: {
+          id: currUserID,
+          name: currentUser,
+          friends: newCurrUserFriends,
+          friendRequests: newCurrUserFriendRequests
+        }
+      }
+      })
+      console.log(currUserRes);
+      console.log("pushed to currUser!");
+
+      const friendParams = {
+        name: newFriend
+        };
+        const newFriendResult = await API.graphql(graphqlOperation(userByName, friendParams));
+        const newFriendsID = newFriendResult.data.userByName.items[0].id;
+        const friends = newFriendResult.data.userByName.items[0].friends;
+        const friendRequests = newFriendResult.data.userByName.items[0].friendRequests;
+        var newFriends = [];
+        // var newFriendRequests = [];
+    
+        // if(friends == null){
+        //   newFriends.push(currentUser);
+        // }
+        // else{
+          newFriends = friends;
+          newFriends.push(currentUser);
+          // newFriendRequests = friendRequests;
+          // const currUserIndex = newFriendRequests.indexOf(currentUser);
+          // if (currUserIndex > -1) { // only splice array when item is found
+          //   newFriendRequests.splice(currUserIndex, 1); // 2nd parameter means remove one item only
+          // }
+        // }
+  
+        // newFriends.push(friendName);
+        // console.log("New Friends: " + newFriends);
+  
+        const res = await API.graphql({
+        query: updateUser, 
+        variables: {
+          input: {
+            id: newFriendsID,
+            name: newFriend,
+            friends: newFriends,
+            // friendRequests: newFriendRequests
+          }
+        }
+        })
+        console.log(res);
+        console.log("pushed to newFriend!")
+
+
+  } catch(err){
+    console.log(err);
+  }
+}
+
 
 export async function addFriend(newFriend){
     try{
@@ -188,7 +316,7 @@ export async function createUserInDB(){
         variables: {
           input: {
             name: currentUser,
-            friends: [""]
+            friends: [],
           }
         }
       })

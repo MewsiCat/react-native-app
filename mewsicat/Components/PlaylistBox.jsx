@@ -2,10 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import SongItemInList from '../Components/SongItemInList.jsx';
 import { Ionicons } from '@expo/vector-icons';
+import AddOverlay from '../screens/AddOverlay.js';
+import { Overlay } from 'react-native-elements';
 
 
 export default function PlaylistBox({ friendlist }) {
   const [searchText, setSearchText] = useState('');
+  const [addOverlayVisible, setAddOverlayVisible] = useState(false);
+
+  const toggleAddOverlay = () => {
+    setAddOverlayVisible(!addOverlayVisible);
+}
+
   const filteredFriends = searchText
     ? friendlist.filter(friend =>
       friend.name.toLowerCase().includes(searchText.toLowerCase())
@@ -52,7 +60,11 @@ export default function PlaylistBox({ friendlist }) {
       />
       <View style={styles.horizontalLine}/>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Add')}>
+      <Overlay isVisible={addOverlayVisible} onBackdropPress={toggleAddOverlay} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
+            <AddOverlay />
+            {/* <Loading /> */}
+        </Overlay>
+        <TouchableOpacity style={styles.button} onPress={toggleAddOverlay}>
           <Text style={styles.buttonText}>Add</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => console.log('Remove')}>

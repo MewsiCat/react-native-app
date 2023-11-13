@@ -6,8 +6,9 @@ export const onCreateUser = /* GraphQL */ `
     onCreateUser(filter: $filter) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename
@@ -19,8 +20,9 @@ export const onUpdateUser = /* GraphQL */ `
     onUpdateUser(filter: $filter) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename
@@ -32,8 +34,9 @@ export const onDeleteUser = /* GraphQL */ `
     onDeleteUser(filter: $filter) {
       id
       name
-      description
       friends
+      cat
+      friendRequests
       createdAt
       updatedAt
       __typename

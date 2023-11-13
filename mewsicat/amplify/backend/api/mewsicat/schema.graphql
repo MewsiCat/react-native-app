@@ -5,6 +5,7 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 type User @model {
   id: ID!
   name: String! @index(name: "byName", queryField: "userByName")
-  description: String
-  friends: [String!]
+  friends: [String]
+	cat: String
+	friendRequests: [String]
 }

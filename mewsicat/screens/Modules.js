@@ -6,12 +6,14 @@ import Settings from './Settings';
 import MusicRec from './MusicRec';
 import Jukebox from './Jukebox';
 import Loading from './Loading';
+import FriendRequestsList from './FriendRequestsList';
 
 export default function Modules({ navigation }) {
     const [musicVisible, setMusicVisible] = useState(false);
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [friendsVisible, setFriendsVisible] = useState(false);
     const [recVisible, setRecVisible] = useState(false);
+    const [friendRequestsVisible, setFriendRequestsVisible] = useState(false);
 
     const toggleMusic = () => {
         setMusicVisible(!musicVisible);
@@ -26,6 +28,9 @@ export default function Modules({ navigation }) {
 
     const toggleFriends = () => {
         setFriendsVisible(!friendsVisible);
+    }
+    const toggleFriendRequests = () => {
+        setFriendRequestsVisible(!friendRequestsVisible);
     }
 
     return (
@@ -52,6 +57,15 @@ export default function Modules({ navigation }) {
         </Pressable>
         <Overlay isVisible={friendsVisible} onBackdropPress={toggleFriends} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
             <FriendsList />
+            {/* <Loading /> */}
+        </Overlay>
+
+        {/* Friend Requests */}
+        <Pressable onPress={toggleFriendRequests} style={styles.buttonContainer}>
+            <Image source={require('../assets/friendsIcon.png')} style={styles.img}/>
+        </Pressable>
+        <Overlay isVisible={friendRequestsVisible} onBackdropPress={toggleFriendRequests} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
+            <FriendRequestsList />
             {/* <Loading /> */}
         </Overlay>
     </View>

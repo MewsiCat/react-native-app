@@ -6,7 +6,6 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import awsExports from '../src/aws-exports';
-import { addFriend } from '../backend/api/amplifyDBFunctions.js';
 import Loading from './Loading.js';
 import { Overlay } from 'react-native-elements';
 
@@ -79,16 +78,17 @@ const songData = Array.from({ length: tempMusic + 10 }, (_, num) => ({
   songName: songNames[num],
 }));
 
-var friendsData;
+var friendRequestsData;
 
 
-export async function generateFriendsList(){
+export async function generateFriendRequestsList(){
     try{
     // const [friends, setFriends] = useState([]);
     // const [friendsLength, setFriendsLength] = useState();
 
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
+    console.log("current user " + currentUser);
 
     const params = {
       name: currentUser
@@ -96,14 +96,21 @@ export async function generateFriendsList(){
     const result = await API.graphql(graphqlOperation(userByName, params));
     const friendsID = result.data.userByName.items[0].id;
     // setFriends(result.data.userByName.items[0].friends);
-    const friends = result.data.userByName.items[0].friends;
-    console.log("Friends in friends list " + friends);
+    var friendRequests = result.data.userByName.items[0].friendRequests;
+    if(friendRequests == null){
+      friendRequests = 0;
+    }
+    console.log("FriendRequests list " + friendRequests);
     // setFriendsLength(friends.length);
-    const friendsLength = friends.length;
-    console.log("Friends length: " + friendsLength);
-    friendsData = Array.from({ length: friendsLength }, (_, num) => ({
+    var friendRequestsLength = friendRequests.length;
+    if(friendRequestsLength == null){
+      friendRequestsLength = 0;
+    }
+
+    console.log("FriendRequests length: " + friendRequestsLength);
+    friendRequestsData = Array.from({ length: friendRequestsLength }, (_, num) => ({
       profilePicture: imagetemp[num],
-      name: friends[num],
+      name: friendRequests[num],
       active: songNames[num],
     }));
   } catch (err) {
@@ -111,7 +118,7 @@ export async function generateFriendsList(){
   }
 }
 
-export default function FriendsList() {
+export default function FriendRequestsList() {
   const [modalVisible, setModalVisible] = useState(true); 
 
   const [loadVisible, setLoadVisible] = useState(false);
@@ -125,9 +132,8 @@ export default function FriendsList() {
     }
 
   useEffect(async () => {
-    //addFriend("beepbop")
     toggleLoad();
-      await generateFriendsList();
+    await generateFriendRequestsList();
     toggleLoadFalse();
   }, []);
 
@@ -138,7 +144,7 @@ export default function FriendsList() {
         <Loading />
       </Overlay>
       <View style={styles.playlistContainer}>
-        <Playlistbox friendlist={friendsData} />
+        <Playlistbox friendlist={friendRequestsData} />
       </View>
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} style={{ zIndex: 1000, elevation: 1000 }} />
     </View>

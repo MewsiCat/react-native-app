@@ -49,6 +49,7 @@ import {
 import { Amplify, Auth } from 'aws-amplify';
 import awsExports from './src/aws-exports';
 import { generateSong } from "./screens/MusicRec.js";
+import { generateFriendRequestsList } from "./screens/FriendRequestsList.js";
 Amplify.configure(awsExports);
 
 const spotifyController = new SpotifyAPIController();
@@ -112,9 +113,10 @@ const App = () => {
       try {
         // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync(Entypo.font);
-        checkUser();
+        await checkUser();
         getSpotifyConnected();
-        generateFriendsList();
+        await generateFriendRequestsList();
+        await generateFriendsList();
         await getBGM();
         playBGM();
         playSound();
@@ -125,7 +127,7 @@ const App = () => {
         //updateFriends();
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
       } catch (e) {
         console.warn(e);
       } finally {
