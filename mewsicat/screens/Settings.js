@@ -187,6 +187,7 @@ export default function Settings() {
           "streaming",
           "user-read-email",
           "user-read-private",
+          "user-library-modify",
         ],
         // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
         // this must be set to false
