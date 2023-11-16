@@ -20,19 +20,6 @@ export default function SongItemInList({ profilePicture, name, active }) {
         setLoadVisible(loadVisible);
     }
 
-  const handleActiveIndicatorPress = () => {
-    setIsActive(!isActive);
-    Toast.show({
-      type: 'friendNotification',
-      position: 'bottom',
-      text1: `${!isActive ? 'Unmuted recommendation' : 'Muted recommendation'}`,
-      text1Style: {
-        fontSize: 15,
-      },
-      visibilityTime: 1200,
-    });
-  };
-
 
   return (
     <View style={styles.container}>
@@ -44,16 +31,6 @@ export default function SongItemInList({ profilePicture, name, active }) {
       <Text style={styles.userName}>
         {name.length > 14 ? `${name.substring(0, 13)}...` : name}
       </Text>
-
-      {/* Notification indicator */}
-      <TouchableOpacity onPress={handleActiveIndicatorPress}>
-        <MaterialCommunityIcons
-          name={isActive ? "fish" : "fish-off"}
-          size={24}
-          // color={isActive ? '#00ff00' : '#ff0000'}
-          style={styles.activeIndicator}
-        />
-      </TouchableOpacity>
 
       <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
         <Loading />

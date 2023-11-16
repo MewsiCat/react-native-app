@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { acceptFriendRequest, addFriend } from '../backend/api/amplifyDBFunctions';
 import Loading from '../screens/Loading';
 import { Overlay } from 'react-native-elements';
+import { sendFriendRequest } from '../backend/api/amplifyDBFunctions.js';
 
 
 export default function SongItemInList({ profilePicture, name, active }) {
@@ -19,20 +20,11 @@ export default function SongItemInList({ profilePicture, name, active }) {
     const toggleLoadFalse = () => {
         setLoadVisible(loadVisible);
     }
-
-  const handleActiveIndicatorPress = () => {
-    setIsActive(!isActive);
-    Toast.show({
-      type: 'friendNotification',
-      position: 'bottom',
-      text1: `${!isActive ? 'Unmuted recommendation' : 'Muted recommendation'}`,
-      text1Style: {
-        fontSize: 15,
-      },
-      visibilityTime: 1200,
-    });
-  };
-
+    const sendRequest = async () => {
+        toggleLoad();
+        await sendFriendRequest(name);
+        toggleLoadFalse();
+      };
 
   return (
     <View style={styles.container}>
@@ -42,18 +34,8 @@ export default function SongItemInList({ profilePicture, name, active }) {
 
       {/* User Name */}
       <Text style={styles.userName}>
-        {name.length > 14 ? `${name.substring(0, 13)}...` : name}
+        {name.length > 10 ? `${name.substring(0, 9)}...` : name}
       </Text>
-
-      {/* Notification indicator */}
-      <TouchableOpacity onPress={handleActiveIndicatorPress}>
-        <MaterialCommunityIcons
-          name={isActive ? "fish" : "fish-off"}
-          size={24}
-          // color={isActive ? '#00ff00' : '#ff0000'}
-          style={styles.activeIndicator}
-        />
-      </TouchableOpacity>
 
       <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
         <Loading />
@@ -61,7 +43,8 @@ export default function SongItemInList({ profilePicture, name, active }) {
 
       {/* Send Music Button */}
       <TouchableOpacity style={styles.sendMusicButton}>
-        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await acceptFriendRequest(name); toggleLoadFalse();}}>Accept</Text>
+        <AntDesign name={"adduser"} size={24} style={styles.iconStyle}/>
+        <Text style={styles.sendMusicButtonText} onPress={sendRequest}>Add Friend</Text>
       </TouchableOpacity>
     </View>
   );
@@ -95,10 +78,14 @@ const styles = StyleSheet.create({
       paddingHorizontal: 8,
       borderWidth:2,
       borderRadius: 10,
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
     
   },
   sendMusicButtonText: {
     color: '#783621',
     fontWeight: '600',
+    
   },
 });

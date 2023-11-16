@@ -101,10 +101,12 @@ export async function generateFriendsList(){
       variables: { id: userID }
     });
     // setFriends(result.data.userByName.items[0].friends);
+
     const friends = userRes.data.userByName.items[0].friends;
     console.log("Friends in friends list " + friends);
     // setFriendsLength(friends.length);
     const friendsLength = friends.items.length;
+
     console.log("Friends length: " + friendsLength);
     if(friendsLength == undefined){
       friendsLength = 0;
@@ -115,7 +117,6 @@ export async function generateFriendsList(){
       name: friends.items[num].name,
       active: songNames[num],
     }));
-
   } catch (err) {
     console.log(err);
   }
