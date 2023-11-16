@@ -27,7 +27,11 @@ var topArtists;
 var topArtistsGenres;
 var topTracks;
 var songPrev;
+
 var musicRec;
+
+var songID;
+
 
 var soundPlaying;
 const sound = new Audio.Sound()
@@ -112,6 +116,7 @@ export async function generateSong(){
             // console.log(data.tracks[0].artists[0].name)
             // console.log(data.tracks[0].album.images[0].url)
             // console.log(data.tracks[0].preview_url)
+            songID = data.tracks[0].id;
             songPrev = data.tracks[0].preview_url;
             songName = data.tracks[0].name;
             musicRec = data.tracks[0].id;
@@ -127,6 +132,28 @@ export async function generateSong(){
     } catch(err) {
         console.log(err);
       } 
+}
+
+export async function addToPlaylist() {
+    try {
+        console.log("beginning of add to playlist");
+        const currentUserInfo = await Auth.currentUserInfo();
+        const access_token = currentUserInfo.attributes['custom:spotify_token'];
+        var result = await fetch(
+            `https://api.spotify.com/v1/me/tracks?ids=${songID}`,
+            {
+                method: "PUT",
+                headers: { Authorization: "Bearer " + access_token },
+                data: {
+                    "ids": ["string"]
+                }
+            },
+            )
+        // console.log(songID);
+        console.log("add to playlist done!");
+    } catch(err) {
+        console.log(err);
+    } 
 }
 
 export async function playPauseSong() {
@@ -191,16 +218,17 @@ export default function MusicRec() {
                 <Button title='⏪' color='#783621' style={styles.button} />
                 <Button title="▶️" color='#783621' style={styles.button} onPress={() => {playPauseSong()}}/>
                 <Button title='⏩' color='#783621' style={styles.button} />
-                
-
-                
             </View>
                 <Button title='send' color='#783621' style={styles.button} onPress={async () => {toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();}}/>
+
+
+            <View style={styles.containerB}>
+                <Pressable style={styles.buttonContainer} onPress={async () => {await addToPlaylist()}}>
+                    <Text style={styles.buttonText}>Add to Playlist</Text>
+                </Pressable>
                 <Pressable style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>Return Home</Text>
                 </Pressable>
-            <View>
-
             </View>
         </View>
     );
@@ -215,8 +243,12 @@ const styles = StyleSheet.create({
         borderWidth:2,
         borderRadius: 10,
         width: '90%',
-        marginTop: 'auto'
+        padding: 5,
+        margin: 10
       },
+    containerB: {
+        marginTop: 'auto',
+    },
     container: {
         backgroundColor: '#f0d396',
         padding: 20,
