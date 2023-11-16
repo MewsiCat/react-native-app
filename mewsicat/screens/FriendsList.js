@@ -97,15 +97,19 @@ export async function generateFriendsList(){
     const friendsID = result.data.userByName.items[0].id;
     // setFriends(result.data.userByName.items[0].friends);
     const friends = result.data.userByName.items[0].friends;
-    console.log("Friends in friends list " + friends);
+    console.log("Friends in friends list: " + friends);
     // setFriendsLength(friends.length);
     const friendsLength = friends.length;
+    // const friendsLength = 3;
     console.log("Friends length: " + friendsLength);
     friendsData = Array.from({ length: friendsLength }, (_, num) => ({
       profilePicture: imagetemp[num],
+      // name: artists[num],
       name: friends[num],
+
       active: songNames[num],
     }));
+    console.log(friendsData);
   } catch (err) {
     console.log(err);
   }

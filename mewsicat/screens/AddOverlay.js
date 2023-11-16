@@ -10,7 +10,7 @@ import Loading from './Loading.js';
 export default function AddOverlay (){{
 
     const [searchText, setSearchText] = useState('');
-    console.log("addoverlay being rendered");
+    console.log("add overlay being rendered");
 
     const [loadVisible, setLoadVisible] = useState(false);
 
