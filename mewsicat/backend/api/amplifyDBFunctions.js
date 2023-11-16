@@ -5,12 +5,14 @@ import {
     useAuthenticator,
   } from '@aws-amplify/ui-react-native';
   
+  
 import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
-import { createUser, updateUser, deleteUser } from '../../src/graphql/mutations'
-import { listUsers, getUser, userByName } from '../../src/graphql/queries'
+import { createUser, updateUser, deleteUser, createFriend, createSong } from '../../src/graphql/mutations'
+import { listUsers, getUser, userByName, friendByName } from '../../src/graphql/queries'
+
 
 export async function currentUserInfo () {
     try {
@@ -86,6 +88,87 @@ export async function getSpotifyToken(){
     }
   }
 
+export async function sendSong(friend, musicRecURI){
+  try{
+
+  // getting song info from spotify
+  const currentUserInfo = await Auth.currentUserInfo();
+  const access_token = currentUserInfo.attributes['custom:spotify_token'];
+  var profilePic;
+  var artist;
+
+  const friendParams = {
+    name: friend
+  };
+
+  const friendRes = await API.graphql(graphqlOperation(userByName, friendParams));
+  const friendID = friendRes.data.userByName.items[0].id;
+  // var newSong;
+  var songResult = await fetch(
+    `https://api.spotify.com/v1/tracks/${musicRecURI}`,
+    {
+        method: "GET",
+        headers: { Authorization: "Bearer " + access_token },
+    },
+    )
+    .then((res) => res.json())
+    .then((data) => {
+        console.log(data);
+        spotifyID = data.id;
+        songName = data.name;
+        profilePic = data.album.images[0].url;
+        artist = data.artists[0].name;
+        console.log("spotify id: " + spotifyID);
+        console.log("song name: " + songName);
+        //
+    });
+    
+    const newSong = await API.graphql({
+      query: createSong,
+      variables: {
+        input: {
+          songID: friendID,
+          name: songName,
+          spotifyID: spotifyID,
+          artist: artist,
+        }
+      }
+    });
+    console.log(newSong);
+
+  
+  // // sending song to friend
+  // const params = {
+  //   name: friend
+  //   };
+  //   const result = await API.graphql(graphqlOperation(userByName, params));
+  //   const friendsID = result.data.userByName.items[0].id;
+  //   const friendSongs = result.data.userByName.items[0].songs;
+  //   console.log("friend songs" + friendSongs);
+  //   var newFriendSongs = [];
+
+  //   if(friendSongs == null){
+  //     newFriendSongs.push(newSong);
+  //   }
+  //   else{
+  //     newFriendSongs = friendSongs;
+  //     newFriendSongs.push(newSong);
+  //   }
+
+  //   const res = await API.graphql({
+  //   query: updateUser, 
+  //   variables: {
+  //     input: {
+  //       id: friendsID,
+  //       songs: newFriendSongs,
+  //     }
+  //   }
+  //   })
+  }catch(err) {
+    console.log(err);
+  } 
+}
+
 // not gonna work cause you can't return things in async functions
 // export async function checkSpotifyConnected(){
 //   try{
@@ -146,7 +229,7 @@ export async function sendFriendRequest(newFriend){
     const currentUser = currentUserInfo.username;
     
     const params = {
-    name: newFriend
+      name: newFriend
     };
     const result = await API.graphql(graphqlOperation(userByName, params));
     const friendsID = result.data.userByName.items[0].id;
@@ -179,89 +262,69 @@ export async function sendFriendRequest(newFriend){
 
 export async function acceptFriendRequest(newFriend){
   try{
+    // adding friend to curr user
     const currentUserInfo = await Auth.currentUserInfo();
       const currentUser = currentUserInfo.username;
 
       const currUserParams = {
-      name: currentUser
-      };
+        name: currentUser
+        };
       const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
       const currUserID = currUserResult.data.userByName.items[0].id;
-      const currUserFriends = currUserResult.data.userByName.items[0].friends;
       const currUserFriendRequests = currUserResult.data.userByName.items[0].friendRequests;
-      var newCurrUserFriends = [];
+      const friends = currUserResult.data.userByName.items[0].friends;
       var newCurrUserFriendRequests = [];
-    
-    // if(currUserFriends == null){
-    //   newCurrUserFriends.push(newFriend);
-    // }
-    // else{
-      newCurrUserFriends = currUserFriends;
-      newCurrUserFriends.push(newFriend);
+
       newCurrUserFriendRequests = currUserFriendRequests;
       const newFriendIndex = newCurrUserFriendRequests.indexOf(newFriend);
           if (newFriendIndex > -1) { // only splice array when item is found
             newCurrUserFriendRequests.splice(newFriendIndex, 1); // 2nd parameter means remove one item only
           }
-    // }
 
-      // newFriends.push(friendName);
-      // console.log("New Friends: " + newFriends);
 
-      const currUserRes = await API.graphql({
-      query: updateUser, 
-      variables: {
-        input: {
-          id: currUserID,
-          name: currentUser,
-          friends: newCurrUserFriends,
-          friendRequests: newCurrUserFriendRequests
+      // creating friend object
+      const friendRes = await API.graphql({
+        query: createFriend, 
+        variables: {
+          input: {
+            friendID: currUserID,
+            name: newFriend
+          }
         }
-      }
-      })
-      console.log(currUserRes);
-      console.log("pushed to currUser!");
+      });
+      console.log("curr user friend result: " + friendRes);
+      console.log("pushed to currUser!")
 
+
+      // adding curr user to friend
       const friendParams = {
         name: newFriend
         };
         const newFriendResult = await API.graphql(graphqlOperation(userByName, friendParams));
         const newFriendsID = newFriendResult.data.userByName.items[0].id;
-        const friends = newFriendResult.data.userByName.items[0].friends;
-        const friendRequests = newFriendResult.data.userByName.items[0].friendRequests;
-        var newFriends = [];
-        // var newFriendRequests = [];
-    
-        // if(friends == null){
-        //   newFriends.push(currentUser);
-        // }
-        // else{
-          newFriends = friends;
-          newFriends.push(currentUser);
-          // newFriendRequests = friendRequests;
-          // const currUserIndex = newFriendRequests.indexOf(currentUser);
-          // if (currUserIndex > -1) { // only splice array when item is found
-          //   newFriendRequests.splice(currUserIndex, 1); // 2nd parameter means remove one item only
-          // }
-        // }
-  
-        // newFriends.push(friendName);
-        // console.log("New Friends: " + newFriends);
-  
-        const res = await API.graphql({
+
+        // creating current user object
+      const createCurrUserObj = await API.graphql({
+        query: createFriend, 
+        variables: { 
+          input: {
+            friendID: newFriendsID,
+            name: currentUser
+          }
+        }
+      });
+      console.log("new friend result: " + createCurrUserObj);
+      console.log("pushed to newFriend!")
+
+      const currUserRes = await API.graphql({
         query: updateUser, 
         variables: {
           input: {
-            id: newFriendsID,
-            name: newFriend,
-            friends: newFriends,
-            // friendRequests: newFriendRequests
+            id: currUserID,
+            friendRequests: newCurrUserFriendRequests
           }
         }
         })
-        console.log(res);
-        console.log("pushed to newFriend!")
-
 
   } catch(err){
     console.log(err);
@@ -274,31 +337,51 @@ export async function addFriend(newFriend){
       const currentUserInfo = await Auth.currentUserInfo();
       const currentUser = currentUserInfo.username;
 
-      const params = {
-      name: currentUser
-      };
-      const result = await API.graphql(graphqlOperation(userByName, params));
-      const friendsID = result.data.userByName.items[0].id;
-      const friends = result.data.userByName.items[0].friends;
-      var newFriends = [];
+      const currUserParams = {
+        name: currentUser
+        };
+      const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
+      const currUserID = currUserResult.data.userByName.items[0].id;
 
-      newFriends = friends;
-      newFriends.push(newFriend);
-
-      // newFriends.push(friendName);
-      // console.log("New Friends: " + newFriends);
-
-      const res = await API.graphql({
-      query: updateUser, 
-      variables: {
-        input: {
-          id: friendsID,
-          name: currentUser,
-          friends: newFriends
+      // creating friend object
+      const friendRes = await API.graphql({
+        query: createFriend, 
+        variables: {
+          input: {
+            friendID: currUserID,
+            name: newFriend
+          }
         }
-      }
-      })
-      console.log(res);
+      });
+      console.log(friendRes);
+      // const currentUserInfo = await Auth.currentUserInfo();
+      // const currentUser = currentUserInfo.username;
+
+      // const params = {
+      // name: currentUser
+      // };
+      // const result = await API.graphql(graphqlOperation(userByName, params));
+      // const friendsID = result.data.userByName.items[0].id;
+      // const friends = result.data.userByName.items[0].friends;
+      // var newFriends = [];
+
+      // newFriends = friends;
+      // newFriends.push(newFriend);
+
+      // // newFriends.push(friendName);
+      // // console.log("New Friends: " + newFriends);
+
+      // const res = await API.graphql({
+      // query: updateUser, 
+      // variables: {
+      //   input: {
+      //     id: friendsID,
+      //     name: currentUser,
+      //     friends: newFriends
+      //   }
+      // }
+      // })
+      // console.log(res);
     }catch(err){
       console.log(err);
     }
@@ -316,7 +399,6 @@ export async function createUserInDB(){
         variables: {
           input: {
             name: currentUser,
-            friends: [],
           }
         }
       })
