@@ -3,13 +3,14 @@ import { View, Text, StyleSheet, Modal, TouchableWithoutFeedback, Button, Dimens
 import Playlistbox from '../Components/PlaylistBox.jsx';
 import { Amplify, Auth } from 'aws-amplify';
 import { API, graphqlOperation } from 'aws-amplify'
-import { listUsers, getUser, userByName, getFriend } from '../src/graphql/queries'
+import { listUsers, getUser, userByName } from '../src/graphql/queries.js'
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import awsExports from '../src/aws-exports';
+import awsExports from '../src/aws-exports.js';
 import { addFriend } from '../backend/api/amplifyDBFunctions.js';
 import Loading from './Loading.js';
 import { Overlay } from 'react-native-elements';
 import FriendBox from '../Components/FriendBox.jsx';
+import FriendSongBox from '../Components/FriendSongBox.jsx';
 
 Amplify.configure(awsExports);
 
@@ -82,47 +83,39 @@ const songData = Array.from({ length: tempMusic + 10 }, (_, num) => ({
 
 var friendsData;
 
-
-export async function generateFriendsList(){
+export async function generateSongsList(){
     try{
     // const [friends, setFriends] = useState([]);
     // const [friendsLength, setFriendsLength] = useState();
-    console.log("beginning of friends list function!");
+
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
 
     const params = {
       name: currentUser
     };
-    const userRes = await API.graphql(graphqlOperation(userByName, params));
-    const userID = userRes.data.userByName.items[0].id;
-    const result = await API.graphql({
-      query: getFriend,
-      variables: { id: userID }
-    });
+    const result = await API.graphql(graphqlOperation(userByName, params));
+    const user = result.data.userByName.items[0].id;
     // setFriends(result.data.userByName.items[0].friends);
-
-    const friends = userRes.data.userByName.items[0].friends;
-    console.log("Friends in friends list " + friends);
+    const songs = result.data.userByName.items[0].songs;
+    console.log("Songs in song list " + songs);
     // setFriendsLength(friends.length);
-    const friendsLength = friends.items.length;
-
-    console.log("Friends length: " + friendsLength);
-    if(friendsLength == undefined){
-      friendsLength = 0;
+    const songsLength = songs.items.length;
+    console.log("Songs length: " + songsLength);
+    if(songsLength == undefined){
+      songsLength = 0;
     }
-    console.log("generate friends list done!");
-    friendsData = Array.from({ length: friendsLength }, (_, num) => ({
+    friendsData = Array.from({ length: songsLength }, (_, num) => ({
       profilePicture: imagetemp[num],
-      name: friends.items[num].name,
-      active: songNames[num],
+      name: songs.items[num].name,
+      active: songs.items[num].spotifyID,
     }));
   } catch (err) {
     console.log(err);
   }
 }
 
-export default function FriendsList() {
+export default function FriendSongsList() {
   const [modalVisible, setModalVisible] = useState(true); 
 
   const [loadVisible, setLoadVisible] = useState(false);
@@ -136,9 +129,9 @@ export default function FriendsList() {
     }
 
   useEffect(async () => {
+    //addFriend("beepbop")
     toggleLoad();
-      await generateFriendsList();
-      // await addFriend("beepbop");
+      await generateSongsList();
     toggleLoadFalse();
   }, []);
 
@@ -149,7 +142,7 @@ export default function FriendsList() {
         <Loading />
       </Overlay>
       <View style={styles.playlistContainer}>
-        <FriendBox friendlist={friendsData} />
+        <FriendSongBox friendlist={friendsData} />
       </View>
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} style={{ zIndex: 1000, elevation: 1000 }} />
     </View>

@@ -3,13 +3,15 @@ import { View, Text, StyleSheet, Modal, TouchableWithoutFeedback, Button, Dimens
 import Playlistbox from '../Components/PlaylistBox.jsx';
 import { Amplify, Auth } from 'aws-amplify';
 import { API, graphqlOperation } from 'aws-amplify'
-import { listUsers, getUser, userByName, getFriend } from '../src/graphql/queries'
+import { listUsers, getUser, userByName } from '../src/graphql/queries.js'
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import awsExports from '../src/aws-exports';
+import awsExports from '../src/aws-exports.js';
 import { addFriend } from '../backend/api/amplifyDBFunctions.js';
 import Loading from './Loading.js';
 import { Overlay } from 'react-native-elements';
 import FriendBox from '../Components/FriendBox.jsx';
+import SongFriendBox from '../Components/SongFriendBox.jsx';
+import { getFriend } from '../src/graphql/queries.js';
 
 Amplify.configure(awsExports);
 
@@ -101,12 +103,10 @@ export async function generateFriendsList(){
       variables: { id: userID }
     });
     // setFriends(result.data.userByName.items[0].friends);
-
     const friends = userRes.data.userByName.items[0].friends;
     console.log("Friends in friends list " + friends);
     // setFriendsLength(friends.length);
     const friendsLength = friends.items.length;
-
     console.log("Friends length: " + friendsLength);
     if(friendsLength == undefined){
       friendsLength = 0;
@@ -122,7 +122,7 @@ export async function generateFriendsList(){
   }
 }
 
-export default function FriendsList() {
+export default function SongFriendsList( {musicRecURI} ) {
   const [modalVisible, setModalVisible] = useState(true); 
 
   const [loadVisible, setLoadVisible] = useState(false);
@@ -136,9 +136,9 @@ export default function FriendsList() {
     }
 
   useEffect(async () => {
+    //addFriend("beepbop")
     toggleLoad();
       await generateFriendsList();
-      // await addFriend("beepbop");
     toggleLoadFalse();
   }, []);
 
@@ -149,7 +149,7 @@ export default function FriendsList() {
         <Loading />
       </Overlay>
       <View style={styles.playlistContainer}>
-        <FriendBox friendlist={friendsData} />
+        <SongFriendBox friendlist={friendsData} musicRecURI={musicRecURI}/>
       </View>
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} style={{ zIndex: 1000, elevation: 1000 }} />
     </View>

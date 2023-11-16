@@ -7,6 +7,8 @@ import MusicRec from './MusicRec';
 import Jukebox from './Jukebox';
 import Loading from './Loading';
 import FriendRequestsList from './FriendRequestsList';
+import FriendSongsList from './FriendSongsList';
+import GenerateCats from './GenerateCats';
 
 export default function Modules({ navigation }) {
     const [musicVisible, setMusicVisible] = useState(false);
@@ -14,6 +16,16 @@ export default function Modules({ navigation }) {
     const [friendsVisible, setFriendsVisible] = useState(false);
     const [recVisible, setRecVisible] = useState(false);
     const [friendRequestsVisible, setFriendRequestsVisible] = useState(false);
+    const [songsVisible, setSongsVisible] = useState(false);
+    const [genCatVisible, setGenCatVisible] = useState(false);
+
+    const toggleGenerateCat = () => {
+        setGenCatVisible(!genCatVisible);
+    }
+
+    const toggleSongs = () => {
+        setSongsVisible(!songsVisible)
+    }
 
     const toggleMusic = () => {
         setMusicVisible(!musicVisible);
@@ -68,6 +80,23 @@ export default function Modules({ navigation }) {
             <FriendRequestsList />
             {/* <Loading /> */}
         </Overlay>
+        
+        {/* Songs */}
+        <Pressable onPress={toggleSongs} style={styles.buttonContainer}>
+            <Image source={require('../assets/blackcat.jpg')} style={styles.img}/>
+        </Pressable>
+        <Overlay isVisible={songsVisible} onBackdropPress={toggleSongs} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
+            <FriendSongsList />
+        </Overlay>
+
+        {/* Generate Cat */}
+        <Pressable onPress={toggleGenerateCat} style={styles.buttonContainer}>
+            <Image source={require('../assets/wife.jpg')} style={styles.img}/>
+        </Pressable>
+        <Overlay isVisible={genCatVisible} onBackdropPress={toggleGenerateCat} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
+            <GenerateCats />
+        </Overlay>
+   
     </View>
     );
 };

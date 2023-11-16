@@ -17,6 +17,9 @@ Amplify.configure(awsExports);
 import { createUser, updateUser, deleteUser } from '../src/graphql/mutations'
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
 
+import { Overlay } from 'react-native-elements';
+import Loading from './Loading';
+
 var songName;
 var artistName;
 var imageName;
@@ -25,11 +28,17 @@ var topArtistsGenres;
 var topTracks;
 var songPrev;
 
+var musicRec;
+
+var songID;
+
+
 var soundPlaying;
 const sound = new Audio.Sound()
 
 import { Audio } from 'expo-av';
 import { pauseBGM, toggleBGM } from '../App';
+import SongFriendsList from './SongFriendsList';
 
 async function getTopTracks(){
     try{
@@ -107,8 +116,11 @@ export async function generateSong(){
             // console.log(data.tracks[0].artists[0].name)
             // console.log(data.tracks[0].album.images[0].url)
             // console.log(data.tracks[0].preview_url)
+            songID = data.tracks[0].id;
             songPrev = data.tracks[0].preview_url;
             songName = data.tracks[0].name;
+            musicRec = data.tracks[0].id;
+            console.log("spotify id: " + data.tracks[0].id);
             artistName = data.tracks[0].artists[0].name;
             imageName = data.tracks[0].album.images[0].url;
         });
@@ -120,6 +132,28 @@ export async function generateSong(){
     } catch(err) {
         console.log(err);
       } 
+}
+
+export async function addToPlaylist() {
+    try {
+        console.log("beginning of add to playlist");
+        const currentUserInfo = await Auth.currentUserInfo();
+        const access_token = currentUserInfo.attributes['custom:spotify_token'];
+        var result = await fetch(
+            `https://api.spotify.com/v1/me/tracks?ids=${songID}`,
+            {
+                method: "PUT",
+                headers: { Authorization: "Bearer " + access_token },
+                data: {
+                    "ids": ["string"]
+                }
+            },
+            )
+        // console.log(songID);
+        console.log("add to playlist done!");
+    } catch(err) {
+        console.log(err);
+    } 
 }
 
 export async function playPauseSong() {
@@ -134,6 +168,21 @@ export async function playPauseSong() {
 }
 
 export default function MusicRec() {
+
+    const [loadVisible, setLoadVisible] = useState(false);
+    const [songFriendsVisible, setSongFriendsVisible] = useState(false);
+
+    const toggleSongFriendsList = () => {
+        setSongFriendsVisible(!songFriendsVisible);
+    }
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
 
     useEffect(() => {
         pauseBGM();
@@ -151,6 +200,12 @@ export default function MusicRec() {
             <Image source={{uri: imageName,}} style={styles.img} />
             <Text style={styles.song}>{songName}</Text>
             <Text style={styles.artist}>{artistName}</Text>
+            <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                 <Loading />
+            </Overlay>
+            <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                 <SongFriendsList musicRecURI={musicRec}/>
+            </Overlay>
             <Slider
                 style={{width: '90%', height: '90%', alignSelf:'center', paddingTop:0}}
                 minimumValue={0}
@@ -163,16 +218,17 @@ export default function MusicRec() {
                 <Button title='⏪' color='#783621' style={styles.button} />
                 <Button title="▶️" color='#783621' style={styles.button} onPress={() => {playPauseSong()}}/>
                 <Button title='⏩' color='#783621' style={styles.button} />
-                
-
-                
             </View>
-                <Button title='send' color='#783621' style={styles.button} />
+                <Button title='send' color='#783621' style={styles.button} onPress={async () => {toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();}}/>
+
+
+            <View style={styles.containerB}>
+                <Pressable style={styles.buttonContainer} onPress={async () => {await addToPlaylist()}}>
+                    <Text style={styles.buttonText}>Add to Playlist</Text>
+                </Pressable>
                 <Pressable style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>Return Home</Text>
                 </Pressable>
-            <View>
-
             </View>
         </View>
     );
@@ -187,8 +243,12 @@ const styles = StyleSheet.create({
         borderWidth:2,
         borderRadius: 10,
         width: '90%',
-        marginTop: 'auto'
+        padding: 5,
+        margin: 10
       },
+    containerB: {
+        marginTop: 'auto',
+    },
     container: {
         backgroundColor: '#f0d396',
         padding: 20,
