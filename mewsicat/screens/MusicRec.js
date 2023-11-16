@@ -17,6 +17,9 @@ Amplify.configure(awsExports);
 import { createUser, updateUser, deleteUser } from '../src/graphql/mutations'
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
 
+import { Overlay } from 'react-native-elements';
+import Loading from './Loading';
+
 var songName;
 var artistName;
 var imageName;
@@ -24,13 +27,18 @@ var topArtists;
 var topArtistsGenres;
 var topTracks;
 var songPrev;
+
+var musicRec;
+
 var songID;
+
 
 var soundPlaying;
 const sound = new Audio.Sound()
 
 import { Audio } from 'expo-av';
 import { pauseBGM, toggleBGM } from '../App';
+import SongFriendsList from './SongFriendsList';
 
 async function getTopTracks(){
     try{
@@ -111,6 +119,8 @@ export async function generateSong(){
             songID = data.tracks[0].id;
             songPrev = data.tracks[0].preview_url;
             songName = data.tracks[0].name;
+            musicRec = data.tracks[0].id;
+            console.log("spotify id: " + data.tracks[0].id);
             artistName = data.tracks[0].artists[0].name;
             imageName = data.tracks[0].album.images[0].url;
         });
@@ -159,6 +169,21 @@ export async function playPauseSong() {
 
 export default function MusicRec() {
 
+    const [loadVisible, setLoadVisible] = useState(false);
+    const [songFriendsVisible, setSongFriendsVisible] = useState(false);
+
+    const toggleSongFriendsList = () => {
+        setSongFriendsVisible(!songFriendsVisible);
+    }
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
     useEffect(() => {
         pauseBGM();
         soundPlaying = false;
@@ -175,6 +200,12 @@ export default function MusicRec() {
             <Image source={{uri: imageName,}} style={styles.img} />
             <Text style={styles.song}>{songName}</Text>
             <Text style={styles.artist}>{artistName}</Text>
+            <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                 <Loading />
+            </Overlay>
+            <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                 <SongFriendsList musicRecURI={musicRec}/>
+            </Overlay>
             <Slider
                 style={{width: '90%', height: '90%', alignSelf:'center', paddingTop:0}}
                 minimumValue={0}
@@ -188,6 +219,8 @@ export default function MusicRec() {
                 <Button title="▶️" color='#783621' style={styles.button} onPress={() => {playPauseSong()}}/>
                 <Button title='⏩' color='#783621' style={styles.button} />
             </View>
+                <Button title='send' color='#783621' style={styles.button} onPress={async () => {toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();}}/>
+
 
             <View style={styles.containerB}>
                 <Pressable style={styles.buttonContainer} onPress={async () => {await addToPlaylist()}}>
