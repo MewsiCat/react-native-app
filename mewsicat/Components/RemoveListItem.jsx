@@ -11,6 +11,10 @@ export default function SongItemInList({ profilePicture, name, active }) {
   const [isConfirmMode, setIsConfirmMode] = useState(false);
   const slideAnim = useRef(new Animated.Value(-100)).current; // Initial value for right: -100 (off-screen)
 
+  const toggleConfirmMode = () => {
+    setIsConfirmMode(!isConfirmMode);
+  }
+
   const handleRemovePress = () => {
     setIsConfirmMode(true);
     Animated.timing(slideAnim, {
@@ -18,6 +22,7 @@ export default function SongItemInList({ profilePicture, name, active }) {
       duration: 100,
       useNativeDriver: false,
     }).start();
+    console.log(isConfirmMode);
   };
 
   const handleConfirmRemoval = async () => {
@@ -60,6 +65,12 @@ export default function SongItemInList({ profilePicture, name, active }) {
             <Text style={styles.removeButtonText}>Remove</Text>
           </TouchableOpacity>
         )}
+        {/* Touchable area for exiting confirmation mode */}
+        {isConfirmMode && (
+        <View style={styles.overlayContainer}>
+          <TouchableOpacity style={styles.overlay} onPress={handleOutsidePress} activeOpacity={1} />
+        </View>
+      )}
 
         {/* Slide-in Confirm Button with Trash Icon */}
         {isConfirmMode && (
@@ -71,13 +82,6 @@ export default function SongItemInList({ profilePicture, name, active }) {
           </Animated.View>
         )}
       </View>
-
-      {/* Touchable area for exiting confirmation mode */}
-      {isConfirmMode && (
-        <View style={styles.overlayContainer}>
-          <TouchableOpacity style={styles.overlay} onPress={handleOutsidePress} activeOpacity={1} />
-        </View>
-      )}
     </View>
   );
 }
@@ -192,7 +196,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   overlay: {
-    flex: 1,
+    flex: 1, 
+    width:300,
     backgroundColor: 'transparent',
   },
 });
