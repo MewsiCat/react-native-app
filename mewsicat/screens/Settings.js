@@ -13,6 +13,7 @@ import { Amplify, Auth } from 'aws-amplify';
 import Loading from './Loading.js';
 import { Audio } from 'expo-av';
 import { TokenResponse, refreshmAsync} from 'expo-auth-session';
+import { refreshAsync } from 'expo-auth-session';
 import defaultUser from '../assets/default_user.jpg'
 import * as Linking from 'expo-linking';
 
