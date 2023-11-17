@@ -12,8 +12,9 @@ import { Amplify, Auth } from 'aws-amplify';
 // import { checkSpotifyConnected } from '../backend/api/amplifyDBFunctions';
 import Loading from './Loading.js';
 import { Audio } from 'expo-av';
-import { TokenResponse, refreshAsync} from 'expo-auth-session';
+import { TokenResponse, refreshmAsync} from 'expo-auth-session';
 import defaultUser from '../assets/default_user.jpg'
+import * as Linking from 'expo-linking';
 
 const default_user_uri = Image.resolveAssetSource(defaultUser).uri;
 
@@ -24,7 +25,7 @@ const default_user_uri = Image.resolveAssetSource(defaultUser).uri;
 
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
-const redirect_uri = "exp://localhost:19002/--/spotify-auth-callback";
+const redirect_uri = Linking.createURL("/spotify-auth-callback");
 
 async function playSound() {
   const { sound } = await Audio.Sound.createAsync(
@@ -194,7 +195,7 @@ export default function Settings() {
         usePKCE: false,
         // In the future will do this: Linking.createURL("/spotify-auth-callback"), as it changes the IP address depending on your wifi, 
         // also be sure to check the warnings if there are issues before production
-        redirectUri: "exp://localhost:19002/--/spotify-auth-callback", 
+        redirectUri: Linking.createURL("/spotify-auth-callback"),
   
       },
       discovery

@@ -10,7 +10,7 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
-import { createUser, updateUser, deleteUser, createFriend, createSong } from '../../src/graphql/mutations'
+import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend } from '../../src/graphql/mutations'
 import { listUsers, getUser, userByName, friendByName } from '../../src/graphql/queries'
 
 
@@ -259,6 +259,57 @@ export async function sendFriendRequest(newFriend){
     console.log(err);
   }
 }
+
+export async function removeFriend(friendToRemove) {
+  try {
+    const currentUserInfo = await Auth.currentUserInfo();
+    const currentUser = currentUserInfo.username;
+
+    const userParams = {
+      name: currentUser
+    };
+    const userRes = await API.graphql(graphqlOperation(userByName, userParams));
+    const currentUserId = userRes.data.userByName.items[0].id;
+    let currentFriends = userRes.data.userByName.items[0].friends.items;
+
+    const friendObj = currentFriends.find(friend => friend.name === friendToRemove);
+    if (!friendObj) {
+      console.log(`${friendToRemove} is not in your freind list.`);
+      return;
+    }
+    const deleteRes = await API.graphql({
+      query: deleteFriend,
+      variables: {
+        input: {
+          id: friendObj.id
+        }
+      }
+    });
+
+    const deletedFriendParams = {
+      name: friendToRemove
+    };
+      const deletedFriendResult = await API.graphql(graphqlOperation(userByName, deletedFriendParams));
+      const deletedFriendsID = deletedFriendResult.data.userByName.items[0].id;
+      let deletedFriendsFriend = deletedFriendResult.data.userByName.items[0].friends.items;
+      const DeletedFriendObject = deletedFriendsFriend.find(friend => friend.name === currentUser);
+
+    const createCurrUserObj = await API.graphql({
+      query: deleteFriend, 
+      variables: { 
+        input: {
+          id: DeletedFriendObject.id
+        }
+      }
+    });
+
+    console.log(`Friend removed successfully: ${friendToRemove}`);
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 export async function acceptFriendRequest(newFriend){
   try{

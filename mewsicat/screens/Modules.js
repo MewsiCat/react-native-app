@@ -72,14 +72,14 @@ export default function Modules({ navigation }) {
             {/* <Loading /> */}
         </Overlay>
 
-        {/* Friend Requests */}
+        {/* Friend Requests
         <Pressable onPress={toggleFriendRequests} style={styles.buttonContainer}>
             <Image source={require('../assets/friendsIcon.png')} style={styles.img}/>
         </Pressable>
         <Overlay isVisible={friendRequestsVisible} onBackdropPress={toggleFriendRequests} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
             <FriendRequestsList />
-            {/* <Loading /> */}
-        </Overlay>
+            {/* <Loading /> 
+        </Overlay> */}
         
         {/* Songs */}
         <Pressable onPress={toggleSongs} style={styles.buttonContainer}>
