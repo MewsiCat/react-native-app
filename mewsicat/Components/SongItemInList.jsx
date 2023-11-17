@@ -61,7 +61,7 @@ export default function SongItemInList({ profilePicture, name, active }) {
 
       {/* Send Music Button */}
       <TouchableOpacity style={styles.sendMusicButton}>
-        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await acceptFriendRequest(name); toggleLoadFalse();}}>Accept</Text>
+        <Text style={styles.sendMusicButtonText} onPress={console.log("a")}>a button</Text>
       </TouchableOpacity>
     </View>
   );

@@ -12,24 +12,44 @@ import { Overlay } from 'react-native-elements';
 import { sendFriendRequest } from '../backend/api/amplifyDBFunctions.js';
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
 
-export async function generateAllUsersList() {
-  // try {
+const imagetemp = [
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/e/ee/NewJeans_-_Get_Up.png",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+];
+const artists = ["New Jeans", "abcdefghigklmnopqrstuvwxyz", "patrick", "addy ", "hajin", "albert", "random name", "long nameeeeeeeeeee", "micahel", "miguel", "tofulati", "jhba;sdf", "kajsbdjasd", "qphnda", "kjbasdubhkjqwn"];
+const songNames = [true, false, true, true, false, true, true, false, true, true, false, true];
 
-  //   const currentUserInfo = await Auth.currentUserInfo();
-  //   const currentUser = currentUserInfo.username;
-  //   console.log(currentUser);
-  //   const result = await API.graphql(graphqlOperation(listUsers));
-  //   const users = result.data.listUsers.items;
-  //   console.log("All users: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + users);
-  //   return users.map(user => ({
-  //     profilePicture: user.profilePicture, // Adjust according to your data structure
-  //     name: user.name,
-  //     active: user.activeStatus, 
-  //   }));
-  // } catch (err) {
-  //   console.log(err);
-  //   return [];
-  // }
+export async function generateAllUsersList() {
+  try {
+
+    const currentUserInfo = await Auth.currentUserInfo();
+    const currentUser = currentUserInfo.username;
+    console.log(currentUser);
+    const result = await API.graphql(graphqlOperation(listUsers));
+    const users = result.data.listUsers.items;
+    console.log("All users: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + users);
+    return users.map(user => ({
+      profilePicture: user.profilePicture,
+      name: user.name,
+      active: user.activeStatus, 
+    }));
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
 }
 
 export async function generateFriendRequestsList(){
@@ -54,18 +74,18 @@ export async function generateFriendRequestsList(){
   console.log("FriendRequests list " + friendRequests);
   // setFriendsLength(friends.length);
   var friendRequestsLength = friendRequests.length;
-  if(friendRequestsLength == null){
+  if (friendRequestsLength == null) {
     friendRequestsLength = 0;
   }
 
-  console.log("FriendRequests length: " + friendRequestsLength);
-  friendRequestsData = Array.from({ length: friendRequestsLength }, (_, num) => ({
+  return Array.from({ length: friendRequestsLength }, (_, num) => ({
     profilePicture: imagetemp[num],
     name: friendRequests[num],
     active: songNames[num],
   }));
 } catch (err) {
   console.log(err);
+  return [];
 }
 }
 
@@ -74,6 +94,8 @@ export default function PlaylistBox({ friendlist }) {
   const [addOverlayVisible, setAddOverlayVisible] = useState(false);
   const [loadVisible, setLoadVisible] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
+  const [friendRequestsData, setFriendRequestsData] = useState([]);
+
 
   useEffect(() => {    
     const fetchUsers = async () => {
@@ -81,6 +103,13 @@ export default function PlaylistBox({ friendlist }) {
       setAllUsers(users);
     };
     fetchUsers();
+
+    const fetchFriendRequests = async () => {
+      const requests = await generateFriendRequestsList();
+      setFriendRequestsData(requests);
+    };
+
+    fetchFriendRequests();
   }, []);
 
   const toggleAddOverlay = () => {

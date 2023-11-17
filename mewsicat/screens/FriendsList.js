@@ -149,7 +149,7 @@ export default function FriendsList() {
         <Loading />
       </Overlay>
       <View style={styles.playlistContainer}>
-        <FriendBox friendlist={friendsData} />
+        <Playlistbox friendlist={friendsData} />
       </View>
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} style={{ zIndex: 1000, elevation: 1000 }} />
     </View>
