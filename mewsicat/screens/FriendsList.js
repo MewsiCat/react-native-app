@@ -135,11 +135,14 @@ export default function FriendsList() {
         setLoadVisible(loadVisible);
     }
 
-  useEffect(async () => {
-    toggleLoad();
+  useEffect(() => {
+    async function fetchData() {
+      toggleLoad();
       await generateFriendsList();
       // await addFriend("beepbop");
     toggleLoadFalse();
+    }
+    fetchData();
   }, []);
 
 

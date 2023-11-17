@@ -131,10 +131,13 @@ export default function FriendRequestsList() {
         setLoadVisible(loadVisible);
     }
 
-  useEffect(async () => {
-    toggleLoad();
-    await generateFriendRequestsList();
-    toggleLoadFalse();
+  useEffect(() => {
+    async function fetchData(){
+      toggleLoad();
+      await generateFriendRequestsList();
+      toggleLoadFalse();
+    }
+    fetchData();
   }, []);
 
 
