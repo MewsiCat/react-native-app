@@ -44,6 +44,8 @@ import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser,
 import {
   withAuthenticator,
   useAuthenticator,
+  Authenticator,
+  useTheme
 } from '@aws-amplify/ui-react-native';
 
 import { Amplify, Auth } from 'aws-amplify';
@@ -51,6 +53,7 @@ import awsExports from './src/aws-exports';
 import { generateSong } from "./screens/MusicRec.js";
 import { generateFriendRequestsList } from "./screens/FriendRequestsList.js";
 Amplify.configure(awsExports);
+
 
 const spotifyController = new SpotifyAPIController();
 
@@ -105,6 +108,9 @@ const App = () => {
     console.log('Playing Sound');
     await sound.playAsync();
   }
+  const {
+    tokens: { colors },
+  } = useTheme();
 
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -163,7 +169,16 @@ const App = () => {
   //console.log("Spotify token!: " + spotifyToken);
   //spotifyController.getUser(spotifyToken);
   return (
-    
+    <Authenticator.Provider>
+    <Authenticator Container={(props) => (
+          // reuse default `Container` and apply custom background
+          <Authenticator.Container
+            {...props}
+            style={{ backgroundColor: colors.pink[20] }}
+          />
+          // will render on every subcomponent
+        )}
+        >
     <NavigationContainer>
 
       <Stack.Navigator initialRouteName="GrayScreen" screenOptions={{header: (props) => <CustomHeader {...props} />,}}>
@@ -173,6 +188,8 @@ const App = () => {
         <Stack.Screen name="Modules" component={Modules} />
       </Stack.Navigator>
     </NavigationContainer>
+    </Authenticator>
+    </Authenticator.Provider>
   );
 }
 
@@ -208,7 +225,7 @@ function HomeScreen({ navigation }) {
   );
 }
 
-export default withAuthenticator(App);
+export default App;
 
 
 const styles = StyleSheet.create({
