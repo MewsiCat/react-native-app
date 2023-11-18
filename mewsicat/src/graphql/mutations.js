@@ -12,22 +12,52 @@ export const createUser = /* GraphQL */ `
       friends {
         items {
           id
+          friendID
           name
           profilePic
-          cat
+          cat {
+            id
+            catID
+            name
+            pic
+            fishes
+            type
+            createdAt
+            updatedAt
+            userCatId
+            __typename
+          }
           createdAt
           updatedAt
           userFriendsId
+          friendCatId
           __typename
         }
         nextToken
         __typename
       }
-      cat
+      cat {
+        items {
+          id
+          catID
+          name
+          pic
+          fishes
+          type
+          createdAt
+          updatedAt
+          userCatId
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      firstTimeUser
       friendRequests
       songs {
         items {
           id
+          songID
           name
           artist
           spotifyID
@@ -56,22 +86,52 @@ export const updateUser = /* GraphQL */ `
       friends {
         items {
           id
+          friendID
           name
           profilePic
-          cat
+          cat {
+            id
+            catID
+            name
+            pic
+            fishes
+            type
+            createdAt
+            updatedAt
+            userCatId
+            __typename
+          }
           createdAt
           updatedAt
           userFriendsId
+          friendCatId
           __typename
         }
         nextToken
         __typename
       }
-      cat
+      cat {
+        items {
+          id
+          catID
+          name
+          pic
+          fishes
+          type
+          createdAt
+          updatedAt
+          userCatId
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      firstTimeUser
       friendRequests
       songs {
         items {
           id
+          songID
           name
           artist
           spotifyID
@@ -100,22 +160,52 @@ export const deleteUser = /* GraphQL */ `
       friends {
         items {
           id
+          friendID
           name
           profilePic
-          cat
+          cat {
+            id
+            catID
+            name
+            pic
+            fishes
+            type
+            createdAt
+            updatedAt
+            userCatId
+            __typename
+          }
           createdAt
           updatedAt
           userFriendsId
+          friendCatId
           __typename
         }
         nextToken
         __typename
       }
-      cat
+      cat {
+        items {
+          id
+          catID
+          name
+          pic
+          fishes
+          type
+          createdAt
+          updatedAt
+          userCatId
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      firstTimeUser
       friendRequests
       songs {
         items {
           id
+          songID
           name
           artist
           spotifyID
@@ -133,6 +223,63 @@ export const deleteUser = /* GraphQL */ `
     }
   }
 `;
+export const createCat = /* GraphQL */ `
+  mutation CreateCat(
+    $input: CreateCatInput!
+    $condition: ModelCatConditionInput
+  ) {
+    createCat(input: $input, condition: $condition) {
+      id
+      catID
+      name
+      pic
+      fishes
+      type
+      createdAt
+      updatedAt
+      userCatId
+      __typename
+    }
+  }
+`;
+export const updateCat = /* GraphQL */ `
+  mutation UpdateCat(
+    $input: UpdateCatInput!
+    $condition: ModelCatConditionInput
+  ) {
+    updateCat(input: $input, condition: $condition) {
+      id
+      catID
+      name
+      pic
+      fishes
+      type
+      createdAt
+      updatedAt
+      userCatId
+      __typename
+    }
+  }
+`;
+export const deleteCat = /* GraphQL */ `
+  mutation DeleteCat(
+    $input: DeleteCatInput!
+    $condition: ModelCatConditionInput
+  ) {
+    deleteCat(input: $input, condition: $condition) {
+      id
+      catID
+      name
+      pic
+      fishes
+      type
+      createdAt
+      updatedAt
+      userCatId
+      __typename
+    }
+  }
+`;
 export const createFriend = /* GraphQL */ `
   mutation CreateFriend(
     $input: CreateFriendInput!
@@ -140,12 +287,25 @@ export const createFriend = /* GraphQL */ `
   ) {
     createFriend(input: $input, condition: $condition) {
       id
+      friendID
       name
       profilePic
-      cat
+      cat {
+        id
+        catID
+        name
+        pic
+        fishes
+        type
+        createdAt
+        updatedAt
+        userCatId
+        __typename
+      }
       createdAt
       updatedAt
       userFriendsId
+      friendCatId
       __typename
     }
   }
@@ -157,12 +317,25 @@ export const updateFriend = /* GraphQL */ `
   ) {
     updateFriend(input: $input, condition: $condition) {
       id
+      friendID
       name
       profilePic
-      cat
+      cat {
+        id
+        catID
+        name
+        pic
+        fishes
+        type
+        createdAt
+        updatedAt
+        userCatId
+        __typename
+      }
       createdAt
       updatedAt
       userFriendsId
+      friendCatId
       __typename
     }
   }
@@ -174,12 +347,25 @@ export const deleteFriend = /* GraphQL */ `
   ) {
     deleteFriend(input: $input, condition: $condition) {
       id
+      friendID
       name
       profilePic
-      cat
+      cat {
+        id
+        catID
+        name
+        pic
+        fishes
+        type
+        createdAt
+        updatedAt
+        userCatId
+        __typename
+      }
       createdAt
       updatedAt
       userFriendsId
+      friendCatId
       __typename
     }
   }
@@ -191,6 +377,7 @@ export const createSong = /* GraphQL */ `
   ) {
     createSong(input: $input, condition: $condition) {
       id
+      songID
       name
       artist
       spotifyID
@@ -208,6 +395,7 @@ export const updateSong = /* GraphQL */ `
   ) {
     updateSong(input: $input, condition: $condition) {
       id
+      songID
       name
       artist
       spotifyID
@@ -225,6 +413,7 @@ export const deleteSong = /* GraphQL */ `
   ) {
     deleteSong(input: $input, condition: $condition) {
       id
+      songID
       name
       artist
       spotifyID
