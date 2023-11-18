@@ -99,6 +99,7 @@ const App = () => {
   const [spotifyToken, setSpotifyToken] = useState("");
 
   const [sound, setSound] = React.useState();
+  const [firstTimeUser, setFirstTimeUser] = useState(true);
 
   async function playSound() {
     console.log('Loading Sound');
@@ -125,6 +126,7 @@ const App = () => {
         await generateFriendRequestsList();
         await generateFriendsList();
         await getBGM();
+        await getSpotifyConnected();
         playBGM();
         playSound();
         //generateSong();
