@@ -57,24 +57,27 @@ export default function GenerateCats({ navigation }) {
     }
   
     return (
-      <ImageBackground
-        source={require('../assets/catgenbg.jpeg')}
-        style={styles.container}
-      >
-        <View style={styles.container}>
-        <Image source={image} style={styles.img} />
-        <Text style={styles.title}>Generate your cat!</Text>
-            <Pressable style={styles.buttonContainer} onPress={async () => {
-                generateCat();
-            }}>
-                <Text style={styles.buttonText}>Get Cat!</Text>
-            </Pressable>
-        </View>
-      </ImageBackground>
+        <View>
+            <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
+                <Text style={styles.title}>Cat Lottery</Text>
+                <Image source={image} style={styles.img} />
+                <Pressable style={styles.buttonContainer} onPress={async () => {
+                    generateCat();
+                }}>
+                    <Text style={styles.buttonText}>Get Cat!</Text>
+                </Pressable>
+            </ImageBackground>
+       </View>
     );
   }
 
   const styles = StyleSheet.create({
+    bg: {
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column',
+        alignContent: 'center',
+    },
     buttonContainer: {
         alignSelf: 'center',
         backgroundColor: '#f0d396',
@@ -83,29 +86,16 @@ export default function GenerateCats({ navigation }) {
         borderWidth:2,
         borderRadius: 10,
         width: '90%',
-        marginTop: 'auto'
-      },
-    container: {
-        padding: 20,
-        flexDirection: 'column',
-        flex: 1,
+        padding: 5,
+        margin: 30,
+        marginTop: 'auto',
     },
     title: {
         fontSize: 40,
         fontWeight: 'bold',
         color: '#783621',
-        alignSelf:'center'
-    },
-    description: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#783621',
         alignSelf:'center',
-        paddingTop: 30
-    },
-    signout: {
-        alignSelf: 'center',
-        padding:10
+        padding: 30,
     },
     buttonText: {
         color: '#783621',
@@ -115,9 +105,9 @@ export default function GenerateCats({ navigation }) {
         alignSelf:'center'
     },
     img: {
-        alignSelf:'center',
-        width: 300,
+        justifyContent: 'center',
+        width: 200,
         height: 250,
-        margin: 150
-    }
+        margin: 50,
+    },
 })

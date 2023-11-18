@@ -93,7 +93,7 @@ export default function Modules({ navigation }) {
         <Pressable onPress={toggleGenerateCat} style={styles.buttonContainer}>
             <Image source={require('../assets/wife.jpg')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={genCatVisible} onBackdropPress={toggleGenerateCat} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
+        <Overlay isVisible={genCatVisible} onBackdropPress={toggleGenerateCat} overlayStyle={{height:'90%', backgroundColor:'#f0d396', borderRadius: 20}}>
             <GenerateCats />
         </Overlay>
    
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         marginTop: 80
     },
     button: {
-    margin: 10,
+        margin: 10,
     },
     textPrimary: {
     marginVertical: 20,
