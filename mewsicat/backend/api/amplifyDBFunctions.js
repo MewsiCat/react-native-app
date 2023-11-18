@@ -10,7 +10,7 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
-import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend } from '../../src/graphql/mutations'
+import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat } from '../../src/graphql/mutations'
 import { listUsers, getUser, userByName, friendByName } from '../../src/graphql/queries'
 
 
@@ -64,13 +64,34 @@ export async function checkFirstTimeUser(){
   name: currentUser
   };
   const result = await API.graphql(graphqlOperation(userByName, params));
-  const userID = result.data.userByName.items[0].firstTimeUser;
+  const firstTimeUser = result.data.userByName.items[0].firstTimeUser;
   if(firstTimeUser == undefined){
-    return false;
-  }
-  else{
     return true;
   }
+  else{
+    return false;
+  }
+}
+
+export async function updateFirstTimeUser(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const params = {
+  name: currentUser
+  };
+  const result = await API.graphql(graphqlOperation(userByName, params));
+  const userID = result.data.userByName.items[0].id;
+  
+  const res = await API.graphql({
+    query: updateUser, 
+    variables: {
+      input: {
+        id: userID,
+        firstTimeUser: true,
+      }
+    }
+    })
 }
 
 export async function checkUser(){
@@ -397,6 +418,34 @@ export async function acceptFriendRequest(newFriend){
   } catch(err){
     console.log(err);
   }
+}
+
+export async function createNewCat(newCat, catType){
+
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
+  const currUserID = currUserResult.data.userByName.items[0].id;
+
+  // creating friend object
+  const catRes = await API.graphql({
+    query: createCat, 
+    variables: {
+      input: {
+        catID: currUserID,
+        name: newCat,
+        type: catType,
+        fishes: 0,
+      }
+    }
+  });
+  console.log("curr user cat result: " + catRes);
+  console.log("pushed to currUser!")
+
 }
 
 

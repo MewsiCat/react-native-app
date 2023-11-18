@@ -39,7 +39,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser, deleteUser } from '../src/graphql/mutations'
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
 
-import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends } from '../backend/api/amplifyDBFunctions'
+import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends, checkFirstTimeUser } from '../backend/api/amplifyDBFunctions'
 
 import {
   withAuthenticator,
@@ -56,9 +56,22 @@ Amplify.configure(awsExports);
 
 const Stack = createStackNavigator();
 
+
 export default function Home(){
-    const check = true;
-    return check == true ? (<NavigationContainer>
+
+    const [firstTimeUser, setFirstTimeUser] = useState(true);
+
+    useEffect(() => {
+        async function fetchData(){
+            const check = await checkFirstTimeUser();
+            console.log(check);
+            if(check == false){
+                setFirstTimeUser(false);
+            }
+        }
+        fetchData();
+    }, [])
+    return firstTimeUser == true ? (<NavigationContainer>
 
         <Stack.Navigator initialRouteName="GrayScreen" screenOptions={{header: (props) => <CustomHeader {...props} />,}}>
           {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
