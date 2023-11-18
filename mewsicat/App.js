@@ -52,6 +52,7 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsExports from './src/aws-exports';
 import { generateSong } from "./screens/MusicRec.js";
 import { generateFriendRequestsList } from "./screens/FriendRequestsList.js";
+import Home from "./screens/Home.js";
 Amplify.configure(awsExports);
 
 
@@ -168,7 +169,7 @@ const App = () => {
   //getSpotifyToken();
   //console.log("Spotify token!: " + spotifyToken);
   //spotifyController.getUser(spotifyToken);
-  return (
+  return(
     <Authenticator.Provider>
     <Authenticator Container={(props) => (
           // reuse default `Container` and apply custom background
@@ -179,15 +180,7 @@ const App = () => {
           // will render on every subcomponent
         )}
         >
-    <NavigationContainer>
-
-      <Stack.Navigator initialRouteName="GrayScreen" screenOptions={{header: (props) => <CustomHeader {...props} />,}}>
-        {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
-        <Stack.Screen name="GrayScreen" component={GrayScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="Modules" component={Modules} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <Home />
     </Authenticator>
     </Authenticator.Provider>
   );

@@ -56,6 +56,23 @@ export async function checkFriend(friendName){
   console.log("Not a friend");
 }
 
+export async function checkFirstTimeUser(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const params = {
+  name: currentUser
+  };
+  const result = await API.graphql(graphqlOperation(userByName, params));
+  const userID = result.data.userByName.items[0].firstTimeUser;
+  if(firstTimeUser == undefined){
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
 export async function checkUser(){
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
