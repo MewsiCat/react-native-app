@@ -6,7 +6,7 @@ import { ResponseType, exchangeCodeAsync, useAuthRequest } from "expo-auth-sessi
 import { Auth } from 'aws-amplify';
 import { refreshAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
-import GrayScreen from './GrayScreen';
+import GenerateCats from './GenerateCats';
 
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
@@ -162,7 +162,7 @@ const SpotifyLogin = ({ navigation }) => {
       />
       <View style={{ height: 100 }} />
     </View>
-  ) : (<GrayScreen/>);
+  ) : (<GenerateCats/>);
 };
 
 export default SpotifyLogin;
