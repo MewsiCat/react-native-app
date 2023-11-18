@@ -16,6 +16,7 @@
     "@react-native-community/netinfo": "^9.5.0",
     "@react-native-community/slider": "^4.4.3",
     "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native-stack": "^6.9.17",
     "@react-navigation/stack": "^6.3.20",
     "amazon-cognito-identity-js": "^6.3.7",
     "aws-amplify": "^5.3.12",
@@ -31,7 +32,8 @@
     "react-native-elements": "^3.4.3",
     "react-native-get-random-values": "^1.9.0",
     "react-native-toast-message": "^2.1.7",
-    "react-native-url-polyfill": "^2.0.0"
+    "react-native-url-polyfill": "^2.0.0",
+    "react-redux": "^8.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

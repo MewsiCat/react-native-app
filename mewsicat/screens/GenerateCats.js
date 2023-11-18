@@ -5,24 +5,29 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import Modules from './Modules';
 import { Audio } from 'expo-av';
 import { generateFriendRequestsList } from './FriendRequestsList';
+import Home from './Home';
 
 import { Text, Image, Overlay } from 'react-native-elements';
 import { Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import App from '../App';
 
 const listOfCats = ["blackcat.jpg", "chaewoncat.png", "default_user.jpg", "friendsIcon.png", "musicIcon.jpg", "sadcat.jpg", "settingsIcon.jpg", "wife.jpg"];
 var catImage = require('../assets/blackcat.jpg');
 var catString
 
-
-
-
 export default function GenerateCats({ navigation }) {
     const [touches, setTouches] = useState([]);
     const [image, setImage] = useState();
+    const [goHome, setGoHome] = useState(false);
   
     useEffect(() => {
         setImage(require('../assets/blackcat.jpg'));
     }, []);
+
+    function toggleSetGoHome(){
+        setGoHome(!goHome)
+    }
 
     function generateCat(){
         const randomNum = Math.floor(Math.random() * (listOfCats.length-1));
@@ -55,8 +60,8 @@ export default function GenerateCats({ navigation }) {
     
         // setImage(require(`${catString}`));
     }
-  
-    return (
+    const home = false
+    return goHome == false ? (
         <View>
             <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
                 <Text style={styles.title}>Cat Lottery</Text>
@@ -66,9 +71,12 @@ export default function GenerateCats({ navigation }) {
                 }}>
                     <Text style={styles.buttonText}>Get Cat!</Text>
                 </Pressable>
+                <Pressable style={styles.buttonContainer} onPress={toggleSetGoHome}>
+                    <Text style={styles.buttonText}>Return Home</Text>
+                </Pressable>
             </ImageBackground>
        </View>
-    );
+    ) : (<Home/>)
   }
 
   const styles = StyleSheet.create({
