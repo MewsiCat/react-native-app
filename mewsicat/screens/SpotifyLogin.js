@@ -17,7 +17,7 @@ const discovery = {
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
 
-  var spotifyConnected = false;
+  // var spotifyConnected = false;
 
   async function updateSpotifyConnected (val) {
     try {
@@ -37,10 +37,12 @@ const discovery = {
     const spotify_connected = currentUserInfo.attributes["custom:spotifyConnected"];
     console.log("spotify connected: " + spotify_connected);
     if(spotify_connected == "1"){
-      spotifyConnected = true;
+      // spotifyConnected = true;
+      return true;
     }
     else{
-      spotifyConnected = false;
+      // spotifyConnected = false;
+      return false;
     }
     }catch(err) {
       console.log(err);
@@ -96,7 +98,8 @@ async function getToken (code) {
 const SpotifyLogin = ({ navigation }) => {
     const spotifyController = new SpotifyAPIController();
     const [token, setToken] = useState("");
-      const [request, response, promptAsync] = useAuthRequest(
+    const [spotifyConnected, setSpotifyConnected] = useState(false);
+          const [request, response, promptAsync] = useAuthRequest(
       {
         responseType: ResponseType.Code,
         clientId: "88c17d6f25cc43eaad226930c216ae5b",
@@ -122,26 +125,33 @@ const SpotifyLogin = ({ navigation }) => {
       discovery
   );
 
+
     useEffect(() => {
-        getSpotifyConnected();
-        console.log("spotify connected var " + spotifyConnected);
-        if(!spotifyConnected){
-            if (response?.type === "success") {
-            console.log("using auth code");
-            const { code } = response.params;
-            console.log("code " + code);
-            getToken(code);
-            updateSpotifyConnected("1");
-            }
+        async function fetchData(){
+          const res = await getSpotifyConnected();
+          if(res == true){
+            setSpotifyConnected(!spotifyConnected);
+          }
+          console.log("spotify connected var " + spotifyConnected);
+          if(!spotifyConnected){
+              if (response?.type === "success") {
+              console.log("using auth code");
+              const { code } = response.params;
+              console.log("code " + code);
+              getToken(code);
+              updateSpotifyConnected("1");
+              setSpotifyConnected(!spotifyConnected);
+              }
+          }
+          else{
+              getNewToken();
+          }
         }
-        else{
-            getNewToken();
-        }
+        fetchData();
     }, [response]);
-
-    const check = spotifyConnected;
-
-  return check == false ? (
+  
+  console.log("spotifyConnected: " + spotifyConnected);
+  return spotifyConnected == false ? (
     <View style={styles.container}>
       <Text
         style={{

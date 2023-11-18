@@ -7,9 +7,9 @@ import LoginScreen from './LoginScreen.js';
 import CustomHeader from '../Components/CustomHeader.jsx'
 import SpotifyLogin from './SpotifyLogin.js';
 import Modules from './Modules.js';
-import React from 'react';
 import { Amplify} from 'aws-amplify';
 import awsExports from '../src/aws-exports';
+import { Dimensions } from 'react-native';
 
 
 import React, {useEffect, useState, useCallback} from 'react';
@@ -36,6 +36,9 @@ import {
   useTheme
 } from '@aws-amplify/ui-react-native';
 
+import { Overlay } from 'react-native-elements';
+import Loading from './Loading.js';
+
 Amplify.configure(awsExports);
 
 const Stack = createStackNavigator();
@@ -45,24 +48,60 @@ export default function Home(){
 
     const [firstTimeUser, setFirstTimeUser] = useState(true);
 
+    const [loadVisible, setLoadVisible] = useState(false);
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
     useEffect(() => {
         async function fetchData(){
+          toggleLoad();
+            const checkingUser = await checkUser();
             const check = await checkFirstTimeUser();
-            console.log(check);
+            console.log("check first time user:" + check);
             if(check == false){
                 setFirstTimeUser(false);
+                console.log(firstTimeUser);
             }
+            toggleLoadFalse();
         }
         fetchData();
     }, [])
-    return firstTimeUser == true ? (<NavigationContainer>
-
-
+    return firstTimeUser == false ? (
+    <NavigationContainer>
         <Stack.Navigator initialRouteName="GrayScreen" screenOptions={{header: (props) => <CustomHeader {...props} />,}}>
           {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
           <Stack.Screen name="GrayScreen" component={GrayScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="Modules" component={Modules} />
         </Stack.Navigator>
-      </NavigationContainer>) : (<SpotifyLogin/>);
+      </NavigationContainer>) : (
+        <View style={styles.container}>
+          <View style={styles.container}>
+          <SpotifyLogin />
+          </View>
+        <Overlay isVisible={loadVisible} overlayStyle={{backgroundColor:'#f0d396', height:'100%', width:'100%', borderRadius: 20}}>
+          <Loading />
+        </Overlay>
+      </View>
+      );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#f0d396',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+  playlistContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#f0d396',
+    height: '100%',
+  }
+});

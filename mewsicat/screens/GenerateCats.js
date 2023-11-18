@@ -11,6 +11,9 @@ import { Text, Image, Overlay } from 'react-native-elements';
 import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import App from '../App';
+import { updateFirstTimeUser } from '../backend/api/amplifyDBFunctions';
+
+import Loading from './Loading';
 
 const listOfCats = ["blackcat.jpg", "chaewoncat.png", "default_user.jpg", "friendsIcon.png", "musicIcon.jpg", "sadcat.jpg", "settingsIcon.jpg", "wife.jpg"];
 var catImage = require('../assets/blackcat.jpg');
@@ -20,6 +23,7 @@ export default function GenerateCats({ navigation }) {
     const [touches, setTouches] = useState([]);
     const [image, setImage] = useState();
     const [goHome, setGoHome] = useState(false);
+
   
     useEffect(() => {
         setImage(require('../assets/blackcat.jpg'));
@@ -62,7 +66,7 @@ export default function GenerateCats({ navigation }) {
     }
     const home = false
     return goHome == false ? (
-        <View>
+        <View style={styles.container}>
             <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
                 <Text style={styles.title}>Cat Lottery</Text>
                 <Image source={image} style={styles.img} />
@@ -71,7 +75,7 @@ export default function GenerateCats({ navigation }) {
                 }}>
                     <Text style={styles.buttonText}>Get Cat!</Text>
                 </Pressable>
-                <Pressable style={styles.buttonContainer} onPress={toggleSetGoHome}>
+                <Pressable style={styles.buttonContainer} onPress={async () => {console.log("beginning update first time");await updateFirstTimeUser(); console.log("ending update first time");setGoHome(!goHome);}}>
                     <Text style={styles.buttonText}>Return Home</Text>
                 </Pressable>
             </ImageBackground>
@@ -80,6 +84,11 @@ export default function GenerateCats({ navigation }) {
   }
 
   const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#f0d396',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+      },
     bg: {
         width: '100%',
         height: '100%',

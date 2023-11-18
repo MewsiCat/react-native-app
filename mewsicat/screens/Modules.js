@@ -89,13 +89,13 @@ export default function Modules({ navigation }) {
             <FriendSongsList />
         </Overlay>
 
-        {/* Generate Cat */}
+        {/* Generate Cat
         <Pressable onPress={toggleGenerateCat} style={styles.buttonContainer}>
             <Image source={require('../assets/wife.jpg')} style={styles.img}/>
         </Pressable>
         <Overlay isVisible={genCatVisible} onBackdropPress={toggleGenerateCat} overlayStyle={{height:'90%', backgroundColor:'#f0d396', borderRadius: 20}}>
             <GenerateCats />
-        </Overlay>
+        </Overlay> */}
    
     </View>
     );

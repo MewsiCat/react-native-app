@@ -57,6 +57,7 @@ export async function checkFriend(friendName){
 }
 
 export async function checkFirstTimeUser(){
+  try{
   const currentUserInfo = await Auth.currentUserInfo();
   const currentUser = currentUserInfo.username;
 
@@ -71,6 +72,11 @@ export async function checkFirstTimeUser(){
   else{
     return false;
   }
+}
+catch(err){
+  console.log(err);
+  return true;
+}
 }
 
 export async function updateFirstTimeUser(){
