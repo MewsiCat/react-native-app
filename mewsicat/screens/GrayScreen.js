@@ -1,10 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Animated, Button, ImageBackground, TouchableOpacity, Dimensions, Easing } from 'react-native';
+import { StyleSheet, View, Animated, Button, ImageBackground, TouchableOpacity, Dimensions, Easing, Text, Image } from 'react-native';
 const scale = 3;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import Modules from './Modules';
 import { Audio } from 'expo-av';
 import { generateFriendRequestsList } from './FriendRequestsList';
+import { Amplify, Auth } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify'
+import { listUsers, getUser, userByName, getFriend } from '../src/graphql/queries'
+
+const totalSpriteSheetNum = 5;
+const spriteSheet0 = require('../assets/black_0.png');
+const spriteSheet1 = require('../assets/blue_0.png');
+const spriteSheet2 = require('../assets/brown_0.png');
+const spriteSheet3 = require('../assets/calico_0.png');
+const spriteSheet4 = require('../assets/grey_0.png');
+
+const imagetemp = [
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/e/ee/NewJeans_-_Get_Up.png",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
+];
+const artists = ["New Jeans", "abcdefghigklmnopqrstuvwxyz", "patrick", "addy ", "hajin", "albert", "random name", "long nameeeeeeeeeee", "micahel", "miguel", "tofulati", "jhba;sdf", "kajsbdjasd", "qphnda", "kjbasdubhkjqwn"];
+const songNames = [true, false, true, true, false, true, true, false, true, true, false, true];
 
 async function playSound() {
   const { sound } = await Audio.Sound.createAsync(
@@ -15,7 +45,7 @@ async function playSound() {
 }
 
 
-const Cat = ({ source, onMoveEnd }) => {
+const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
   const scale = 3;
   const speed = 100;
   const frameWidth = 32;
@@ -28,6 +58,7 @@ const Cat = ({ source, onMoveEnd }) => {
   const [frameCount, setFrameCount] = useState(4);
   const [isMoving, setIsMoving] = useState(false);
 
+
   let directionIndex = 0;
 
   const x = useRef(new Animated.Value(0)).current;
@@ -39,8 +70,15 @@ const Cat = ({ source, onMoveEnd }) => {
   const sittingStartY = 32;
   const sittingFrameCount = 6
 
+
+  const spriteSheets = [spriteSheet0, spriteSheet1, spriteSheet2, spriteSheet3, spriteSheet4];
+  const [spriteSheetSource, setSpriteSheetSource] = useState(spriteSheets[Math.floor(Math.random() * spriteSheets.length)]);
+
+
   const handlePressCat = () => {
     playSound();
+    setModalContent(friend);
+    setIsModalVisible(true);
     stopAnimationAndListeners();
 
     setSpriteStartX(32);
@@ -172,7 +210,7 @@ const Cat = ({ source, onMoveEnd }) => {
     >
       <TouchableOpacity onPress={handlePressCat}>
         <SpriteAnimator
-          source={source}
+          source={spriteSheetSource}
           frameCount={frameCount}
           frameDuration={frameDuration}
           startX={spriteStartX}
@@ -185,6 +223,46 @@ const Cat = ({ source, onMoveEnd }) => {
   );
 };
 
+export async function generateFriendsList() {
+  try {
+    // const [friends, setFriends] = useState([]);
+    // const [friendsLength, setFriendsLength] = useState();
+    console.log("beginning of friends list function!");
+    const currentUserInfo = await Auth.currentUserInfo();
+    const currentUser = currentUserInfo.username;
+
+    const params = {
+      name: currentUser
+    };
+    const userRes = await API.graphql(graphqlOperation(userByName, params));
+    const userID = userRes.data.userByName.items[0].id;
+    const result = await API.graphql({
+      query: getFriend,
+      variables: { id: userID }
+    });
+    // setFriends(result.data.userByName.items[0].friends);
+
+    const friends = userRes.data.userByName.items[0].friends;
+    console.log("Friends in friends list " + friends);
+    // setFriendsLength(friends.length);
+    const friendsLength = friends.items.length;
+
+    console.log("Friends length: " + friendsLength);
+    if (friendsLength == undefined) {
+      friendsLength = 0;
+    }
+    console.log("generate friends list done!");
+    friendsData = Array.from({ length: friendsLength }, (_, num) => ({
+      profilePicture: imagetemp[num],
+      name: friends.items[num].name,
+      active: songNames[num],
+    }));
+    return friendsData;
+  } catch (err) {
+    console.log("Failed to get friend in grayscreen" + err);
+    return [];
+  }
+}
 
 const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, frameWidth, frameHeight }) => {
   const animation = useState(new Animated.Value(0))[0];
@@ -256,11 +334,41 @@ const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, fra
 
 export default function GrayScreen({ navigation }) {
   const [touches, setTouches] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [modalContent, setModalContent] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const spriteSheetSource = require('../assets/black_0.png');
 
   useEffect(() => {
+    const fetchFriends = async () => {
+      const friendsData = await generateFriendsList();
+      setFriends(friendsData);
+    };
+    fetchFriends();
     generateFriendRequestsList();
   }, []);
+
+  const CatInfoModal = ({ visible, onClose, friend }) => {
+    if (!visible || !friend) return null;
+    return (
+      <TouchableOpacity
+        style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
+        <View style={styles.modalContent}>
+
+          <Image source={{ uri: friend.profilePicture }} style={styles.friendImage} />
+          <View style={styles.friendMoreInfo}>
+            <Text style={styles.friendName}>{friend.name}</Text>
+
+            <View style={styles.horizontalLine} />
+            <Text>Active: {friend.active}</Text>
+            <Text>Favorite music: { }</Text>
+            <Text>Listening to:</Text>
+
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <ImageBackground
@@ -270,34 +378,68 @@ export default function GrayScreen({ navigation }) {
       <View style={styles.modulesContainer}>
         <Modules />
       </View>
-      <View style={styles.container}>
-        <Cat
-          source={spriteSheetSource}
-          onMoveEnd={() => {
-            // console.log('dest');
-          }}
-        />
+      <View style={styles.catsContainer}>
+        {friends.map((friend, index) => (
+          <Cat
+            key={index}
+            friend={friend}
+            setIsModalVisible={setIsModalVisible}
+            setModalContent={setModalContent}
+            onMoveEnd={() => {/* ... */ }}
+          />
+        ))}
       </View>
-      {touches.map((touch, index) => (
-        <Animated.Image
-          key={index}
-          source={require('../assets/catpaw.png')}
-          style={[
-            styles.touchCircle,
-            {
-              top: touch.y - 30,
-              left: touch.x,
-              opacity: touch.opacity,
-              transform: [{ scale: touch.scale }],
-            },
-          ]}
-        />
-      ))}
+      <CatInfoModal visible={isModalVisible} friend={modalContent} onClose={() => setIsModalVisible(false)} />
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  catsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#f0d396',
+    borderWidth: 3,
+    borderColor: '#783621',
+    padding: 20,
+    borderRadius: 10,
+    width: "60%",
+    height: "40%",
+  },
+  friendMoreInfo: {
+    marginTop: 10,
+    alignSelf: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    borderRadius: 10,
+    width: '95%',
+    height: '80%',
+    padding: 10,
+  },
+  horizontalLine: {
+    borderBottomColor: '#783621',
+    borderBottomWidth: 1,
+    marginHorizontal: 5,
+    marginBottom: 5,
+  },
+  friendImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  friendName: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: '#transparent',
@@ -321,11 +463,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   modulesContainer: {
-    zIndex: 1,
     position: 'absolute',
+    zIndex: 1,
     top: 0,
-    left: 0,
     right: 0,
   },
-  
 });
+
+
+
+
+
