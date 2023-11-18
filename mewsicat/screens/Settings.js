@@ -20,10 +20,6 @@ import * as Linking from 'expo-linking';
 const default_user_uri = Image.resolveAssetSource(defaultUser).uri;
 
 
-
-
-
-
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
 const redirect_uri = Linking.createURL("/spotify-auth-callback");
@@ -82,7 +78,7 @@ const SignOutButton = () => {
     }catch(err) {
       console.log(err);
     } 
-}
+  }
 
 async function checkTokenStatus(){
     const currentUserInfo = await Auth.currentUserInfo();
