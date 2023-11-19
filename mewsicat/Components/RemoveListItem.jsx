@@ -89,13 +89,14 @@ export default function SongItemInList({ profilePicture, name, active }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
   },
   innerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
     justifyContent: 'space-between',
-    backgroundColor: '#f0d396', // Normal background
+    // backgroundColor: '#f0d396', // Normal background
   },
   confirmMode: {
     backgroundColor: '#d0a060', // Dark background for confirmation mode

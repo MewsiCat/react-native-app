@@ -354,6 +354,40 @@ export async function removeFriend(friendToRemove) {
   }
 }
 
+export async function rejectFriendRequest(newFriend){
+  try{
+    // adding friend to curr user
+    const currentUserInfo = await Auth.currentUserInfo();
+      const currentUser = currentUserInfo.username;
+
+      const currUserParams = {
+        name: currentUser
+        };
+      const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
+      const currUserID = currUserResult.data.userByName.items[0].id;
+      const currUserFriendRequests = currUserResult.data.userByName.items[0].friendRequests;
+      const friends = currUserResult.data.userByName.items[0].friends;
+      var newCurrUserFriendRequests = [];
+
+      newCurrUserFriendRequests = currUserFriendRequests;
+      const newFriendIndex = newCurrUserFriendRequests.indexOf(newFriend);
+          if (newFriendIndex > -1) { // only splice array when item is found
+            newCurrUserFriendRequests.splice(newFriendIndex, 1); // 2nd parameter means remove one item only
+          }
+      const currUserRes = await API.graphql({
+        query: updateUser, 
+        variables: {
+          input: {
+            id: currUserID,
+            friendRequests: newCurrUserFriendRequests
+          }
+        }
+        })
+
+  } catch(err){
+    console.log(err);
+  }
+}
 
 export async function acceptFriendRequest(newFriend){
   try{

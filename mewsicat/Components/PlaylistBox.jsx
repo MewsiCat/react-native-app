@@ -225,6 +225,15 @@ export default function PlaylistBox({ friendlist }) {
     }
   };
 
+  const RedDot = () => {
+    if (friendRequestsData.length < 1) return null;
+    return (
+      <View style={styles.redDotNotify}>
+        <Text style={{color:"white"}}>{friendRequestsData.length}</Text>
+      </View>
+    );
+  };
+
   const getPlaceholderForSearchBar = () => {
     switch (activeTab) {
       case 'add':
@@ -279,6 +288,7 @@ export default function PlaylistBox({ friendlist }) {
         >
           <Text style={styles.buttonText}>Requests</Text>
         </TouchableOpacity>
+        <RedDot/>
       </View>
     </View>
   );
@@ -291,6 +301,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 4,
     borderColor: '#783621',
+  },
+  redDotNotify: {
+    position: 'absolute',
+    right: "2%",
+    marginTop: 3,
+    backgroundColor: 'red',
+    borderRadius: 30,
+    paddingHorizontal:6,
   },
   emptyText: {
     fontSize: 24,

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
-import { acceptFriendRequest, addFriend } from '../backend/api/amplifyDBFunctions';
+import { acceptFriendRequest, addFriend, rejectFriendRequest } from '../backend/api/amplifyDBFunctions';
 import Loading from '../screens/Loading';
 import { Overlay } from 'react-native-elements';
 
@@ -40,6 +40,9 @@ export default function SongItemInList({ profilePicture, name, active }) {
       <TouchableOpacity style={styles.sendMusicButton}>
         <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await acceptFriendRequest(name); toggleLoadFalse();}}>Accept</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.sendMusicButton} >
+        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await rejectFriendRequest(name); toggleLoadFalse();}}>Reject</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -71,8 +74,7 @@ const styles = StyleSheet.create({
       borderColor:'#d0a060',
       paddingHorizontal: 8,
       borderWidth:2,
-      borderRadius: 10,
-    
+      borderRadius: 10,    
   },
   sendMusicButtonText: {
     color: '#783621',
