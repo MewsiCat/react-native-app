@@ -16,7 +16,6 @@ import * as Font from 'expo-font';
 import FriendsList from "./screens/FriendsList.js";
 import PlaylistButton from "./screens/Playlist.js";
 
-import { getSpotifyConnected } from "./screens/Settings.js";
 import { generateFriendsList } from "./screens/FriendsList.js";
 
 import { Audio } from 'expo-av';
@@ -39,7 +38,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser, deleteUser } from './src/graphql/mutations'
 import { listUsers, getUser, userByName } from './src/graphql/queries'
 
-import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends } from './backend/api/amplifyDBFunctions'
+import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends, getSpotifyConnected, checkTokenStatus } from './backend/api/amplifyDBFunctions'
 
 import {
   withAuthenticator,
@@ -120,16 +119,17 @@ const App = () => {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
+        await playSound();
         await Font.loadAsync(Entypo.font);
         await checkUser();
-        getSpotifyConnected();
         await generateFriendRequestsList();
         await generateFriendsList();
         await updateCat();
-        await getBGM();
         await getSpotifyConnected();
+        await checkTokenStatus();
+        await getBGM();
         playBGM();
-        playSound();
+        console.log("setup done!");
         //generateSong();
         // addFriend("bbbbbb");
         listFriends();
@@ -137,7 +137,7 @@ const App = () => {
         //updateFriends();
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        //await new Promise(resolve => setTimeout(resolve, 10000));
       } catch (e) {
         console.warn(e);
       } finally {
