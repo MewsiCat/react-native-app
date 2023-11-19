@@ -45,35 +45,6 @@ const SignOutButton = () => {
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
 
-  var userName = "";
-  var userPic = "";
-
-
-async function getUser(){
-    try{
-    const currentUserInfo = await Auth.currentUserInfo();
-    const access_token = currentUserInfo.attributes['custom:spotify_token'];
-    
-    var result = await fetch(
-        `https://api.spotify.com/v1/me`,
-        {
-            method: "GET",
-            headers: { Authorization: "Bearer " + access_token },
-        },
-        )
-        .then((res) => res.json())
-        .then((data) => {
-            console.log(data);
-            console.log(data.display_name)
-            console.log(data.images[0].url)
-            userName = data.display_name;
-            userPic = data.images[0].url;
-        });
-    } catch(err) {
-        console.log(err);
-      } 
-}
-
 
 export default function Settings() {
     const spotifyController = new SpotifyAPIController();
@@ -104,47 +75,8 @@ export default function Settings() {
       },
       discovery
     );
-    //const dispatch = useDispatch();
 
-    useEffect(() => {
-      async function fetchData(){
-        const res = await getSpotifyConnected();
-        if(res == true){
-          setSpotifyConnected(true);
-        }
-        console.log("spotify connected var " + spotifyConnected);
-        if(!spotifyConnected){
-            if (response?.type === "success") {
-            console.log("using auth code");
-            const { code } = response.params;
-            console.log("code " + code);
-            getToken(code);
-            updateSpotifyConnected("1");
-            setSpotifyConnected(!spotifyConnected);
-            }
-        }
-        // await getNewToken();
-      }
-      fetchData();
-      }, [response]);
-  
-
-      getUser();
-
-      var isLoggedIn = false;
-      var logText = "";
-
-      if(userPic == ""){
-        userPic = default_user_uri;
-      }
-    
-      if (spotifyConnected) {
-        logText = "Logged in as: " + userName;
-        isLoggedIn = true;
-      } else {
-        logText = "Log into Spotify"
-        isLoggedIn = false;
-      }
+    const { user } = useAuthenticator(userSelector);
 
     return (
         <View style={styles.container}>
@@ -175,9 +107,8 @@ export default function Settings() {
                 />
             </View>
             <View style={styles.toBottom}>
-                <Pressable style={styles.welcome} onPress={() => {promptAsync(); playSound();}} disabled={isLoggedIn}>
-                  <Text style={styles.buttonText}>{logText}</Text>
-                  <Image source={{uri: userPic }} style={styles.img}/>
+                <Pressable style={styles.welcome} disabled={true}>
+                  <Text style={styles.buttonText}>Logged in as: {user?.username}</Text>
                 </Pressable>
 
                 <SignOutButton style={styles.signout} onPress={() => {playSound();}}/>
