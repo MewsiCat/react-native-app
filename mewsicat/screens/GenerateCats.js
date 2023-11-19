@@ -26,6 +26,16 @@ export default function GenerateCats({ navigation }) {
     const [touches, setTouches] = useState([]);
     const [image, setImage] = useState();
     const [goHome, setGoHome] = useState(false);
+    const [loadVisible, setLoadVisible] = useState(false);
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
 
   
     useEffect(() => {
@@ -72,9 +82,11 @@ export default function GenerateCats({ navigation }) {
     
         // setImage(require(`${catString}`));
     }
-    const home = false
     return goHome == false ? (
         <View style={styles.container}>
+            <Overlay isVisible={loadVisible} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                <Loading />
+            </Overlay>
             <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
                 <Text adjustsFontSizeToFit={true} style={styles.title}>Cat Lottery</Text>
                 <View style={{alignSelf:'center'}} >
@@ -82,11 +94,13 @@ export default function GenerateCats({ navigation }) {
                 </View>
                 <View style={{marginTop:'auto', margin: 30}}>
                     <Pressable style={styles.buttonContainer} onPress={async () => {
-                        createNewCat()
+                        toggleLoad();
+                        await createNewCat();
+                        toggleLoadFalse();
                     }}>
                         <Text style={styles.buttonText}>Get Cat!</Text>
                     </Pressable>
-                    <Pressable style={styles.buttonContainer} onPress={async () => {console.log("beginning update first time");await updateFirstTimeUser(); console.log("ending update first time");setGoHome(!goHome);}}>
+                    <Pressable style={styles.buttonContainer} onPress={async () => { toggleLoad();console.log("beginning update first time"); await updateFirstTimeUser(); console.log("ending update first time");toggleLoadFalse(); setGoHome(!goHome); }}>
                         <Text style={styles.buttonText}>Return Home</Text>
                     </Pressable>
                 </View>
