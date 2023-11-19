@@ -39,6 +39,7 @@ const sound = new Audio.Sound()
 import { Audio } from 'expo-av';
 import { pauseBGM, toggleBGM } from '../App';
 import SongFriendsList from './SongFriendsList';
+import { increaseFishes } from '../backend/api/amplifyDBFunctions';
 
 async function getTopTracks() {
     try {
@@ -128,6 +129,8 @@ export async function generateSong() {
         await sound.loadAsync({
             uri: songPrev
         })
+        await increaseFishes();
+        await getUserCat();
         // console.log("top artist: " + topArtists);
     } catch (err) {
         console.log(err);

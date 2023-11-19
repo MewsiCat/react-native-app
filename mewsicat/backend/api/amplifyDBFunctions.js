@@ -12,10 +12,11 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
-import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat } from '../../src/graphql/mutations'
-import { listUsers, getUser, userByName, friendByName, getCat } from '../../src/graphql/queries'
+import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat, updateCat } from '../../src/graphql/mutations'
+import { listUsers, getUser, userByName, friendByName, getCat, catByName } from '../../src/graphql/queries'
 import { refreshAsync, TokenResponse, exchangeCodeAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
+import { updateUserCat } from '../../screens/Modules';
 
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
@@ -558,7 +559,7 @@ export async function createNewCat(newCat, catType){
   const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
   const currUserID = currUserResult.data.userByName.items[0].id;
 
-  // creating friend object
+  // creating cat object
   const catRes = await API.graphql({
     query: createCat, 
     variables: {
@@ -573,6 +574,31 @@ export async function createNewCat(newCat, catType){
   console.log("curr user cat result: " + catRes);
   console.log("pushed to currUser!")
 
+}
+
+export async function increaseFishes(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  
+    const catResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+    const catResultID = catResult.data.catByName.items[0].id;
+    var fishes = catResult.data.catByName.items[0].fishes;
+    fishes++;
+
+    const updateCatRes = await API.graphql({
+      query: updateCat, 
+      variables: {
+        input: {
+          id: catResultID,
+          fishes: fishes,
+        }
+      }
+    });
+    await updateUserCat();
 }
 
 
@@ -598,34 +624,6 @@ export async function addFriend(newFriend){
         }
       });
       console.log(friendRes);
-      // const currentUserInfo = await Auth.currentUserInfo();
-      // const currentUser = currentUserInfo.username;
-
-      // const params = {
-      // name: currentUser
-      // };
-      // const result = await API.graphql(graphqlOperation(userByName, params));
-      // const friendsID = result.data.userByName.items[0].id;
-      // const friends = result.data.userByName.items[0].friends;
-      // var newFriends = [];
-
-      // newFriends = friends;
-      // newFriends.push(newFriend);
-
-      // // newFriends.push(friendName);
-      // // console.log("New Friends: " + newFriends);
-
-      // const res = await API.graphql({
-      // query: updateUser, 
-      // variables: {
-      //   input: {
-      //     id: friendsID,
-      //     name: currentUser,
-      //     friends: newFriends
-      //   }
-      // }
-      // })
-      // console.log(res);
     }catch(err){
       console.log(err);
     }

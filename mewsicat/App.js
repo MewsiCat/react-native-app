@@ -21,7 +21,7 @@ import { generateFriendsList } from "./screens/FriendsList.js";
 import { Audio } from 'expo-av';
 
 
-import Modules, { updateCat } from './screens/Modules.js';
+import Modules, { updateCat, updateUserCat } from './screens/Modules.js';
 
 import React, {useEffect, useState, useCallback} from 'react';
 import {
@@ -124,7 +124,7 @@ const App = () => {
         await checkUser();
         await generateFriendRequestsList();
         await generateFriendsList();
-        await updateCat();
+        await updateUserCat();
         await getSpotifyConnected();
         await checkTokenStatus();
         await getBGM();
