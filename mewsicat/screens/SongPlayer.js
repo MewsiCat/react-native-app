@@ -20,6 +20,8 @@ import { listUsers, getUser, userByName } from '../src/graphql/queries'
 import { Overlay } from 'react-native-elements';
 import Loading from './Loading';
 
+import { pauseBGM, toggleBGM } from '../App';
+
 var songName;
 var artistName;
 var imageName;
@@ -37,7 +39,7 @@ var soundPlaying;
 const sound = new Audio.Sound()
 
 import { Audio } from 'expo-av';
-import { pauseBGM, toggleBGM } from '../App';
+
 import SongFriendsList from './SongFriendsList';
 import { increaseFishes } from '../backend/api/amplifyDBFunctions';
 
@@ -94,17 +96,16 @@ export async function stopMusic() {
     await sound.unloadAsync();
 }
 
-export async function generateSong() {
+export async function generateSong(musicRecURI) {
     try {
-        await getTopTracks();
-        await getTopArtists();
         const currentUserInfo = await Auth.currentUserInfo();
         const access_token = currentUserInfo.attributes['custom:spotify_token'];
+        console.log(musicRecURI)
         // console.log("access token: " + access_token);
         // console.log("top tracks " + topTracks);
         // console.log("top artists: "  + topArtists);
         var result = await fetch(
-            `https://api.spotify.com/v1/recommendations?seed_artists=${topArtists}&seed_tracks=${topTracks}&linit=1`,
+            `https://api.spotify.com/v1/tracks/${musicRecURI}`,
             {
                 method: "GET",
                 headers: { Authorization: "Bearer " + access_token },
@@ -117,23 +118,23 @@ export async function generateSong() {
                 // console.log(data.tracks[0].artists[0].name)
                 // console.log(data.tracks[0].album.images[0].url)
                 // console.log(data.tracks[0].preview_url)
-                songID = data.tracks[0].id;
-                songPrev = data.tracks[0].preview_url;
-                songName = data.tracks[0].name;
-                musicRec = data.tracks[0].id;
-                console.log("spotify id: " + data.tracks[0].id);
-                artistName = data.tracks[0].artists[0].name;
-                imageName = data.tracks[0].album.images[0].url;
+                songID = data.id;
+                songPrev = data.preview_url;
+                songName = data.name;
+                musicRec = data.id;
+                console.log("spotify id: " + data.id);
+                artistName = data.artists[0].name;
+                imageName = data.album.images[0].url;
             });
         await sound.unloadAsync();
         await sound.loadAsync({
             uri: songPrev
         })
-        await increaseFishes();
-        await getUserCat();
+        // await increaseFishes();
+        // await getUserCat();
         // console.log("top artist: " + topArtists);
-    } catch (err) {
-        console.log(err);
+    }catch(err){
+        console.log(err)
     }
 }
 
@@ -170,7 +171,7 @@ export async function playPauseSong() {
     }
 }
 
-export default function MusicRec() {
+export default function SongPlayer({musicRecURI}) {
 
     const [loadVisible, setLoadVisible] = useState(false);
     const [songFriendsVisible, setSongFriendsVisible] = useState(false);
@@ -231,13 +232,10 @@ export default function MusicRec() {
                     disabled
                 />
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
-                    <Pressable>
-                        <Image style={styles.icon} source={require('../assets/previous.png')}/>
-                    </Pressable>
                     <Pressable onPress={() => { playPauseSong() }}>
                         <Image style={styles.icon} source={require('../assets/play.png')}/>
                     </Pressable>
-                    <Pressable onPress={async () => {
+                    {/* <Pressable onPress={async () => {
                         toggleLoad();
                         await generateSong();
                         toggleLoadFalse();
@@ -245,7 +243,7 @@ export default function MusicRec() {
                         playMeow();
                         }}>
                         <Image style={styles.icon} source={require('../assets/skip.png')}/>
-                    </Pressable>
+                    </Pressable> */}
                 </View>
             </View>
 
@@ -264,7 +262,7 @@ export default function MusicRec() {
                         {isLiked ? 'Liked' : 'Add to Liked Songs'}
                     </Text>
                 </Pressable>
-                <Pressable style={styles.buttonContainer} onPress={async () => {
+                {/* <Pressable style={styles.buttonContainer} onPress={async () => {
                     toggleLoad();
                     await generateSong();
                     toggleLoadFalse();
@@ -272,7 +270,7 @@ export default function MusicRec() {
                     playMeow();
                     }}>
                     <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Get a Song</Text>
-                </Pressable>
+                </Pressable> */}
             </View>
         </View>
     );

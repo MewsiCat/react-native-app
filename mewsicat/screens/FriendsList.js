@@ -148,7 +148,7 @@ export default function FriendsList() {
 
   return (
     <View style={styles.container}>
-      <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+      <Overlay isVisible={loadVisible} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
         <Loading />
       </Overlay>
       <View style={styles.playlistContainer}>

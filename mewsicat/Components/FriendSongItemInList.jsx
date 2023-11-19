@@ -7,11 +7,13 @@ import Loading from '../screens/Loading';
 import { Overlay } from 'react-native-elements';
 import MusicRec from '../screens/MusicRec';
 import { sendSong } from '../backend/api/amplifyDBFunctions';
+import SongPlayer from '../screens/SongPlayer';
 
 import { Auth } from 'aws-amplify';
 
 import { pauseBGM, toggleBGM } from '../App';
 import { Audio } from 'expo-av';
+import { generateSong } from '../screens/SongPlayer';
 
 var soundPlaying;
 const sound = new Audio.Sound()
@@ -123,12 +125,12 @@ export default function FriendSongItemInList({ profilePicture, name, active, mus
         <Loading />
       </Overlay>
       <Overlay isVisible={recVisible} onBackdropPress={toggleRec} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
-                <MusicRec />
+                <SongPlayer musicRecURI={active}/>
             </Overlay>
 
       {/* Send Music Button */}
       <TouchableOpacity style={styles.sendMusicButton}>
-        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await getSongPrev(active); playPauseSong(); toggleLoadFalse();}}>Play!</Text>
+        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); console.log(active); await generateSong(active); toggleLoadFalse(); toggleRec();}}>Play!</Text>
       </TouchableOpacity>
     </View>
   );
