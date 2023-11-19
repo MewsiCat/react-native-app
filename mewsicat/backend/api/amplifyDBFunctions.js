@@ -365,7 +365,7 @@ export async function sendFriendRequest(newFriend){
     const friendsID = result.data.userByName.items[0].id;
     const friendRequests = result.data.userByName.items[0].friendRequests;
     console.log("friend requests" + friendRequests)
-    var newFriendRequests = [""];
+    var newFriendRequests = [];
     
     if(friendRequests == null){
       newFriendRequests.push(currentUser);
