@@ -12,6 +12,7 @@ import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import App from '../App';
 import { updateFirstTimeUser } from '../backend/api/amplifyDBFunctions';
+import { Auth } from 'aws-amplify';
 
 import Loading from './Loading';
 import { createNewCat } from '../backend/api/amplifyDBFunctions';
@@ -19,6 +20,7 @@ import { createNewCat } from '../backend/api/amplifyDBFunctions';
 const listOfCats = ["blackcat.jpg", "chaewoncat.png", "default_user.jpg", "friendsIcon.png", "musicIcon.jpg", "sadcat.jpg", "settingsIcon.jpg", "wife.jpg"];
 var catImage = require('../assets/blackcat.jpg');
 var catString
+var currentUser;
 
 export default function GenerateCats({ navigation }) {
     const [touches, setTouches] = useState([]);
@@ -27,6 +29,11 @@ export default function GenerateCats({ navigation }) {
 
   
     useEffect(() => {
+        async function fetchData(){
+            const currentUserInfo = await Auth.currentUserInfo();
+            currentUser = currentUserInfo.username;
+        }
+        fetchData();
         setImage(require('../assets/blackcat.jpg'));
     }, []);
 
@@ -72,7 +79,7 @@ export default function GenerateCats({ navigation }) {
                 <Text style={styles.title}>Cat Lottery</Text>
                 <Image source={image} style={styles.img} />
                 <Pressable style={styles.buttonContainer} onPress={async () => {
-                    createNewCat("bob", "stupid")
+                    createNewCat(currentUser, "CARTI CAT");
                 }}>
                     <Text style={styles.buttonText}>Get Cat!</Text>
                 </Pressable>
