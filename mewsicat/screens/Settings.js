@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     title: {
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center'
