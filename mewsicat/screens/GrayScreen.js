@@ -271,6 +271,7 @@ export async function generateFriendsList() {
     console.log("Friends in friends list " + friends);
     // setFriendsLength(friends.length);
     const friendsLength = friends.items.length;
+    console.log(friends.items[0].cat.name)
 
     console.log("Friends length: " + friendsLength);
     if (friendsLength == undefined) {
@@ -279,8 +280,8 @@ export async function generateFriendsList() {
     console.log("generate friends list done!");
     friendsData = Array.from({ length: friendsLength }, (_, num) => ({
       profilePicture: imagetemp[num],
-      name: friends.items[num].name,
-      active: songNames[num],
+      name: friends.items[num].cat.name,
+      type: friends.items[num].cat.type,
     }));
     return friendsData;
   } catch (err) {
