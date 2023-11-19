@@ -7,93 +7,12 @@ import { Auth } from 'aws-amplify';
 import { refreshAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
 import GenerateCats from './GenerateCats';
-
-const client_id = "88c17d6f25cc43eaad226930c216ae5b";
-const client_secret = "55c8fe6737b44bf39b7671aec4572402";
-const redirect_uri = Linking.createURL("/spotify-auth-callback");
+import { updateSpotifyConnected, getSpotifyConnected, updateUserAttributes, getNewToken, getToken } from '../backend/api/amplifyDBFunctions';
 
 const discovery = {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
-
-  // var spotifyConnected = false;
-
-  async function updateSpotifyConnected (val) {
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      const result = await Auth.updateUserAttributes(user, {
-        "custom:spotifyConnected"	: val,
-      });
-      console.log(result); // SUCCESS
-    } catch(err) {
-      console.log(err);
-    }
-  };
-
-  export async function getSpotifyConnected(){
-    try{
-    const currentUserInfo = await Auth.currentUserInfo();
-    const spotify_connected = currentUserInfo.attributes["custom:spotifyConnected"];
-    console.log("spotify connected: " + spotify_connected);
-    if(spotify_connected == "1"){
-      // spotifyConnected = true;
-      return true;
-    }
-    else{
-      // spotifyConnected = false;
-      return false;
-    }
-    }catch(err) {
-      console.log(err);
-    } 
-  }
-
-async function updateUserAttributes (access_token, refresh_token) {
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      const result = await Auth.updateUserAttributes(user, {
-        "custom:spotify_token" : access_token,
-        "custom:refresh_token" : refresh_token
-      });
-      console.log(result); // SUCCESS
-    } catch(err) {
-      console.log(err);
-    }
-  };
-
-async function getNewToken(){
-  const currentUserInfo = await Auth.currentUserInfo();
-  const refresh_token = currentUserInfo.attributes['custom:refresh_token'];
-  const codeRes = await refreshAsync(
-    {
-        clientId: client_id,
-        clientSecret: client_secret,
-        refreshToken: refresh_token
-    },
-    discovery
-)
-  const tokenConfig = codeRes?.getRequestConfig();
-  console.log("access token in new token func: " + tokenConfig.accessToken);
-  console.log("refresh token in new token func: " + refresh_token);
-  updateUserAttributes(tokenConfig.accessToken, refresh_token);
-}
-
-async function getToken (code) {
-  const codeRes = await exchangeCodeAsync(
-      {
-          code: code,
-          redirectUri: redirect_uri,
-          clientId: client_id,
-          clientSecret: client_secret
-      },
-      discovery
-    
-  )
-  const tokenConfig = codeRes?.getRequestConfig();
-  console.log("access token: " + tokenConfig.accessToken);
-  updateUserAttributes(tokenConfig.accessToken, tokenConfig.refreshToken)
-}
 
 const SpotifyLogin = ({ navigation }) => {
     const spotifyController = new SpotifyAPIController();
