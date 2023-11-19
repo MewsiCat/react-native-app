@@ -605,9 +605,30 @@ export async function acceptFriendRequest(newFriend){
   }
 }
 
-export async function createNewCat(newCat, catType){
+export async function createNewCat(){
+
+  var topArtistsGenre;
 
   const currentUserInfo = await Auth.currentUserInfo();
+        const access_token = currentUserInfo.attributes['custom:spotify_token'];
+        console.log("access token: " + access_token);
+        var userRes = await fetch(
+            `https://api.spotify.com/v1/me/top/artists`,
+            {
+                method: "GET",
+                headers: { Authorization: "Bearer " + access_token },
+            },
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("top artist in function: " + data.items[0].name);
+                topArtists = data.items[0].uri;
+                console.log(data.items[0].genres[0]);
+                topArtistsGenre = data.items[0].genres[0];
+                topArtists = topArtists.substring(15);
+                // topArtistsGenres = data.items[0].genre;
+                // console.log("top artists genres in function: " + topArtistsGenres);
+            });
   const currentUser = currentUserInfo.username;
 
   const currUserParams = {
@@ -622,8 +643,8 @@ export async function createNewCat(newCat, catType){
     variables: {
       input: {
         catID: currUserID,
-        name: newCat,
-        type: catType,
+        name: currentUser,
+        type: topArtistsGenre,
         fishes: 0,
       }
     }
