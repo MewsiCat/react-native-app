@@ -60,9 +60,9 @@ export default function SongItemInList({ profilePicture, name, active }) {
       </Overlay>
 
       {/* Send Music Button */}
-      <TouchableOpacity style={styles.sendMusicButton}>
+      {/* }<TouchableOpacity style={styles.sendMusicButton}>
         <Text style={styles.sendMusicButtonText}>a button</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
