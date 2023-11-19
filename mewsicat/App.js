@@ -19,6 +19,7 @@ import PlaylistButton from "./screens/Playlist.js";
 import { generateFriendsList } from "./screens/FriendsList.js";
 
 import { Audio } from 'expo-av';
+import blackCatImage from './assets/blackcat.jpg'; 
 
 
 import Modules, { updateCat } from './screens/Modules.js';
@@ -32,6 +33,7 @@ import {
   Button,
   Pressable,
   SafeAreaView,
+  ImageBackground,
 } from 'react-native';
 
 import { API, graphqlOperation } from 'aws-amplify'
@@ -164,6 +166,13 @@ const App = () => {
     return null;
   }
 
+  const Myimage = () =>{
+    <ImageBackground
+      source={blackCatImage}
+    >
+    </ImageBackground>
+
+  }
   
   
   // const [formState, setFormState] = useState(initialFormState);
@@ -174,18 +183,27 @@ const App = () => {
   //spotifyController.getUser(spotifyToken);
   return(
     <Authenticator.Provider>
+          <ImageBackground
+      source={blackCatImage} style={{position: "absolute",     ...StyleSheet.absoluteFillObject,
+    }} 
+    >
+      
+    </ImageBackground>
     <Authenticator Container={(props) => (
-          // reuse default `Container` and apply custom background
           <Authenticator.Container
             {...props}
-            style={{ backgroundColor: colors.pink[20] }}
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', height:90}}
           />
+
+
           // will render on every subcomponent
         )}
         >
       <Home />
     </Authenticator>
+
     </Authenticator.Provider>
+    
   );
 }
 
