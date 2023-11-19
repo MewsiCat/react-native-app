@@ -209,8 +209,8 @@ export default function MusicRec() {
         <View style={styles.container}>
             <Text style={styles.title}>Music Reccomendation!</Text>
             <Image source={{ uri: imageName, }} style={styles.img} />
-            <Text style={styles.song}>{displaySongName}</Text>
-            <Text style={styles.artist}>{artistName}</Text>
+            <Text adjustsFontSizeToFit='true' style={styles.song}>{displaySongName}</Text>
+            <Text adjustsFontSizeToFit='true' style={styles.artist}>{artistName}</Text>
             <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
                 <Loading />
             </Overlay>
@@ -218,21 +218,38 @@ export default function MusicRec() {
                 <SongFriendsList musicRecURI={musicRec} />
             </Overlay>
             <Slider
+                value={0.6}
                 minimumValue={0}
                 maximumValue={1}
                 minimumTrackTintColor="#d0a060"
                 maximumTrackTintColor="#783621"
                 thumbTintColor='#783621'
+                disabled
             />
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Button title='⏪' color='#783621' style={styles.button} />
-                <Button title="▶️" color='#783621' style={styles.button} onPress={() => { playPauseSong() }} />
-                <Button title='⏩' color='#783621' style={styles.button} />
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
+                <Pressable>
+                    <Image style={styles.icon} source={require('../assets/previous.png')}/>
+                </Pressable>
+                <Pressable onPress={() => { playPauseSong() }}>
+                    <Image style={styles.icon} source={require('../assets/play.png')}/>
+                </Pressable>
+                <Pressable onPress={async () => {
+                    toggleLoad();
+                    await generateSong();
+                    toggleLoadFalse();
+                    toggleRec(); 
+                    playMeow();
+                    }}>
+                    <Image style={styles.icon} source={require('../assets/skip.png')}/>
+                </Pressable>
             </View>
-            <Button title='send' color='#783621' style={styles.button} onPress={async () => { toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse(); }} />
-
 
             <View style={styles.containerB}>
+                <Pressable style={styles.buttonContainer} onPress={async ()=> {
+                    toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();
+                }}>
+                    <Text style={styles.buttonText} adjustsFontSizeToFit='true'>Send to a Friend</Text>
+                </Pressable>
                 <Pressable
                     style={[styles.buttonContainer, isLiked ? styles.likedButton : null]}
                     onPress={handleAddToPlaylist}
@@ -242,8 +259,14 @@ export default function MusicRec() {
                         {isLiked ? 'Liked' : 'Add to Liked Songs'}
                     </Text>
                 </Pressable>
-                <Pressable style={styles.buttonContainer}>
-                    <Text style={styles.buttonText}>Return Home</Text>
+                <Pressable style={styles.buttonContainer} onPress={async () => {
+                    toggleLoad();
+                    await generateSong();
+                    toggleLoadFalse();
+                    toggleRec(); 
+                    playMeow();
+                    }}>
+                    <Text adjustsFontSizeToFit='true' style={styles.buttonText}>Get a Song</Text>
                 </Pressable>
             </View>
         </View>
@@ -259,13 +282,14 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 10,
         width: '90%',
-        padding: 5,
-        margin: 10
+        padding: 3,
+        margin: 5
     },
     likedButton: {
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
     containerB: {
+        marginTop: 10,
         marginTop: 'auto',
     },
     container: {
@@ -315,8 +339,14 @@ const styles = StyleSheet.create({
     artist: {
         alignSelf: 'center',
         paddingLeft: 20,
-        paddingBottom: 50,
+        paddingBottom: 30,
         fontSize: 15,
         color: '#d0a060'
+    },
+    icon: {
+        width: 35,
+        height: 35,
+        padding: 10,
+        marginBottom: 20
     }
 })
