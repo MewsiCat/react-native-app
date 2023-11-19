@@ -45,35 +45,6 @@ const SignOutButton = () => {
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
 
-  var userName = "";
-  var userPic = "";
-
-
-async function getUser(){
-    try{
-    const currentUserInfo = await Auth.currentUserInfo();
-    const access_token = currentUserInfo.attributes['custom:spotify_token'];
-    
-    var result = await fetch(
-        `https://api.spotify.com/v1/me`,
-        {
-            method: "GET",
-            headers: { Authorization: "Bearer " + access_token },
-        },
-        )
-        .then((res) => res.json())
-        .then((data) => {
-            console.log(data);
-            console.log(data.display_name)
-            console.log(data.images[0].url)
-            userName = data.display_name;
-            userPic = data.images[0].url;
-        });
-    } catch(err) {
-        console.log(err);
-      } 
-}
-
 
 export default function Settings() {
     const spotifyController = new SpotifyAPIController();
@@ -104,79 +75,40 @@ export default function Settings() {
       },
       discovery
     );
-    //const dispatch = useDispatch();
 
-    useEffect(() => {
-      async function fetchData(){
-        const res = await getSpotifyConnected();
-        if(res == true){
-          setSpotifyConnected(true);
-        }
-        console.log("spotify connected var " + spotifyConnected);
-        if(!spotifyConnected){
-            if (response?.type === "success") {
-            console.log("using auth code");
-            const { code } = response.params;
-            console.log("code " + code);
-            getToken(code);
-            updateSpotifyConnected("1");
-            setSpotifyConnected(!spotifyConnected);
-            }
-        }
-        // await getNewToken();
-      }
-      fetchData();
-      }, [response]);
-  
-
-      getUser();
-
-      var isLoggedIn = false;
-      var logText = "";
-
-      if(userPic == ""){
-        userPic = default_user_uri;
-      }
-    
-      if (spotifyConnected) {
-        logText = "Logged in as: " + userName;
-        isLoggedIn = true;
-      } else {
-        logText = "Log into Spotify"
-        isLoggedIn = false;
-      }
+    const { user } = useAuthenticator(userSelector);
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Settings</Text>
-            <Text style={styles.description}>
-                Volume
-            </Text>
-            <Slider
-                style={{width: '80%', height: '80%', alignSelf:'center', padding:50, paddingTop:0}}
-                minimumValue={0}
-                maximumValue={1}
-                minimumTrackTintColor="#d0a060"
-                maximumTrackTintColor="#d0a060"
-                thumbTintColor='#783621'
-            />
+            <View style={styles.stuff}>
+                <Text style={styles.description}>
+                    Volume
+                </Text>
+                <Slider
+                    style={{width: '80%', height: '80%', alignSelf:'center'}}
+                    minimumValue={0}
+                    maximumValue={1}
+                    minimumTrackTintColor="#d0a060"
+                    maximumTrackTintColor="#d0a060"
+                    thumbTintColor='#783621'
+                />
 
-            <Text style={styles.description}>
-                Effects
-            </Text>
-            <Slider
-                style={{width: '80%', height: '80%', alignSelf:'center', padding:50, paddingTop:0}}
-                minimumValue={0}
-                maximumValue={1}
-                minimumTrackTintColor="#d0a060"
-                maximumTrackTintColor="#d0a060"
-                thumbTintColor='#783621'
-            />
-
+                <Text style={styles.description}>
+                    Effects
+                </Text>
+                <Slider
+                    style={{width: '80%', height: '80%', alignSelf:'center'}}
+                    minimumValue={0}
+                    maximumValue={1}
+                    minimumTrackTintColor="#d0a060"
+                    maximumTrackTintColor="#d0a060"
+                    thumbTintColor='#783621'
+                />
+            </View>
             <View style={styles.toBottom}>
-                <Pressable style={styles.welcome} onPress={() => {promptAsync(); playSound();}} disabled={isLoggedIn}>
-                  <Text style={styles.buttonText}>{logText}</Text>
-                  <Image source={{uri: userPic }} style={styles.img}/>
+                <Pressable style={styles.welcome} disabled={true}>
+                  <Text style={styles.buttonText}>Logged in as: {user?.username}</Text>
                 </Pressable>
 
                 <SignOutButton style={styles.signout} onPress={() => {playSound();}}/>
@@ -188,6 +120,10 @@ export default function Settings() {
 }
 
 const styles = StyleSheet.create({
+    stuff: {
+        marginTop: 40,
+        height: '10%'
+    },
     buttonContainer: {
         alignSelf: 'center',
         backgroundColor: '#f0d396',
@@ -216,7 +152,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     title: {
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center'
@@ -226,7 +162,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center',
-        paddingTop: 30
+//        paddingTop: 30
     },
     signout: {
         alignSelf: 'center',

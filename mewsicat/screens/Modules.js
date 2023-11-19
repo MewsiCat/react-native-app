@@ -91,7 +91,7 @@ export default function Modules({ navigation }) {
         <Pressable onPress={toggleMusic} style={styles.buttonContainer}>
             <Image source={require('../assets/musicIcon.jpg')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={musicVisible} onBackdropPress={toggleMusic} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+        <Overlay isVisible={musicVisible} onBackdropPress={toggleMusic} overlayStyle={{backgroundColor:'#f0d396', height:'90%', borderRadius: 20}}>
             <Jukebox />
         </Overlay>
 

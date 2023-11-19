@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, Button } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, Button, Dimensions } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { SpotifyAPIController } from '../backend/api/spotifyAPIController';
 
@@ -210,41 +210,43 @@ export default function MusicRec() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Music Reccomendation!</Text>
-            <Image source={{ uri: imageName, }} style={styles.img} />
-            <Text adjustsFontSizeToFit={true} style={styles.song}>{displaySongName}</Text>
-            <Text adjustsFontSizeToFit={true} style={styles.artist}>{artistName}</Text>
-            <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
-                <Loading />
-            </Overlay>
-            <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
-                <SongFriendsList musicRecURI={musicRec} />
-            </Overlay>
-            <Slider
-                value={0.6}
-                minimumValue={0}
-                maximumValue={1}
-                minimumTrackTintColor="#d0a060"
-                maximumTrackTintColor="#783621"
-                thumbTintColor='#783621'
-                disabled
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
-                <Pressable>
-                    <Image style={styles.icon} source={require('../assets/previous.png')}/>
-                </Pressable>
-                <Pressable onPress={() => { playPauseSong() }}>
-                    <Image style={styles.icon} source={require('../assets/play.png')}/>
-                </Pressable>
-                <Pressable onPress={async () => {
-                    toggleLoad();
-                    await generateSong();
-                    toggleLoadFalse();
-                    toggleRec(); 
-                    playMeow();
-                    }}>
-                    <Image style={styles.icon} source={require('../assets/skip.png')}/>
-                </Pressable>
+            <View style={styles.stuff}>
+                <Text style={styles.title}>Music Reccomendation!</Text>
+                <Image source={{ uri: imageName}} style={styles.img} />
+                <Text style={styles.song}>{displaySongName}</Text>
+                <Text style={styles.artist}>{artistName}</Text>
+                <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
+                    <Loading />
+                </Overlay>
+                <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', borderRadius: 20 }}>
+                    <SongFriendsList musicRecURI={musicRec} />
+                </Overlay>
+                <Slider
+                    value={0.6}
+                    minimumValue={0}
+                    maximumValue={1}
+                    minimumTrackTintColor="#d0a060"
+                    maximumTrackTintColor="#783621"
+                    thumbTintColor='#783621'
+                    disabled
+                />
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
+                    <Pressable>
+                        <Image style={styles.icon} source={require('../assets/previous.png')}/>
+                    </Pressable>
+                    <Pressable onPress={() => { playPauseSong() }}>
+                        <Image style={styles.icon} source={require('../assets/play.png')}/>
+                    </Pressable>
+                    <Pressable onPress={async () => {
+                        toggleLoad();
+                        await generateSong();
+                        toggleLoadFalse();
+                        toggleRec();
+                        playMeow();
+                        }}>
+                        <Image style={styles.icon} source={require('../assets/skip.png')}/>
+                    </Pressable>
+                </View>
             </View>
 
             <View style={styles.containerB}>
@@ -277,6 +279,10 @@ export default function MusicRec() {
 }
 
 const styles = StyleSheet.create({
+    stuff: {
+        height: '40%',
+        width: '100%'
+    },
     buttonContainer: {
         alignSelf: 'center',
         backgroundColor: '#f0d396',
@@ -298,6 +304,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f0d396',
         padding: 20,
+        width: Dimensions.get('window').width * 0.8,
         flexDirection: 'column',
         flex: 1,
     },
@@ -327,9 +334,9 @@ const styles = StyleSheet.create({
     },
     img: {
         alignSelf: 'center',
-        width: 200,
-        height: 250,
-        margin: 50,
+        width: '100%',
+        height: '100%',
+        marginTop: 5,
         marginBottom: 5
     },
     song: {

@@ -76,16 +76,20 @@ export default function GenerateCats({ navigation }) {
     return goHome == false ? (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
-                <Text style={styles.title}>Cat Lottery</Text>
-                <Image source={image} style={styles.img} />
-                <Pressable style={styles.buttonContainer} onPress={async () => {
-                    createNewCat(currentUser, "CARTI CAT");
-                }}>
-                    <Text style={styles.buttonText}>Get Cat!</Text>
-                </Pressable>
-                <Pressable style={styles.buttonContainer} onPress={async () => {console.log("beginning update first time");await updateFirstTimeUser(); console.log("ending update first time");setGoHome(!goHome);}}>
-                    <Text style={styles.buttonText}>Return Home</Text>
-                </Pressable>
+                <Text adjustsFontSizeToFit={true} style={styles.title}>Cat Lottery</Text>
+                <View style={{alignSelf:'center'}} >
+                    <Image source={image} style={styles.img} />
+                </View>
+                <View style={{marginTop:'auto', margin: 30}}>
+                    <Pressable style={styles.buttonContainer} onPress={async () => {
+                        createNewCat("bob", "stupid")
+                    }}>
+                        <Text style={styles.buttonText}>Get Cat!</Text>
+                    </Pressable>
+                    <Pressable style={styles.buttonContainer} onPress={async () => {console.log("beginning update first time");await updateFirstTimeUser(); console.log("ending update first time");setGoHome(!goHome);}}>
+                        <Text style={styles.buttonText}>Return Home</Text>
+                    </Pressable>
+                </View>
             </ImageBackground>
        </View>
     ) : (<Home/>)
@@ -101,7 +105,7 @@ export default function GenerateCats({ navigation }) {
         width: '100%',
         height: '100%',
         flexDirection: 'column',
-        alignContent: 'center',
+        justifyContent: 'center',
     },
     buttonContainer: {
         alignSelf: 'center',
@@ -112,15 +116,16 @@ export default function GenerateCats({ navigation }) {
         borderRadius: 10,
         width: '90%',
         padding: 5,
-        margin: 30,
-        marginTop: 'auto',
+        margin: 10
     },
     title: {
         fontSize: 40,
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center',
+        justifyContent: 'center',
         padding: 30,
+        marginTop: 30
     },
     buttonText: {
         color: '#783621',
@@ -130,9 +135,7 @@ export default function GenerateCats({ navigation }) {
         alignSelf:'center'
     },
     img: {
-        justifyContent: 'center',
         width: 200,
         height: 250,
-        margin: 50,
     },
 })
