@@ -209,8 +209,8 @@ export default function MusicRec() {
         <View style={styles.container}>
             <Text style={styles.title}>Music Reccomendation!</Text>
             <Image source={{ uri: imageName, }} style={styles.img} />
-            <Text adjustsFontSizeToFit='true' style={styles.song}>{displaySongName}</Text>
-            <Text adjustsFontSizeToFit='true' style={styles.artist}>{artistName}</Text>
+            <Text adjustsFontSizeToFit={true} style={styles.song}>{displaySongName}</Text>
+            <Text adjustsFontSizeToFit={true} style={styles.artist}>{artistName}</Text>
             <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
                 <Loading />
             </Overlay>
@@ -248,7 +248,7 @@ export default function MusicRec() {
                 <Pressable style={styles.buttonContainer} onPress={async ()=> {
                     toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();
                 }}>
-                    <Text style={styles.buttonText} adjustsFontSizeToFit='true'>Send to a Friend</Text>
+                    <Text style={styles.buttonText} adjustsFontSizeToFit={true}>Send to a Friend</Text>
                 </Pressable>
                 <Pressable
                     style={[styles.buttonContainer, isLiked ? styles.likedButton : null]}
@@ -266,7 +266,7 @@ export default function MusicRec() {
                     toggleRec(); 
                     playMeow();
                     }}>
-                    <Text adjustsFontSizeToFit='true' style={styles.buttonText}>Get a Song</Text>
+                    <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Get a Song</Text>
                 </Pressable>
             </View>
         </View>
