@@ -299,12 +299,12 @@ export async function checkTokenStatus(){
   const millis = Date.now() - Number(tokenTimeGot);
   const timeElapsed = Math.floor(millis / 1000);
   console.log("time elapsed: " + timeElapsed);
-  if(timeElapsed >= 3600){
-    console.log("token not fresh");
-    getNewToken();
+  if(timeElapsed < 3600){
+    console.log("token still fresh");
   }
   else{
-    console.log("token still fresh");
+    console.log("token not fresh");
+    getNewToken();
   }
 }
 
