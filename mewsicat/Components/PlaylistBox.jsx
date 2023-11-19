@@ -274,19 +274,19 @@ export default function PlaylistBox({ friendlist }) {
           style={[styles.button, activeTab === 'add' && styles.activeButton]}
           onPress={() => toggleTab('add')}
         >
-          <Text adjustsFontSizeToFit='true' style={styles.buttonText}>Add</Text>
+          <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Add</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, activeTab === 'remove' && styles.activeButton]}
           onPress={() => toggleTab('remove')}
         >
-          <Text adjustsFontSizeToFit='true' style={styles.buttonText}>Remove</Text>
+          <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Remove</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, activeTab === 'requests' && styles.activeButton]}
           onPress={() => toggleTab('requests')}
         >
-          <Text adjustsFontSizeToFit='true' style={styles.buttonText}>Requests</Text>
+          <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Requests</Text>
         </TouchableOpacity>
         <RedDot/>
       </View>
