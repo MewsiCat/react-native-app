@@ -9,10 +9,10 @@ export default function BackButton({title}) {
 
   return (
     <TouchableOpacity
-      style={styles.floatingButton}
+      // style={styles.floatingButton}
       onPress={() => navigation.goBack()}
     >
-      <Ionicons name="arrow-back" size={24} color="black" />
+      {/* <Ionicons name="arrow-back" size={24} color="black" /> */}
     </TouchableOpacity>
   );
 };

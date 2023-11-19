@@ -11,7 +11,7 @@ import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
 import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat } from '../../src/graphql/mutations'
-import { listUsers, getUser, userByName, friendByName } from '../../src/graphql/queries'
+import { listUsers, getUser, userByName, friendByName, getCat } from '../../src/graphql/queries'
 
 
 export async function currentUserInfo () {

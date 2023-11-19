@@ -14,6 +14,7 @@ import App from '../App';
 import { updateFirstTimeUser } from '../backend/api/amplifyDBFunctions';
 
 import Loading from './Loading';
+import { createNewCat } from '../backend/api/amplifyDBFunctions';
 
 const listOfCats = ["blackcat.jpg", "chaewoncat.png", "default_user.jpg", "friendsIcon.png", "musicIcon.jpg", "sadcat.jpg", "settingsIcon.jpg", "wife.jpg"];
 var catImage = require('../assets/blackcat.jpg');
@@ -71,7 +72,7 @@ export default function GenerateCats({ navigation }) {
                 <Text style={styles.title}>Cat Lottery</Text>
                 <Image source={image} style={styles.img} />
                 <Pressable style={styles.buttonContainer} onPress={async () => {
-                    generateCat();
+                    createNewCat("bob", "stupid")
                 }}>
                     <Text style={styles.buttonText}>Get Cat!</Text>
                 </Pressable>
