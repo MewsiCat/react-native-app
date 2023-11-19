@@ -149,30 +149,31 @@ export default function Settings() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Settings</Text>
-            <Text style={styles.description}>
-                Volume
-            </Text>
-            <Slider
-                style={{width: '80%', height: '80%', alignSelf:'center', padding:50, paddingTop:0}}
-                minimumValue={0}
-                maximumValue={1}
-                minimumTrackTintColor="#d0a060"
-                maximumTrackTintColor="#d0a060"
-                thumbTintColor='#783621'
-            />
+            <View style={styles.stuff}>
+                <Text style={styles.description}>
+                    Volume
+                </Text>
+                <Slider
+                    style={{width: '80%', height: '80%', alignSelf:'center'}}
+                    minimumValue={0}
+                    maximumValue={1}
+                    minimumTrackTintColor="#d0a060"
+                    maximumTrackTintColor="#d0a060"
+                    thumbTintColor='#783621'
+                />
 
-            <Text style={styles.description}>
-                Effects
-            </Text>
-            <Slider
-                style={{width: '80%', height: '80%', alignSelf:'center', padding:50, paddingTop:0}}
-                minimumValue={0}
-                maximumValue={1}
-                minimumTrackTintColor="#d0a060"
-                maximumTrackTintColor="#d0a060"
-                thumbTintColor='#783621'
-            />
-
+                <Text style={styles.description}>
+                    Effects
+                </Text>
+                <Slider
+                    style={{width: '80%', height: '80%', alignSelf:'center'}}
+                    minimumValue={0}
+                    maximumValue={1}
+                    minimumTrackTintColor="#d0a060"
+                    maximumTrackTintColor="#d0a060"
+                    thumbTintColor='#783621'
+                />
+            </View>
             <View style={styles.toBottom}>
                 <Pressable style={styles.welcome} onPress={() => {promptAsync(); playSound();}} disabled={isLoggedIn}>
                   <Text style={styles.buttonText}>{logText}</Text>
@@ -188,6 +189,10 @@ export default function Settings() {
 }
 
 const styles = StyleSheet.create({
+    stuff: {
+        marginTop: 40,
+        height: '10%'
+    },
     buttonContainer: {
         alignSelf: 'center',
         backgroundColor: '#f0d396',
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     title: {
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center'
@@ -226,7 +231,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center',
-        paddingTop: 30
+//        paddingTop: 30
     },
     signout: {
         alignSelf: 'center',

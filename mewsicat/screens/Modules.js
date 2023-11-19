@@ -12,11 +12,12 @@ import FriendRequestsList from './FriendRequestsList';
 import FriendSongsList from './FriendSongsList';
 import GenerateCats from './GenerateCats';
 import { collectManifestSchemes } from 'expo-linking';
-import { createNewCat } from '../backend/api/amplifyDBFunctions';
+import { createNewCat, increaseFishes } from '../backend/api/amplifyDBFunctions';
 
 var catFishes;
 
-export async function updateCat(){
+export async function updateUserCat(){
+    try{
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
   
@@ -31,6 +32,9 @@ export async function updateCat(){
     });
   
     catFishes = userRes.data.userByName.items[0].cat.items[0].fishes;
+} catch(err){
+    console.log(err);
+}
 }
 
 export default function Modules({ navigation }) {
@@ -68,7 +72,14 @@ export default function Modules({ navigation }) {
         setFriendRequestsVisible(!friendRequestsVisible);
     }
 
-    useEffect(async ()=> {await createNewCat("bob", "stupid"); await updateCat()}, [])
+    useEffect(()=> {
+        async function fetchData(){
+            const currentUserInfo = await Auth.currentUserInfo();
+            const currentUser = currentUserInfo.username;
+            console.log("fishes " + catFishes);
+        }
+        fetchData();
+    }, [])
 
     return (
     <View style={styles.container}>
