@@ -13,6 +13,7 @@ import FriendSongsList from './FriendSongsList';
 import GenerateCats from './GenerateCats';
 import { collectManifestSchemes } from 'expo-linking';
 import { createNewCat } from '../backend/api/amplifyDBFunctions';
+import Shop from './Shop';
 
 var catFishes;
 
@@ -41,6 +42,7 @@ export default function Modules({ navigation }) {
     const [friendRequestsVisible, setFriendRequestsVisible] = useState(false);
     const [songsVisible, setSongsVisible] = useState(false);
     const [genCatVisible, setGenCatVisible] = useState(false);
+    const [shopVisible, setShopVisible] = useState(false);
 
     const toggleGenerateCat = () => {
         setGenCatVisible(!genCatVisible);
@@ -66,6 +68,10 @@ export default function Modules({ navigation }) {
     }
     const toggleFriendRequests = () => {
         setFriendRequestsVisible(!friendRequestsVisible);
+    }
+
+    const toggleShop = () => {
+        setShopVisible(!shopVisible);
     }
 
     useEffect(async ()=> {await createNewCat("bob", "stupid"); await updateCat()}, [])
@@ -125,6 +131,14 @@ export default function Modules({ navigation }) {
         <Overlay isVisible={genCatVisible} onBackdropPress={toggleGenerateCat} overlayStyle={{height:'90%', backgroundColor:'#f0d396', borderRadius: 20}}>
             <GenerateCats />
         </Overlay> */}
+
+        {/* Shop */}
+        <Pressable onPress={toggleShop} style={styles.buttonContainer}>
+            <Image source={require('../assets/sadcat.jpg')} style={styles.img}/ >
+        </Pressable>
+        <Overlay isVisible={shopVisible} onBackdropPress={toggleShop} overlayStyle={{height:'90%', width:'80%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
+            <Shop/>
+        </Overlay>
    
     </View>
     );
@@ -183,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     },
     buttonContainer: {
-        padding: 5,
+        padding: 3,
         marginLeft: 'auto',
     },
     buttonText: {
@@ -191,8 +205,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     img: {
-        width:50,
-        height:50,
+        width:40,
+        height:40,
         borderRadius: 20
     },
     overlay: {
