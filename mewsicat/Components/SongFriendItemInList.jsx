@@ -13,6 +13,8 @@ export default function SongFriendItemInList({ profilePicture, name, active, mus
   const [isActive, setIsActive] = useState(active);
 
   const [loadVisible, setLoadVisible] = useState(false);
+  const [isSentSong, setSentSong] = useState(false);
+
 
     const toggleLoad = () => {
         setLoadVisible(!loadVisible);
@@ -47,23 +49,13 @@ export default function SongFriendItemInList({ profilePicture, name, active, mus
         {name.length > 18 ? `${name.substring(0, 16)}...` : name}
       </Text>
 
-      {/* Notification indicator */}
-      <TouchableOpacity onPress={handleActiveIndicatorPress}>
-        <MaterialCommunityIcons
-          name={isActive ? "fish" : "fish-off"}
-          size={24}
-          // color={isActive ? '#00ff00' : '#ff0000'}
-          style={styles.activeIndicator}
-        />
-      </TouchableOpacity>
-
       <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
         <Loading />
       </Overlay>
 
       {/* Send Music Button */}
       <TouchableOpacity style={styles.sendMusicButton}>
-        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await sendSong(name, musicRecURI); toggleLoadFalse();}}>Send</Text>
+        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await sendSong(name, musicRecURI); setSentSong(true), toggleLoadFalse();}}>{isSentSong ? "Sent ✓" :"Send"}</Text>
       </TouchableOpacity>
     </View>
   );
