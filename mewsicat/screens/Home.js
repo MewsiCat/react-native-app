@@ -38,6 +38,7 @@ import {
 
 import { Overlay } from 'react-native-elements';
 import Loading from './Loading.js';
+import { playBGM } from '../App.js';
 
 Amplify.configure(awsExports);
 

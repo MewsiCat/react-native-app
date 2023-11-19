@@ -5,6 +5,8 @@ import {
     useAuthenticator,
   } from '@aws-amplify/ui-react-native';
   
+import { Audio } from 'expo-av';
+
   
 import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../src/aws-exports';
@@ -12,6 +14,17 @@ Amplify.configure(awsExports);
 
 import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat } from '../../src/graphql/mutations'
 import { listUsers, getUser, userByName, friendByName } from '../../src/graphql/queries'
+import { refreshAsync, TokenResponse, exchangeCodeAsync } from 'expo-auth-session';
+import * as Linking from 'expo-linking';
+
+const client_id = "88c17d6f25cc43eaad226930c216ae5b";
+const client_secret = "55c8fe6737b44bf39b7671aec4572402";
+const redirect_uri = Linking.createURL("/spotify-auth-callback");
+
+const discovery = {
+  authorizationEndpoint: "https://accounts.spotify.com/authorize",
+  tokenEndpoint: "https://accounts.spotify.com/api/token",
+};
 
 
 export async function currentUserInfo () {
@@ -212,30 +225,103 @@ export async function sendSong(friend, musicRecURI){
     console.log(err);
   } 
 }
+export async function getNewToken(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const refresh_token = currentUserInfo.attributes['custom:refresh_token'];
+  const codeRes = await refreshAsync(
+    {
+        clientId: client_id,
+        clientSecret: client_secret,
+        refreshToken: refresh_token
+    },
+    discovery
+)
+  const tokenConfig = codeRes?.getRequestConfig();
+  const tokenTimeGot = Date.now();
+  console.log("access token in new token func: " + tokenConfig.accessToken);
+  console.log("token time got in new token func: " + tokenTimeGot);
+  console.log("refresh token in new token func: " + refresh_token);
+  updateUserAttributes(tokenConfig.accessToken, refresh_token, tokenTimeGot);
+}
 
-// not gonna work cause you can't return things in async functions
-// export async function checkSpotifyConnected(){
-//   try{
-//     const currentUserInfo = await Auth.currentUserInfo();
-//     const currentUser = currentUserInfo.username;
-
-//     const params = {
-//     name: currentUser
-//     };
-//     const result = await API.graphql(graphqlOperation(userByName, params));
-//     const spotifyConnected = result.data.userByName.items[0].spotifyConnected;
-
-//     if(spotifyConnected == true){
-//       return true;
-//     }
-//     else{
-//       return false;
-//     }
+export async function getToken (code) {
+  const codeRes = await exchangeCodeAsync(
+      {
+          code: code,
+          redirectUri: redirect_uri,
+          clientId: client_id,
+          clientSecret: client_secret
+      },
+      discovery
     
-//   }catch(err){
-//     console.log(err);
-//   }
-// }
+  )
+  const tokenConfig = codeRes?.getRequestConfig();
+  const tokenTimeGot = Date.now();
+  console.log("access token: " + tokenConfig.accessToken);
+  console.log("tokenTimeGot: " + tokenTimeGot);
+  updateUserAttributes(tokenConfig.accessToken, tokenConfig.refreshToken, tokenTimeGot)
+}
+
+export async function updateSpotifyConnected (val) {
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+    const result = await Auth.updateUserAttributes(user, {
+      "custom:spotifyConnected"	: val,
+    });
+    console.log(result); // SUCCESS
+  } catch(err) {
+    console.log(err);
+  }
+};
+
+export async function getSpotifyConnected(){
+  try{
+  const currentUserInfo = await Auth.currentUserInfo();
+  const spotify_connected = currentUserInfo.attributes["custom:spotifyConnected"];
+  console.log("spotify connected: " + spotify_connected);
+  if(spotify_connected == "1"){
+    // spotifyConnected = true;
+    return true;
+  }
+  else{
+    // spotifyConnected = false;
+    return false;
+  }
+  }catch(err) {
+    console.log(err);
+  } 
+}
+
+export async function checkTokenStatus(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const tokenTimeGot = currentUserInfo.attributes['custom:tokenTimeGot'];
+  const millis = Date.now() - Number(tokenTimeGot);
+  const timeElapsed = Math.floor(millis / 1000);
+  console.log("time elapsed: " + timeElapsed);
+  if(timeElapsed >= 3600){
+    console.log("token not fresh");
+    getNewToken();
+  }
+  else{
+    console.log("token still fresh");
+  }
+}
+
+
+export async function updateUserAttributes (access_token, refresh_token, tokenTimeGot) {
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+    const result = await Auth.updateUserAttributes(user, {
+      "custom:spotify_token" : access_token,
+      "custom:refresh_token" : refresh_token,
+      "custom:tokenTimeGot" : tokenTimeGot.toString()
+
+    });
+    console.log(result); // SUCCESS
+  } catch(err) {
+    console.log(err);
+  }
+};
 
 export async function setSpotifyConnected(){
   try{
