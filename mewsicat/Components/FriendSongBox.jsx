@@ -9,7 +9,7 @@ import SongFriendItemInList from './SongFriendItemInList.jsx';
 import FriendSongItemInList from './FriendSongItemInList.jsx';
 
 
-export default function FriendSongBox({ friendlist, musicRecURI }) {
+export default function FriendSongBox({ friendlist, musicRecURI, songPrev, imageName }) {
   const [searchText, setSearchText] = useState('');
   const [addOverlayVisible, setAddOverlayVisible] = useState(false);
 
@@ -55,9 +55,12 @@ export default function FriendSongBox({ friendlist, musicRecURI }) {
         renderItem={({ item }) => (
           <FriendSongItemInList
             profilePicture={item.profilePicture}
+            fromFriend = {item.fromFriend}
             name={item.name}
             active={item.active}
             musicRecURI={musicRecURI}
+            songPrev={songPrev}
+            imageName={imageName}     
           />
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>No songs found</Text>}
