@@ -7,7 +7,9 @@ import { Audio } from 'expo-av';
 import { generateFriendRequestsList } from './FriendRequestsList';
 import { Amplify, Auth } from 'aws-amplify';
 import { API, graphqlOperation } from 'aws-amplify'
-import { listUsers, getUser, userByName, getFriend } from '../src/graphql/queries'
+import { listUsers, getUser, userByName, getFriend, getCat, catByName } from '../src/graphql/queries'
+import { Overlay } from 'react-native-elements';
+import Loading from './Loading';
 
 const totalSpriteSheetNum = 5;
 const spriteSheet0 = require('../assets/black_0.png');
@@ -36,12 +38,36 @@ const imagetemp = [
 const artists = ["New Jeans", "abcdefghigklmnopqrstuvwxyz", "patrick", "addy ", "hajin", "albert", "random name", "long nameeeeeeeeeee", "micahel", "miguel", "tofulati", "jhba;sdf", "kajsbdjasd", "qphnda", "kjbasdubhkjqwn"];
 const songNames = [true, false, true, true, false, true, true, false, true, true, false, true];
 
+var user = {};
+
 async function playSound() {
   const { sound } = await Audio.Sound.createAsync(
     require('../assets/mewsound.mp3')
   );
 
   await sound.playAsync();
+}
+
+async function getUserCat(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  const userCatResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+  const userCatName = userCatResult.data.catByName.items[0].name;
+  const userCatType = userCatResult.data.catByName.items[0].type;
+  const userCatFishes = userCatResult.data.catByName.items[0].fishes;
+  console.log("user cat name: " + userCatName);
+  console.log("user cat fishes: " + userCatFishes);
+
+  user = {
+    name: userCatName,
+    type: userCatType,
+    fishes: userCatFishes,
+  }
+
 }
 
 const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
@@ -337,10 +363,20 @@ export default function GrayScreen({ navigation }) {
   const [modalContent, setModalContent] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const spriteSheetSource = require('../assets/black_0.png');
+  const [loadVisible, setLoadVisible] = useState(false);
+
+  const toggleLoad = () => {
+    setLoadVisible(!loadVisible);
+}
+
+const toggleLoadFalse = () => {
+    setLoadVisible(loadVisible);
+}
 
   useEffect(() => {
     const fetchFriends = async () => {
       const friendsData = await generateFriendsList();
+      await getUserCat();
       setFriends(friendsData);
     };
     fetchFriends();
@@ -349,18 +385,18 @@ export default function GrayScreen({ navigation }) {
 
   const CatInfoModal = ({ visible, onClose, friend }) => {
     if (!visible || !friend) return null;
+    
     return (
       <TouchableOpacity
         style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
         <View style={styles.modalContent}>
-
           <Image source={{ uri: friend.profilePicture }} style={styles.friendImage} />
           <View style={styles.friendMoreInfo}>
             <Text style={styles.friendName}>{friend.name}</Text>
 
             <View style={styles.horizontalLine} />
-            <Text>Active: {friend.active}</Text>
-            <Text>Favorite music: { }</Text>
+            <Text>Type: {friend.type}</Text>
+            <Text>Fishes: {friend.fishes}</Text>
             <Text>Listening to:</Text>
 
           </View>
@@ -369,6 +405,7 @@ export default function GrayScreen({ navigation }) {
     );
   };
 
+
   return (
     <ImageBackground
       source={require('../assets/catbackground.png')}
@@ -376,6 +413,22 @@ export default function GrayScreen({ navigation }) {
     >
       <View style={styles.modulesContainer}>
         <Modules />
+      </View>
+      <View style={styles.catsContainer}>
+      <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '50%', width: '50%', borderRadius: 20 }}>
+                <Loading />
+            </Overlay>
+        <Cat
+            friend={user}
+            setIsModalVisible={async () => {
+              toggleLoad();
+              await getUserCat();
+              toggleLoadFalse();
+              setIsModalVisible(!isModalVisible);
+            }}
+            setModalContent={setModalContent}
+            onMoveEnd={() => {/* ... */ }}
+          />
       </View>
       <View style={styles.catsContainer}>
         {friends.map((friend, index) => (
