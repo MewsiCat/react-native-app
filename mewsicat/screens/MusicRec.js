@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, Button } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, Button, Dimensions } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { SpotifyAPIController } from '../backend/api/spotifyAPIController';
 
@@ -39,6 +39,7 @@ const sound = new Audio.Sound()
 import { Audio } from 'expo-av';
 import { pauseBGM, toggleBGM } from '../App';
 import SongFriendsList from './SongFriendsList';
+import { increaseFishes } from '../backend/api/amplifyDBFunctions';
 
 async function getTopTracks() {
     try {
@@ -128,6 +129,8 @@ export async function generateSong() {
         await sound.loadAsync({
             uri: songPrev
         })
+        await increaseFishes();
+        await getUserCat();
         // console.log("top artist: " + topArtists);
     } catch (err) {
         console.log(err);
@@ -215,7 +218,7 @@ export default function MusicRec() {
                 <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
                     <Loading />
                 </Overlay>
-                <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', width: '80%', borderRadius: 20 }}>
+                <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', borderRadius: 20 }}>
                     <SongFriendsList musicRecURI={musicRec} />
                 </Overlay>
                 <Slider
@@ -301,6 +304,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f0d396',
         padding: 20,
+        width: Dimensions.get('window').width * 0.8,
         flexDirection: 'column',
         flex: 1,
     },

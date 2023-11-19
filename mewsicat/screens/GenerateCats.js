@@ -12,13 +12,15 @@ import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import App from '../App';
 import { updateFirstTimeUser } from '../backend/api/amplifyDBFunctions';
+import { Auth } from 'aws-amplify';
 
 import Loading from './Loading';
 import { createNewCat } from '../backend/api/amplifyDBFunctions';
 
-const listOfCats = ["blackcat.jpg", "chaewoncat.png", "default_user.jpg", "friendsIcon.png", "musicIcon.jpg", "sadcat.jpg", "settingsIcon.jpg", "wife.jpg"];
+const listOfCats = ["classicalcat.png", "countrycat.png", "edmcat.png", "hiphopcat.png", "kpopcat.png", "mysterycat.png", "punkcat.png", "rockandrollcat.png"];
 var catImage = require('../assets/blackcat.jpg');
 var catString
+var currentUser;
 
 export default function GenerateCats({ navigation }) {
     const [touches, setTouches] = useState([]);
@@ -27,6 +29,11 @@ export default function GenerateCats({ navigation }) {
 
   
     useEffect(() => {
+        async function fetchData(){
+            const currentUserInfo = await Auth.currentUserInfo();
+            currentUser = currentUserInfo.username;
+        }
+        fetchData();
         setImage(require('../assets/blackcat.jpg'));
     }, []);
 
@@ -38,29 +45,29 @@ export default function GenerateCats({ navigation }) {
         const randomNum = Math.floor(Math.random() * (listOfCats.length-1));
         //console.log("random cat image url: " + listOfCats[randomNum]);
         catString = "../assets/" + listOfCats[randomNum];
-        if(listOfCats[randomNum] == "blackcat.jpg"){
-            setImage(require('../assets/blackcat.jpg'));
+        if(listOfCats[randomNum] == "classicalcat.png"){
+            setImage(require('../assets/cats/classicalcat.png'));
         }
-        if(listOfCats[randomNum] == "chaewoncat.png"){
-            setImage(require('../assets/chaewoncat.png'));
+        if(listOfCats[randomNum] == "countrycat.png"){
+            setImage(require('../assets/cats/countrycat.png'));
         }
-        if(listOfCats[randomNum] == "default_user.jpg"){
-            setImage(require('../assets/default_user.jpg'));
+        if(listOfCats[randomNum] == "edmcat.png"){
+            setImage(require('../assets/cats/edmcat.png'));
         }
-        if(listOfCats[randomNum] == "friendsIcon.png"){
-            setImage(require('../assets/friendsIcon.png'));
+        if(listOfCats[randomNum] == "hiphopcat.png"){
+            setImage(require('../assets/cats/hiphopcat.png'));
         }
-        if(listOfCats[randomNum] == "musicIcon.jpg"){
-            setImage(require('../assets/musicIcon.jpg'));
+        if(listOfCats[randomNum] == "kpopcat.png"){
+            setImage(require('../assets/cats/kpopcat.png'));
         }
-        if(listOfCats[randomNum] == "sadcat.jpg"){
-            setImage(require('../assets/sadcat.jpg'));
-        }
-        if(listOfCats[randomNum] == "settingsIcon.jpg"){
-            setImage(require('../assets/settingsIcon.jpg'));
+        if(listOfCats[randomNum] == "mysterycat.png"){
+            setImage(require('../assets/cats/mysterycat.png'));
         }
         if(listOfCats[randomNum] == "wife.jpg"){
             setImage(require('../assets/wife.jpg'));
+        }
+        if(listOfCats[randomNum] == "rockandrollcat.png"){
+            setImage(require('../assets/cats/rockandrollcat.png'));
         }
     
         // setImage(require(`${catString}`));
@@ -75,7 +82,7 @@ export default function GenerateCats({ navigation }) {
                 </View>
                 <View style={{marginTop:'auto', margin: 30}}>
                     <Pressable style={styles.buttonContainer} onPress={async () => {
-                        createNewCat("bob", "stupid")
+                        createNewCat()
                     }}>
                         <Text style={styles.buttonText}>Get Cat!</Text>
                     </Pressable>

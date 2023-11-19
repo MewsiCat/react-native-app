@@ -12,10 +12,12 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
-import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat } from '../../src/graphql/mutations'
-import { listUsers, getUser, userByName, friendByName, getCat } from '../../src/graphql/queries'
+import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat, updateCat, updateFriend } from '../../src/graphql/mutations'
+import { listUsers, getUser, userByName, friendByName, getCat, catByName, getFriend } from '../../src/graphql/queries'
 import { refreshAsync, TokenResponse, exchangeCodeAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
+import { updateUserCat } from '../../screens/Modules';
+import { generateFriendsList } from '../../screens/GrayScreen';
 
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
@@ -478,7 +480,7 @@ export async function rejectFriendRequest(newFriend){
 
 export async function acceptFriendRequest(newFriend){
   try{
-    // adding friend to curr user
+    // curr user params
     const currentUserInfo = await Auth.currentUserInfo();
       const currentUser = currentUserInfo.username;
 
@@ -487,8 +489,11 @@ export async function acceptFriendRequest(newFriend){
         };
       const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
       const currUserID = currUserResult.data.userByName.items[0].id;
-      const currUserFriendRequests = currUserResult.data.userByName.items[0].friendRequests;
+      const currUserCatName = currUserResult.data.userByName.items[0].cat.items[0].name;
+      const currUserCatFishes = currUserResult.data.userByName.items[0].cat.items[0].fishes;
+      const currUserCatType = currUserResult.data.userByName.items[0].cat.items[0].type;
       const friends = currUserResult.data.userByName.items[0].friends;
+      const currUserFriendRequests = currUserResult.data.userByName.items[0].friendRequests;
       var newCurrUserFriendRequests = [];
 
       newCurrUserFriendRequests = currUserFriendRequests;
@@ -496,7 +501,34 @@ export async function acceptFriendRequest(newFriend){
           if (newFriendIndex > -1) { // only splice array when item is found
             newCurrUserFriendRequests.splice(newFriendIndex, 1); // 2nd parameter means remove one item only
           }
+      
 
+      // friend params
+      const friendParams = {
+        name: newFriend
+        };
+        const newFriendResult = await API.graphql(graphqlOperation(userByName, friendParams));
+        const newFriendsID = newFriendResult.data.userByName.items[0].id;
+        const newFriendsCatName = newFriendResult.data.userByName.items[0].cat.items[0].name;
+        const newFriendsCatFishes = newFriendResult.data.userByName.items[0].cat.items[0].fishes;
+        const newFriendsCatType = newFriendResult.data.userByName.items[0].cat.items[0].type;
+      
+        // create friend cat object
+      const catRes = await API.graphql({
+        query: createCat, 
+        variables: {
+          input: {
+            catID: newFriendsID,
+            name: newFriend,
+            type: newFriendsCatType,
+            fishes: newFriendsCatFishes,
+          }
+        }
+      });
+
+      const catID = catRes.data.createCat.id;
+      console.log(catRes);
+      console.log(catID);
 
       // creating friend object
       const friendRes = await API.graphql({
@@ -504,20 +536,36 @@ export async function acceptFriendRequest(newFriend){
         variables: {
           input: {
             friendID: currUserID,
-            name: newFriend
+            name: newFriend,
+            friendCatId: catID,
           }
         }
       });
-      console.log("curr user friend result: " + friendRes);
+      const friendObjID = friendRes.data.createFriend.friendCatId;
+      console.log("curr user friend result ID: " + friendObjID);
+      console.log(friendRes);
+
+      console.log("curr user friend cat done!");
+
       console.log("pushed to currUser!")
 
+      //creating current user cat object
+      const currUserCat = await API.graphql({
+        query: createCat, 
+        variables: { 
+          input: {
+            catID: currUserID,
+            name: currentUser,
+            type: newFriendsCatType,
+            fishes: newFriendsCatFishes
+          }
+        }
+      });
 
-      // adding curr user to friend
-      const friendParams = {
-        name: newFriend
-        };
-        const newFriendResult = await API.graphql(graphqlOperation(userByName, friendParams));
-        const newFriendsID = newFriendResult.data.userByName.items[0].id;
+      console.log(currUserCat);
+
+      const currUserCatID = currUserCat.data.createCat.id;
+
 
         // creating current user object
       const createCurrUserObj = await API.graphql({
@@ -525,10 +573,19 @@ export async function acceptFriendRequest(newFriend){
         variables: { 
           input: {
             friendID: newFriendsID,
-            name: currentUser
+            name: currentUser,
+            friendCatId: currUserCatID,
           }
         }
       });
+
+      console.log(createCurrUserObj)
+
+      const currUserObjID = createCurrUserObj.data.createFriend.friendCatId;
+      console.log("curr user friend result ID: " + currUserObjID);
+
+      console.log("curr user friend cat done!");
+
       console.log("new friend result: " + createCurrUserObj);
       console.log("pushed to newFriend!")
 
@@ -542,14 +599,36 @@ export async function acceptFriendRequest(newFriend){
         }
         })
 
+        await generateFriendsList();
   } catch(err){
     console.log(err);
   }
 }
 
-export async function createNewCat(newCat, catType){
+export async function createNewCat(){
+
+  var topArtistsGenre;
 
   const currentUserInfo = await Auth.currentUserInfo();
+        const access_token = currentUserInfo.attributes['custom:spotify_token'];
+        console.log("access token: " + access_token);
+        var userRes = await fetch(
+            `https://api.spotify.com/v1/me/top/artists`,
+            {
+                method: "GET",
+                headers: { Authorization: "Bearer " + access_token },
+            },
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("top artist in function: " + data.items[0].name);
+                topArtists = data.items[0].uri;
+                console.log(data.items[0].genres[0]);
+                topArtistsGenre = data.items[0].genres[0];
+                topArtists = topArtists.substring(15);
+                // topArtistsGenres = data.items[0].genre;
+                // console.log("top artists genres in function: " + topArtistsGenres);
+            });
   const currentUser = currentUserInfo.username;
 
   const currUserParams = {
@@ -558,14 +637,14 @@ export async function createNewCat(newCat, catType){
   const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
   const currUserID = currUserResult.data.userByName.items[0].id;
 
-  // creating friend object
+  // creating cat object
   const catRes = await API.graphql({
     query: createCat, 
     variables: {
       input: {
         catID: currUserID,
-        name: newCat,
-        type: catType,
+        name: currentUser,
+        type: topArtistsGenre,
         fishes: 0,
       }
     }
@@ -573,6 +652,31 @@ export async function createNewCat(newCat, catType){
   console.log("curr user cat result: " + catRes);
   console.log("pushed to currUser!")
 
+}
+
+export async function increaseFishes(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  
+    const catResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+    const catResultID = catResult.data.catByName.items[0].id;
+    var fishes = catResult.data.catByName.items[0].fishes;
+    fishes++;
+
+    const updateCatRes = await API.graphql({
+      query: updateCat, 
+      variables: {
+        input: {
+          id: catResultID,
+          fishes: fishes,
+        }
+      }
+    });
+    await updateUserCat();
 }
 
 
@@ -598,34 +702,6 @@ export async function addFriend(newFriend){
         }
       });
       console.log(friendRes);
-      // const currentUserInfo = await Auth.currentUserInfo();
-      // const currentUser = currentUserInfo.username;
-
-      // const params = {
-      // name: currentUser
-      // };
-      // const result = await API.graphql(graphqlOperation(userByName, params));
-      // const friendsID = result.data.userByName.items[0].id;
-      // const friends = result.data.userByName.items[0].friends;
-      // var newFriends = [];
-
-      // newFriends = friends;
-      // newFriends.push(newFriend);
-
-      // // newFriends.push(friendName);
-      // // console.log("New Friends: " + newFriends);
-
-      // const res = await API.graphql({
-      // query: updateUser, 
-      // variables: {
-      //   input: {
-      //     id: friendsID,
-      //     name: currentUser,
-      //     friends: newFriends
-      //   }
-      // }
-      // })
-      // console.log(res);
     }catch(err){
       console.log(err);
     }

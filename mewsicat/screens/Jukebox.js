@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, Dimensions } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Overlay } from 'react-native-elements';
 import MusicRec from './MusicRec';
@@ -51,7 +51,7 @@ export default function Jukebox() {
             }}>
                 <Text style={styles.buttonText}>Get Song</Text>
             </Pressable>
-            <Overlay isVisible={recVisible} onBackdropPress={toggleRec} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+            <Overlay isVisible={recVisible} onBackdropPress={toggleRec} overlayStyle={{backgroundColor:'#f0d396', height:'90%', borderRadius: 20}}>
                 <MusicRec />
             </Overlay>
             <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
         marginTop: 'auto'
       },
     container: {
+        width: Dimensions.get('window').width * 0.8,
         backgroundColor: '#f0d396',
         padding: 20,
         flexDirection: 'column',

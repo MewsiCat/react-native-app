@@ -12,12 +12,13 @@ import FriendRequestsList from './FriendRequestsList';
 import FriendSongsList from './FriendSongsList';
 import GenerateCats from './GenerateCats';
 import { collectManifestSchemes } from 'expo-linking';
-import { createNewCat } from '../backend/api/amplifyDBFunctions';
+import { createNewCat, increaseFishes } from '../backend/api/amplifyDBFunctions';
 import Shop from './Shop';
 
 var catFishes;
 
-export async function updateCat(){
+export async function updateUserCat(){
+    try{
     const currentUserInfo = await Auth.currentUserInfo();
     const currentUser = currentUserInfo.username;
   
@@ -32,6 +33,9 @@ export async function updateCat(){
     });
   
     catFishes = userRes.data.userByName.items[0].cat.items[0].fishes;
+} catch(err){
+    console.log(err);
+}
 }
 
 export default function Modules({ navigation }) {
@@ -74,7 +78,14 @@ export default function Modules({ navigation }) {
         setShopVisible(!shopVisible);
     }
 
-    useEffect(async ()=> {await createNewCat("bob", "stupid"); await updateCat()}, [])
+    useEffect(()=> {
+        async function fetchData(){
+            const currentUserInfo = await Auth.currentUserInfo();
+            const currentUser = currentUserInfo.username;
+            console.log("fishes " + catFishes);
+        }
+        fetchData();
+    }, [])
 
     return (
     <View style={styles.container}>
@@ -86,7 +97,7 @@ export default function Modules({ navigation }) {
         <Pressable onPress={toggleMusic} style={styles.buttonContainer}>
             <Image source={require('../assets/musicIcon.jpg')} style={styles.img}/>
         </Pressable>
-        <Overlay isVisible={musicVisible} onBackdropPress={toggleMusic} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+        <Overlay isVisible={musicVisible} onBackdropPress={toggleMusic} overlayStyle={{backgroundColor:'#f0d396', height:'90%', borderRadius: 20}}>
             <Jukebox />
         </Overlay>
 
