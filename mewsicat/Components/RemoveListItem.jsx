@@ -9,6 +9,7 @@ import { Overlay } from 'react-native-elements';
 
 export default function SongItemInList({ profilePicture, name, active }) {
   const [isConfirmMode, setIsConfirmMode] = useState(false);
+  const [isRemoved, setIsRemoved] = useState(false);
   const slideAnim = useRef(new Animated.Value(-100)).current; // Initial value for right: -100 (off-screen)
 
   const toggleConfirmMode = () => {
@@ -29,6 +30,7 @@ export default function SongItemInList({ profilePicture, name, active }) {
     console.log("trying remove")
 
     setIsConfirmMode(false);
+    setIsRemoved(true);
     slideAnim.setValue(-100);
   
     try {
@@ -50,19 +52,20 @@ export default function SongItemInList({ profilePicture, name, active }) {
   };
   return (
     <View style={styles.container}>
-      <View style={[styles.innerContainer, isConfirmMode && styles.confirmMode]}>
+      <View style={[styles.innerContainer, isConfirmMode && styles.confirmMode, isRemoved && styles.removeMode]}>
         {/* Image */}
         <Image source={{ uri: profilePicture }} style={styles.image} />
 
         {/* User Name */}
-        <Text style={[styles.userName, isConfirmMode && styles.confirmModeText]}>
+        <Text style={[styles.userName, isConfirmMode && styles.confirmModeText, isRemoved && styles.removedText]}>
           {name.length > 14 ? `${name.substring(0, 13)}...` : name}
         </Text>
 
         {/* Remove Button */}
-        {!isConfirmMode && (
+        {!isConfirmMode && !isRemoved && (
           <TouchableOpacity onPress={handleRemovePress} style={styles.removeButton}>
             <Text style={styles.removeButtonText}>Remove</Text>
+            
           </TouchableOpacity>
         )}
         {/* Touchable area for exiting confirmation mode */}
@@ -91,6 +94,10 @@ const styles = StyleSheet.create({
     flex: 1,
     
   },
+  removedText:{
+    textDecorationLine: 'line-through', 
+    textDecorationStyle: 'solid'  
+  },  
   innerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,6 +107,9 @@ const styles = StyleSheet.create({
   },
   confirmMode: {
     backgroundColor: '#d0a060', // Dark background for confirmation mode
+  },
+  removeMode:{
+    backgroundColor: '#9c7848',
   },
   confirmModeText: {
     color: '#f0d396', // Text color for confirmation mode
