@@ -15,6 +15,7 @@ const spriteSheet1 = require('../assets/blue_0.png');
 const spriteSheet2 = require('../assets/brown_0.png');
 const spriteSheet3 = require('../assets/calico_0.png');
 const spriteSheet4 = require('../assets/grey_0.png');
+var catFishes;
 
 const imagetemp = [
   "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
@@ -43,7 +44,6 @@ async function playSound() {
 
   await sound.playAsync();
 }
-
 
 const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
   const scale = 3;
@@ -406,6 +406,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 2
   },
   modalContent: {
     backgroundColor: '#f0d396',

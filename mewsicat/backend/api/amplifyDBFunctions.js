@@ -13,7 +13,7 @@ import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
 import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat } from '../../src/graphql/mutations'
-import { listUsers, getUser, userByName, friendByName } from '../../src/graphql/queries'
+import { listUsers, getUser, userByName, friendByName, getCat } from '../../src/graphql/queries'
 import { refreshAsync, TokenResponse, exchangeCodeAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
 
@@ -25,6 +25,7 @@ const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
   tokenEndpoint: "https://accounts.spotify.com/api/token",
 };
+
 
 
 export async function currentUserInfo () {

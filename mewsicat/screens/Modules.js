@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {StyleSheet, View, Pressable, Text, Button, Image} from 'react-native';
 import {Overlay} from 'react-native-elements'
 import FriendsList from './FriendsList';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { getCat, userByName } from '../src/graphql/queries'
 import Settings from './Settings';
 import MusicRec from './MusicRec';
 import Jukebox from './Jukebox';
@@ -9,6 +11,27 @@ import Loading from './Loading';
 import FriendRequestsList from './FriendRequestsList';
 import FriendSongsList from './FriendSongsList';
 import GenerateCats from './GenerateCats';
+import { collectManifestSchemes } from 'expo-linking';
+import { createNewCat } from '../backend/api/amplifyDBFunctions';
+
+var catFishes;
+
+export async function updateCat(){
+    const currentUserInfo = await Auth.currentUserInfo();
+    const currentUser = currentUserInfo.username;
+  
+    const params = {
+        name: currentUser
+    };
+    const userRes = await API.graphql(graphqlOperation(userByName, params));
+    const userID = userRes.data.userByName.items[0].id;
+    const result = await API.graphql({
+        query: getCat,
+        variables: { id: userID }
+    });
+  
+    catFishes = userRes.data.userByName.items[0].cat.items[0].fishes;
+}
 
 export default function Modules({ navigation }) {
     const [musicVisible, setMusicVisible] = useState(false);
@@ -45,9 +68,15 @@ export default function Modules({ navigation }) {
         setFriendRequestsVisible(!friendRequestsVisible);
     }
 
+    useEffect(async ()=> {await createNewCat("bob", "stupid"); await updateCat()}, [])
+
     return (
     <View style={styles.container}>
         {/* Music reccomend*/}
+        <Pressable style={styles.currButton}>
+            <Image source={require('../assets/tiff/fish.png')} style={styles.currImage}/>
+            <Text>{catFishes}</Text>
+        </Pressable>
         <Pressable onPress={toggleMusic} style={styles.buttonContainer}>
             <Image source={require('../assets/musicIcon.jpg')} style={styles.img}/>
         </Pressable>
@@ -57,7 +86,7 @@ export default function Modules({ navigation }) {
 
         {/* Settings */}
         <Pressable onPress={toggleSettings} style={styles.buttonContainer}>
-            <Image source={require('../assets/settingsIcon.jpg')} style={styles.img}/>
+            <Image source={require('../assets/tiff/settings.png')} style={styles.img}/>
         </Pressable>
         <Overlay isVisible={settingsVisible} onBackdropPress={toggleSettings} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
             <Settings />
@@ -83,7 +112,7 @@ export default function Modules({ navigation }) {
         
         {/* Songs */}
         <Pressable onPress={toggleSongs} style={styles.buttonContainer}>
-            <Image source={require('../assets/blackcat.jpg')} style={styles.img}/>
+            <Image source={require('../assets/tiff/mail_fish.png')} style={styles.img}/>
         </Pressable>
         <Overlay isVisible={songsVisible} onBackdropPress={toggleSongs} overlayStyle={{height:'90%', backgroundColor:'#f0d396', paddingBottom: 30, borderRadius: 20}}>
             <FriendSongsList />
@@ -102,6 +131,38 @@ export default function Modules({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+    currButton: {
+        backgroundColor: '#f0d396',
+        borderWidth: 1,
+        borderColor: '#783621',
+        padding: 3,
+        borderRadius: 10,
+        flexDirection: 'row',
+        maxHeight: 40,
+        maxWidth: 100,
+        margin: 5,
+        alignItems: 'center'
+    },
+    currImage: {
+        maxHeight: 25,
+        maxWidth: 25,
+        marginRight: 'auto'
+    },
+    add: {
+        borderWidth: 1,
+        borderRadius: 10,
+        maxHeight: '100%',
+        maxWidth: '100%',
+        textAlign: 'center',
+        backgroundColor: 'green',
+        marginLeft: 'auto'
+    },
+    addText: {
+        padding: 1,
+        maxWidth: 50,
+        marginTop: -3,
+        marginBottom: -3
+    },
     container: {
         padding: 10,
         gap:10,
