@@ -89,7 +89,6 @@ const SpotifyLogin = ({ navigation }) => {
           promptAsync();
         }}
       />
-      <View style={{ height: 100 }} />
     </View>
   ) : (<GenerateCats/>);
 };
