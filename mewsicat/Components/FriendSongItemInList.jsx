@@ -35,14 +35,53 @@ export async function getSongPrev(musicRecURI){
             //console.log(data);
             // console.log(data.tracks[0].name)
             // console.log(data.tracks[0].artists[0].name)
-            // console.log(data.tracks[0].album.images[0].url)
+            console.log(data);
+            console.log(data.album);
+            console.log(data.album.images[0]);
+            console.log(data.album.images[0].url);
+
+            console.log("aaaaaaaaaaaaa");
+
+
+
             // console.log(data.tracks[0].preview_url)
             songPrev = data.preview_url;
+            imageName = data.album.images[0].url;
         });
         await sound.unloadAsync();
         await sound.loadAsync({
             uri: songPrev
         })
+        // console.log("top artist: " + topArtists);
+    
+      } catch(err){
+        console.log(err);
+      }
+}
+
+export async function getSongInfo(musicRecURI){
+  try{
+  const currentUserInfo = await Auth.currentUserInfo();
+    const access_token = currentUserInfo.attributes['custom:spotify_token'];
+    // console.log("access token: " + access_token);
+    // console.log("top tracks " + topTracks);
+    // console.log("top artists: "  + topArtists);
+    var result = await fetch(
+        `https://api.spotify.com/v1/tracks/${musicRecURI}`,
+        {
+            method: "GET",
+            headers: { Authorization: "Bearer " + access_token },
+        },
+        )
+        .then((res) => res.json())
+        .then((data) => {
+            //console.log(data);
+            // console.log(data.tracks[0].name)
+            // console.log(data.tracks[0].artists[0].name)
+            // console.log(data.tracks[0].preview_url)
+            songPrev = data.preview_url;
+            imageName = data.album.images[0].url;
+        });
         // console.log("top artist: " + topArtists);
     
       } catch(err){
@@ -62,7 +101,7 @@ export async function playPauseSong() {
 }
 
 
-export default function FriendSongItemInList({ profilePicture, name, active, musicRecURI }) {
+export default function FriendSongItemInList({ profilePicture, name, active, musicRecURI, songPrev, imageName, fromFriend }) {
   const [isActive, setIsActive] = useState(active);
 
   const [loadVisible, setLoadVisible] = useState(false);
@@ -96,28 +135,22 @@ export default function FriendSongItemInList({ profilePicture, name, active, mus
       visibilityTime: 1200,
     });
   };
-
-
+  
   return (
     <View style={styles.container}>
 
       {/* Image */}
       <Image source={{ uri: profilePicture }} style={styles.image} />
+      
 
       {/* User Name */}
       <Text style={styles.userName}>
         {name.length > 18 ? `${name.substring(0, 16)}...` : name}
       </Text>
 
-      {/* Notification indicator */}
-      <TouchableOpacity onPress={handleActiveIndicatorPress}>
-        <MaterialCommunityIcons
-          name={isActive ? "fish" : "fish-off"}
-          size={24}
-          // color={isActive ? '#00ff00' : '#ff0000'}
-          style={styles.activeIndicator}
-        />
-      </TouchableOpacity>
+      <Text style={styles.userName}>
+        {fromFriend}
+      </Text>
 
       <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
         <Loading />

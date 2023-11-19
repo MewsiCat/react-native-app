@@ -82,6 +82,25 @@ const songData = Array.from({ length: tempMusic + 10 }, (_, num) => ({
 }));
 
 var friendsData;
+var songPrev;
+var imageName;
+
+async function fetchSongDetails(spotifyID, access_token) {
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/tracks/${spotifyID}`,
+      {
+        method: "GET",
+        headers: { Authorization: "Bearer " + access_token },
+      }
+    );
+    const data = await response.json();
+    return data.album.images[0].url;  // Assuming you want the first image URL
+  } catch (error) {
+    console.error('Error fetching song details:', error);
+    return '';  // Return empty string or a default image URL in case of error
+  }
+}
 
 export async function generateSongsList(){
     try{
@@ -102,14 +121,25 @@ export async function generateSongsList(){
     // setFriendsLength(friends.length);
     const songsLength = songs.items.length;
     console.log("Songs length: " + songsLength);
+        const access_token = currentUserInfo.attributes['custom:spotify_token'];
+
     if(songsLength == undefined){
       songsLength = 0;
     }
-    friendsData = Array.from({ length: songsLength }, (_, num) => ({
-      profilePicture: imagetemp[num],
-      name: songs.items[num].name,
-      active: songs.items[num].spotifyID,
+    const songDetailsPromises = songs.items.map(song =>
+      fetchSongDetails(song.spotifyID, access_token)
+    );
+    const songImages = await Promise.all(songDetailsPromises);
+    console.log(songImages[0]);
+
+    friendsData = songImages.map((imageUrl, index) => ({
+      profilePicture: songImages[index],  
+      fromFriend: songs.items[index].songID,
+      name: songs.items[index].name,
+      active: songs.items[index].spotifyID,
+      imageName: songImages[index]
     }));
+
   } catch (err) {
     console.log(err);
   }
@@ -137,6 +167,7 @@ export default function FriendSongsList() {
     }
     fetchData();
   }, []);
+  
 
 
   return (
@@ -145,7 +176,7 @@ export default function FriendSongsList() {
         <Loading />
       </Overlay>
       <View style={styles.playlistContainer}>
-        <FriendSongBox friendlist={friendsData} />
+        <FriendSongBox friendlist={friendsData} songPrev={songPrev} imageName={imageName} />
       </View>
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} style={{ zIndex: 1000, elevation: 1000 }} />
     </View>
