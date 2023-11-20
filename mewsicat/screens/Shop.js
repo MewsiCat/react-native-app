@@ -110,7 +110,7 @@ export default function Shop() {
                             <ShopItem
                                 itemName = {item.id}
                                 itemDescription = {item.desc}
-                                itemImg = {item.img}
+                                imgURI = {item.img}
                                 purchased = {item.purchased}
                             />
                           </View>

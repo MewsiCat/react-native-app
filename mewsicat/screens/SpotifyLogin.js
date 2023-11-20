@@ -70,25 +70,22 @@ const SpotifyLogin = ({ navigation }) => {
     }, [response]);
   
   console.log("spotifyConnected: " + spotifyConnected);
-  return spotifyConnected == false ? (
+  return spotifyConnected == true ? (
     <View style={styles.container}>
-      <Text
-        style={{
-          fontSize: 30,
-          fontWeight: "bold",
-          color: "white",
-          marginBottom: "20%",
-        }}
-      >
-        top song player
-      </Text>
-      <Button
-        title="Login with Spotify"
-        style={styles.button}
-        onPress={() => {
-          promptAsync();
-        }}
-      />
+        <View style={styles.stuff}>
+          <Image source={require('../assets/welcome.gif')} style={styles.img} />
+          <View style={styles.alertBox}>
+              <Text style={styles.alertText} >
+                    Mewsicat requires you to login to Spotify for its full capabilities.
+                    Please click on the button below to get started.
+              </Text>
+          </View>
+          <Pressable style={styles.button} onPress={() => {promptAsync()}}>
+            <Text style={styles.spotifyText}>
+                Login with Spotify
+            </Text>
+          </Pressable>
+        </View>
     </View>
   ) : (<GenerateCats/>);
 };
@@ -100,11 +97,47 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "black",
+    backgroundColor: '#debf85',
+    justifyContent: "center",
+    width: '100%',
+    height: '100%',
   },
-
+  stuff: {
+    width: '90%',
+    height: '90%',
+    backgroundColor: '#f0d396',
+    justifyContent: 'center',
+    padding: 20,
+    borderRadius: 20
+  },
+  spotifyText: {
+    alignSelf: 'center',
+    color: 'white',
+    padding: 10
+  },
   button: {
-    width: 200,
-    marginTop: 50,
+    width: '70%',
+    backgroundColor: '#1ed760',
+    alignSelf: 'center',
+    borderRadius: 20
   },
+  alertBox: {
+    width: '100%',
+    borderRadius: 40,
+    alignSelf: 'center',
+    margin: 30
+  },
+  alertText: {
+    padding: 10,
+    color: '#783621',
+    fontSize: 25,
+    textAlign: 'center',
+    fontFamily: 'Helvetica'
+  },
+  img: {
+    width: '100%',
+    height: '30%',
+    padding: 50,
+    borderRadius: 30
+  }
 });
