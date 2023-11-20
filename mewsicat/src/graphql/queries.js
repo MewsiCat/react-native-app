@@ -58,6 +58,7 @@ export const getUser = /* GraphQL */ `
           name
           artist
           spotifyID
+          songFrom
           createdAt
           updatedAt
           userSongsId
@@ -134,6 +135,7 @@ export const listUsers = /* GraphQL */ `
             name
             artist
             spotifyID
+            songFrom
             createdAt
             updatedAt
             userSongsId
@@ -261,6 +263,7 @@ export const getSong = /* GraphQL */ `
       name
       artist
       spotifyID
+      songFrom
       createdAt
       updatedAt
       userSongsId
@@ -281,6 +284,7 @@ export const listSongs = /* GraphQL */ `
         name
         artist
         spotifyID
+        songFrom
         createdAt
         updatedAt
         userSongsId
@@ -361,6 +365,7 @@ export const userByName = /* GraphQL */ `
             name
             artist
             spotifyID
+            songFrom
             createdAt
             updatedAt
             userSongsId
@@ -549,6 +554,7 @@ export const songsBySongID = /* GraphQL */ `
         name
         artist
         spotifyID
+        songFrom
         createdAt
         updatedAt
         userSongsId
@@ -580,6 +586,7 @@ export const songByName = /* GraphQL */ `
         name
         artist
         spotifyID
+        songFrom
         createdAt
         updatedAt
         userSongsId

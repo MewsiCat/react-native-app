@@ -134,7 +134,7 @@ export async function generateSongsList(){
 
     friendsData = songImages.map((imageUrl, index) => ({
       profilePicture: songImages[index],  
-      fromFriend: songs.items[index].songID,
+      fromFriend: songs.items[index].songFrom,
       name: songs.items[index].name,
       active: songs.items[index].spotifyID,
       imageName: songImages[index]

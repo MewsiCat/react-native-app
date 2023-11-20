@@ -61,6 +61,7 @@ export const createUser = /* GraphQL */ `
           name
           artist
           spotifyID
+          songFrom
           createdAt
           updatedAt
           userSongsId
@@ -135,6 +136,7 @@ export const updateUser = /* GraphQL */ `
           name
           artist
           spotifyID
+          songFrom
           createdAt
           updatedAt
           userSongsId
@@ -209,6 +211,7 @@ export const deleteUser = /* GraphQL */ `
           name
           artist
           spotifyID
+          songFrom
           createdAt
           updatedAt
           userSongsId
@@ -381,6 +384,7 @@ export const createSong = /* GraphQL */ `
       name
       artist
       spotifyID
+      songFrom
       createdAt
       updatedAt
       userSongsId
@@ -399,6 +403,7 @@ export const updateSong = /* GraphQL */ `
       name
       artist
       spotifyID
+      songFrom
       createdAt
       updatedAt
       userSongsId
@@ -417,6 +422,7 @@ export const deleteSong = /* GraphQL */ `
       name
       artist
       spotifyID
+      songFrom
       createdAt
       updatedAt
       userSongsId
