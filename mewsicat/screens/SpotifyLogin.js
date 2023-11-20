@@ -70,7 +70,7 @@ const SpotifyLogin = ({ navigation }) => {
     }, [response]);
   
   console.log("spotifyConnected: " + spotifyConnected);
-  return spotifyConnected == true ? (
+  return spotifyConnected == false ? (
     <View style={styles.container}>
         <View style={styles.stuff}>
           <Image source={require('../assets/welcome.gif')} style={styles.img} />

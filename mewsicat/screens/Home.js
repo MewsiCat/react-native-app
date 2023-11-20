@@ -73,7 +73,7 @@ export default function Home(){
         }
         fetchData();
     }, [])
-    return firstTimeUser == true ? (
+    return firstTimeUser == false ? (
     <NavigationContainer>
         <Stack.Navigator initialRouteName="GrayScreen" screenOptions={{header: (props) => <CustomHeader {...props} />,}}>
           {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
