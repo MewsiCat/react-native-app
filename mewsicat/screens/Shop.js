@@ -98,8 +98,8 @@ export default function Shop() {
 
     return (
         <View style={styles.container}>
-            <View style={{flexDirection:'row', justifyContent: 'space-evenly', marginBottom: 20}} >
-                <Text style={styles.title}>The Cat Shack</Text>
+            <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom: 20, width:'80%'}} >
+                <Text style={styles.title}>Cat Shack</Text>
                 <Image source={require('../assets/judebox.gif')} style={styles.img} />
             </View>
             <ScrollView>
@@ -136,21 +136,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         borderWidth:2,
         borderRadius: 10,
-        width: '90%',
+        width: '100%',
         marginTop: 'auto'
       },
     container: {
         backgroundColor: '#f0d396',
         padding: 20,
         flexDirection: 'column',
-        flex: 1,
+//        flex: 1,
     },
     title: {
         fontSize: 40,
         fontWeight: 'bold',
         color: '#783621',
         alignSelf:'center',
-        paddingRight: 10
+        paddingRight: 5
     },
     description: {
         fontSize: 20,
