@@ -5,7 +5,7 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 type User @model {
   id: ID!
   name: String! @index(name: "byName", queryField: "userByName")
-  friends: [Friend] @hasMany(indexName: "byFriendID")# maybe make [String] so you don't have to make "" as a first friend
+  friends: [Friend] @hasMany(indexName: "byFriendID")
 	cat: [Cat] @hasMany(indexName: "byCatID")
 	firstTimeUser: Boolean
 	friendRequests: [String]
@@ -35,4 +35,5 @@ type Song @model {
 	name: String! @index(name: "bySong", queryField: "songByName")
 	artist: String
 	spotifyID: String
+	songFrom: String
 }

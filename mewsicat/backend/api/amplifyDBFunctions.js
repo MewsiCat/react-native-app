@@ -154,6 +154,7 @@ export async function sendSong(friend, musicRecURI){
   // getting song info from spotify
   const currentUserInfo = await Auth.currentUserInfo();
   const access_token = currentUserInfo.attributes['custom:spotify_token'];
+  const currentUser = currentUserInfo.username;
   var profilePic;
   var artist;
 
@@ -191,6 +192,7 @@ export async function sendSong(friend, musicRecURI){
           name: songName,
           spotifyID: spotifyID,
           artist: artist,
+          songFrom: currentUser
         }
       }
     });
