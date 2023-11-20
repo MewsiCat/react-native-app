@@ -11,12 +11,12 @@ async function playSound() {
   await sound.playAsync();
 }
 
-export default function ShopItem({ itemName, itemDescription, itemImg, purchased }) {
+export default function ShopItem({ itemName, itemDescription, imgURI, purchased }) {
 
     return (!purchased) ? (
         <View style={styles.container}>
             <View>
-                <Image source={{ uri: itemImg }} style={styles.IMG} />
+                <Image source={{ uri: imgURI }} style={styles.IMG} />
             </View>
             <View style={{padding: 5}}>
                 <Text style={styles.name}>
@@ -37,7 +37,7 @@ export default function ShopItem({ itemName, itemDescription, itemImg, purchased
     ) : (
         <View style={styles.container}>
             <View>
-                <Image source={{ uri: itemImg }} style={styles.IMG} />
+                <Image source={{ uri: imgURI }} style={styles.IMG} />
             </View>
             <View style={{padding: 5}}>
                 <Text style={styles.name}>
