@@ -8,6 +8,9 @@ import { refreshAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
 import GenerateCats from './GenerateCats';
 import { updateSpotifyConnected, getSpotifyConnected, updateUserAttributes, getNewToken, getToken } from '../backend/api/amplifyDBFunctions';
+import * as Font from 'expo-font';
+import Loading from './Loading';
+import { Overlay } from 'react-native-elements';
 
 const discovery = {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
@@ -17,6 +20,16 @@ const discovery = {
 const SpotifyLogin = ({ navigation }) => {
     const spotifyController = new SpotifyAPIController();
     const [token, setToken] = useState("");
+    const [loadVisible, setLoadVisible] = useState(false);
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
     const [spotifyConnected, setSpotifyConnected] = useState(false);
           const [request, response, promptAsync] = useAuthRequest(
       {
@@ -43,10 +56,21 @@ const SpotifyLogin = ({ navigation }) => {
       },
       discovery
   );
+  async function loadFont(){
+    try{
+      const fontRes = await Font.loadAsync({
+        'Creamy-Sugar': require('../assets/fonts/RustyHooks.ttf'),
+      });
+      console.log(fontRes);
+    } catch(err){
+      console.log(err);
+    }
+  }
 
 
     useEffect(() => {
         async function fetchData(){
+          await loadFont();
           const res = await getSpotifyConnected();
           if(res == true){
             setSpotifyConnected(!spotifyConnected);
@@ -72,6 +96,9 @@ const SpotifyLogin = ({ navigation }) => {
   console.log("spotifyConnected: " + spotifyConnected);
   return spotifyConnected == false ? (
     <View style={styles.container}>
+      <Overlay isVisible={loadVisible} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                <Loading />
+            </Overlay>
         <View style={styles.stuff}>
           <Image source={require('../assets/welcome.gif')} style={styles.img} />
           <View style={styles.alertBox}>
@@ -80,7 +107,7 @@ const SpotifyLogin = ({ navigation }) => {
                     Please click on the button below to get started.
               </Text>
           </View>
-          <Pressable style={styles.button} onPress={() => {promptAsync()}}>
+          <Pressable style={styles.button} onPress={async () => {toggleLoad(); await promptAsync(); toggleLoadFalse();}}>
             <Text style={styles.spotifyText}>
                 Login with Spotify
             </Text>
@@ -113,7 +140,8 @@ const styles = StyleSheet.create({
   spotifyText: {
     alignSelf: 'center',
     color: 'white',
-    padding: 10
+    padding: 10,
+    fontFamily: 'Creamy-Sugar'
   },
   button: {
     width: '70%',
@@ -132,7 +160,7 @@ const styles = StyleSheet.create({
     color: '#783621',
     fontSize: 25,
     textAlign: 'center',
-    fontFamily: 'Helvetica'
+    fontFamily: 'Creamy-Sugar'
   },
   img: {
     width: '100%',

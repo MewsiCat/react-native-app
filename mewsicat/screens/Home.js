@@ -10,6 +10,7 @@ import Modules from './Modules.js';
 import { Amplify} from 'aws-amplify';
 import awsExports from '../src/aws-exports';
 import { Dimensions } from 'react-native';
+import { getUserCat } from './GrayScreen.js';
 
 
 import React, {useEffect, useState, useCallback} from 'react';
