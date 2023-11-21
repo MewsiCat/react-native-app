@@ -48,7 +48,7 @@ async function playSound() {
   await sound.playAsync();
 }
 
-async function getUserCat(){
+export async function getUserCat(){
   const currentUserInfo = await Auth.currentUserInfo();
   const currentUser = currentUserInfo.username;
 

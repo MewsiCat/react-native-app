@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 // import { StyleSheet, View, PanResponder, Animated, Image, Button, Text } from 'react-native';
-import GrayScreen from './screens/GrayScreen.js';
+import GrayScreen, { getUserCat } from './screens/GrayScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
 import CustomHeader from './Components/CustomHeader.jsx'
 
@@ -21,6 +21,7 @@ import { generateFriendsList } from "./screens/FriendsList.js";
 import { Audio } from 'expo-av';
 import blackCatImage from './assets/blackcat.jpg'; 
 import { useFonts } from "expo-font";
+import { I18n } from "aws-amplify";
 
 
 import Modules, { updateCat, updateUserCat } from './screens/Modules.js';
@@ -61,6 +62,7 @@ import awsExports from './src/aws-exports';
 import { generateSong } from "./screens/MusicRec.js";
 import { generateFriendRequestsList } from "./screens/FriendRequestsList.js";
 import Home from "./screens/Home.js";
+import { SignIn } from "@aws-amplify/ui-react-native/dist/Authenticator/Defaults/index.js";
 Amplify.configure(awsExports);
 
 // SplashScreen.preventAutoHideAsync();
@@ -103,18 +105,49 @@ export async function pauseBGM(){
     await bgmSound.pauseAsync();
 }
 
+I18n.putVocabulariesForLanguage('en', {
+  'Sign In' : 'Sign In',
+  'Sign in': 'Log in', // Button label
+  'Sign in to your account': 'Welcome Back!',
+  'Username': 'bruh',
+  Username: 'Enter your username', // Username label
+  Password: 'Enter your password', // Password label
+  'Forgot your password?': 'Reset Password',
+});
+
 const MyAppHeader = () => {
   const {
     tokens: { space, fontSizes },
   } = useTheme();
   return (
     <View padding={space.large}>
-        <Text style={{ fontSize: fontSizes.xxxl, textAlign: "center", fontFamily: 'Creamy-Sugar'}}>
+        <Text style={{ fontSize: fontSizes.xxxl, color: "#783621", textAlign: "center", fontFamily: 'Creamy-Sugar'}}>
         Mewsicat!
       </Text>
       </View>
   );
 };
+const MySignInHeader = () => {
+  const {
+    tokens: { space, fontSizes },
+  } = useTheme();
+  return(
+    <View padding={space.large}>
+      <Text style={{fontSize: fontSizes.xxl, color: "#783621", textAlign: "center", fontFamily: 'Creamy-Sugar'}}>Login!</Text>
+    </View>
+  );
+}
+
+const MySignUpHeader = () => {
+  const {
+    tokens: { space, fontSizes },
+  } = useTheme();
+  return(
+    <View padding={space.large}>
+      <Text style={{fontSize: fontSizes.xxl, color: "#783621", textAlign: "center", fontFamily: 'Creamy-Sugar'}}>Create an account!</Text>
+    </View>
+  );
+}
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -129,7 +162,7 @@ const App = () => {
   async function loadFont(){
     try{
       const fontRes = await Font.loadAsync({
-        'Creamy-Sugar': require('./assets/fonts/CreamySugar.ttf'),
+        'Creamy-Sugar': require('./assets/fonts/RustyHooks.ttf'),
       });
       console.log(fontRes);
     } catch(err){
@@ -158,14 +191,15 @@ const App = () => {
         // Pre-load fonts, make any API calls you need to do here
         await loadFont();
         await playSound();
+        await getBGM();
+        playBGM();
         await checkUser();
         await generateFriendRequestsList();
         await generateFriendsList();
         await updateUserCat();
         await getSpotifyConnected();
         await checkTokenStatus();
-        await getBGM();
-        playBGM();
+        await getUserCat();
         console.log("setup done!");
         //generateSong();
         // addFriend("bbbbbb");
@@ -222,31 +256,39 @@ const App = () => {
   //console.log("Spotify token!: " + spotifyToken);
   //spotifyController.getUser(spotifyToken);
   return(
-    // <ThemeProvider
-    //   colorMode={colorMode}
-    //   theme={{
-    //     tokens: {
-    //       colors: {
-    //         brand: {
-    //           primary: {
-    //             10: '{colors.pink.10}',
-    //             20: '{colors.pink.20}',
-    //             40: '{colors.pink.40}',
-    //             60: '{colors.pink.60}',
-    //             80: '{colors.pink.80}',
-    //             90: '{colors.pink.90}',
-    //             100: '{colors.pink.100}',
-    //           },
-    //         },
-    //       },
-    //     },
-    //   }}>
+    <ThemeProvider
+      colorMode={colorMode}
+      theme={{
+        tokens: {
+          colors: {
+            brand: {
+              primary: {
+                10: '{colors.pink.10}',
+                20: '{colors.pink.20}',
+                40: '{colors.pink.40}',
+                60: '{colors.pink.60}',
+                80: '{colors.pink.80}',
+                90: '{colors.pink.90}',
+                100: '{colors.pink.100}',
+              },
+            },
+          },
+          fontFamily: 'Creamy-Sugar'
+        },
+      }}>
     <Authenticator.Provider>
-    <Authenticator Container={(props) => (
+    <Authenticator components={{
+      SignUp: (props) => (
+        <Authenticator.SignUp {...props} style={{fontFamily: 'Creamy-Sugar'}}Header={MySignUpHeader}/>
+      ),
+      SignIn: (props) => (
+        // will render only on the SignIn subcomponent
+        <Authenticator.SignIn {...props} Header={MySignInHeader} style={{fontColor: "#783621"}}/>
+      ),}}Container={(props) => (
           // reuse default `Container` and apply custom background
           <Authenticator.Container
             {...props}
-            style={{ backgroundColor: colors.blue[80], fontFamily: 'Creamy-Sugar'
+            style={{ backgroundColor: "#f0d396", fontFamily: 'Creamy-Sugar'
             }}
           />
         )}
@@ -257,7 +299,7 @@ const App = () => {
     </Authenticator>
 
     </Authenticator.Provider>
-    // </ThemeProvider>
+    </ThemeProvider>
     
   );
 }
