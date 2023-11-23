@@ -161,9 +161,11 @@ const App = () => {
 
   async function loadFont(){
     try{
+      console.log("starting font res");
       const fontRes = await Font.loadAsync({
         'Creamy-Sugar': require('./assets/fonts/RustyHooks.ttf'),
       });
+      console.log("result below: ");
       console.log(fontRes);
     } catch(err){
       console.log(err);
