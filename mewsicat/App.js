@@ -58,7 +58,7 @@ import { useColorScheme } from 'react-native';
 import { Image } from "react-native-elements";
 
 import { Amplify, Auth } from 'aws-amplify';
-import awsExports from './src/aws-exports';
+import awsExports from './src/amplifyconfiguration.json';
 import { generateSong } from "./screens/MusicRec.js";
 import { generateFriendRequestsList } from "./screens/FriendRequestsList.js";
 import Home from "./screens/Home.js";

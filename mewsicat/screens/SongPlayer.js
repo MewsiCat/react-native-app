@@ -11,7 +11,7 @@ import {
 } from '@aws-amplify/ui-react-native';
 
 import { Amplify, Auth } from 'aws-amplify';
-import awsExports from '../src/aws-exports';
+import awsExports from '../src/amplifyconfiguration.json';
 Amplify.configure(awsExports);
 
 import { createUser, updateUser, deleteUser } from '../src/graphql/mutations'

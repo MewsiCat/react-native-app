@@ -8,7 +8,7 @@ import CustomHeader from '../Components/CustomHeader.jsx'
 import SpotifyLogin from './SpotifyLogin.js';
 import Modules from './Modules.js';
 import { Amplify} from 'aws-amplify';
-import awsExports from '../src/aws-exports';
+import awsExports from '../src/amplifyconfiguration.json';
 import { Dimensions } from 'react-native';
 import { getUserCat } from './GrayScreen.js';
 
