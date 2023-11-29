@@ -11,6 +11,7 @@ import { updateSpotifyConnected, getSpotifyConnected, updateUserAttributes, getN
 import * as Font from 'expo-font';
 import Loading from './Loading';
 import { Overlay } from 'react-native-elements';
+import { makeRedirectUri } from 'expo-auth-session';
 
 const discovery = {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
@@ -51,7 +52,7 @@ const SpotifyLogin = ({ navigation }) => {
         usePKCE: false,
         // In the future will do this: Linking.createURL("/spotify-auth-callback"), as it changes the IP address depending on your wifi, 
         // also be sure to check the warnings if there are issues before production
-        redirectUri: Linking.createURL("/spotify-auth-callback"),
+        redirectUri: makeRedirectUri({scheme: 'mewsicat'}),
   
       },
       discovery

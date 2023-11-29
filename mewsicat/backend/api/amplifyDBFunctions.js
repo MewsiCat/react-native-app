@@ -1,4 +1,5 @@
 import { API, graphqlOperation } from 'aws-amplify'
+import { makeRedirectUri } from 'expo-auth-session';
 
 import {
     withAuthenticator,
@@ -9,7 +10,7 @@ import { Audio } from 'expo-av';
 
   
 import { Amplify, Auth } from 'aws-amplify';
-import awsExports from '../../src/aws-exports';
+import awsExports from '../../src/amplifyconfiguration.json';
 Amplify.configure(awsExports);
 
 import { createUser, updateUser, deleteUser, createFriend, createSong, deleteFriend, createCat, updateCat, updateFriend } from '../../src/graphql/mutations'
@@ -21,7 +22,7 @@ import { generateFriendsList } from '../../screens/GrayScreen';
 
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
-const redirect_uri = Linking.createURL("/spotify-auth-callback");
+const redirect_uri = makeRedirectUri({scheme: 'mewsicat'});
 
 const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",

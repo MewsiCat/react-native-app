@@ -4,11 +4,12 @@
     "slug": "mewsicat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "myapp",
+    "scheme": "mewsicat",
     "icon": "./assets/loading.gif",
     "userInterfaceStyle": "light",
+    "owner": "mewsicat",
     "splash": {
-      "image": "./assets/loading.gif",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,14 +24,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.addychen2.mewsicat"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "fb49c723-4617-4cff-a443-07f95df9bb15"
+        "projectId": "ed2bcf61-717e-41e7-b318-45dd75626a09"
       }
     }
   }
