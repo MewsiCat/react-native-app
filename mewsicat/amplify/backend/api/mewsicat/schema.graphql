@@ -10,6 +10,7 @@ type User @model {
 	firstTimeUser: Boolean
 	friendRequests: [String]
 	songs: [Song] @hasMany(indexName: "bySongID")
+	expoPushToken: String
 }
 
 type Cat @model {

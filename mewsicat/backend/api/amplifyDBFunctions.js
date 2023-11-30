@@ -19,10 +19,13 @@ import { refreshAsync, TokenResponse, exchangeCodeAsync } from 'expo-auth-sessio
 import * as Linking from 'expo-linking';
 import { updateUserCat } from '../../screens/Modules';
 import { generateFriendsList } from '../../screens/GrayScreen';
+import { registerForPushNotificationsAsync, sendFriendReqPushNotification, sendPushNotification, acceptFriendReqPushNotification, sendSongPushNotification } from '../pushNotifications';
 
 const client_id = "88c17d6f25cc43eaad226930c216ae5b";
 const client_secret = "55c8fe6737b44bf39b7671aec4572402";
-const redirect_uri = makeRedirectUri({scheme: 'mewsicat'});
+// for production: makeRedirectUri({scheme: 'mewsicat'})
+const redirect_uri = makeRedirectUri({scheme: 'mewsicat'}); // for expo go: Linking.createURL("/spotify-auth-callback")
+
 
 const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
@@ -165,6 +168,7 @@ export async function sendSong(friend, musicRecURI){
 
   const friendRes = await API.graphql(graphqlOperation(userByName, friendParams));
   const friendID = friendRes.data.userByName.items[0].id;
+  const friendsPushToken = friendRes.data.userByName.items[0].expoPushToken;
   // var newSong;
   var songResult = await fetch(
     `https://api.spotify.com/v1/tracks/${musicRecURI}`,
@@ -198,6 +202,7 @@ export async function sendSong(friend, musicRecURI){
       }
     });
     console.log(newSong);
+    sendSongPushNotification(friendsPushToken, currentUser);
 
   
   // // sending song to friend
@@ -370,6 +375,7 @@ export async function sendFriendRequest(newFriend){
     const result = await API.graphql(graphqlOperation(userByName, params));
     const friendsID = result.data.userByName.items[0].id;
     const friendRequests = result.data.userByName.items[0].friendRequests;
+    const friendsExpoToken = result.data.userByName.items[0].expoPushToken;
     console.log("friend requests" + friendRequests)
     var newFriendRequests = [];
     
@@ -390,6 +396,7 @@ export async function sendFriendRequest(newFriend){
       }
     }
     })
+    await sendFriendReqPushNotification(friendsExpoToken, currentUser);
     console.log(res);
   } catch(err){
     console.log(err);
@@ -515,6 +522,7 @@ export async function acceptFriendRequest(newFriend){
         const newFriendsCatName = newFriendResult.data.userByName.items[0].cat.items[0].name;
         const newFriendsCatFishes = newFriendResult.data.userByName.items[0].cat.items[0].fishes;
         const newFriendsCatType = newFriendResult.data.userByName.items[0].cat.items[0].type;
+        const newFriendsPushToken = newFriendResult.data.userByName.items[0].expoPushToken;
       
         // create friend cat object
       const catRes = await API.graphql({
@@ -602,6 +610,7 @@ export async function acceptFriendRequest(newFriend){
         }
         })
 
+        await acceptFriendReqPushNotification(newFriendsPushToken, newFriend);
         await generateFriendsList();
   } catch(err){
     console.log(err);
@@ -715,6 +724,8 @@ export async function createUserInDB(){
       // Create User in the database
       const currentUserInfo = await Auth.currentUserInfo();
       const currentUser = currentUserInfo.username;
+
+      const expoPushToken = await registerForPushNotificationsAsync();
       
 
       const createUserRes = await API.graphql({
@@ -722,6 +733,7 @@ export async function createUserInDB(){
         variables: {
           input: {
             name: currentUser,
+            expoPushToken: expoPushToken
           }
         }
       })
@@ -743,4 +755,17 @@ export async function createUserInDB(){
     } catch(err){
       console.log(err);
     }
+  }
+
+  export async function testNotifications(){
+    const currentUserInfo = await Auth.currentUserInfo();
+      const currentUser = currentUserInfo.username;
+
+     const params = {
+      name: currentUser
+      };
+      const res = await API.graphql(graphqlOperation(userByName, params));
+      const expoPushToken = res.data.userByName.items[0].expoPushToken;
+
+      await sendPushNotification(expoPushToken);
   }

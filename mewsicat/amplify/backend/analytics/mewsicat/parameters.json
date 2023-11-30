@@ -1,0 +1,21 @@
+{
+    "appName": "mewsicat",
+    "roleName": "pinpointLambdaRole6d4bc62d",
+    "cloudformationPolicyName": "cloudformationPolicy6d4bc62d",
+    "cloudWatchPolicyName": "cloudWatchPolicy6d4bc62d",
+    "pinpointPolicyName": "pinpointPolicy6d4bc62d",
+    "authPolicyName": "pinpoint_amplify_6d4bc62d",
+    "unauthPolicyName": "pinpoint_amplify_6d4bc62d",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

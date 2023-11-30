@@ -1,4 +1,10 @@
 {
+  "analytics": {
+    "mewsicat": {
+      "providerPlugin": "awscloudformation",
+      "service": "Pinpoint"
+    }
+  },
   "api": {
     "mewsicat": {
       "dependsOn": [],

@@ -70,6 +70,7 @@ export const createUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      expoPushToken
       createdAt
       updatedAt
       __typename
@@ -145,6 +146,7 @@ export const updateUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      expoPushToken
       createdAt
       updatedAt
       __typename
@@ -220,6 +222,7 @@ export const deleteUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      expoPushToken
       createdAt
       updatedAt
       __typename
