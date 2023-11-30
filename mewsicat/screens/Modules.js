@@ -12,7 +12,7 @@ import FriendRequestsList from './FriendRequestsList';
 import FriendSongsList from './FriendSongsList';
 import GenerateCats from './GenerateCats';
 import { collectManifestSchemes } from 'expo-linking';
-import { createNewCat, increaseFishes } from '../backend/api/amplifyDBFunctions';
+import { createNewCat, increaseFishes, testNotifications } from '../backend/api/amplifyDBFunctions';
 import Shop from './Shop';
 
 var catFishes;
@@ -64,6 +64,7 @@ export default function Modules({ navigation }) {
     };
 
     const toggleSettings = () => {
+        testNotifications();
         setSettingsVisible(!settingsVisible);
     }
 

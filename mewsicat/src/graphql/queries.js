@@ -67,6 +67,7 @@ export const getUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      expoPushToken
       createdAt
       updatedAt
       __typename
@@ -144,6 +145,7 @@ export const listUsers = /* GraphQL */ `
           nextToken
           __typename
         }
+        expoPushToken
         createdAt
         updatedAt
         __typename
@@ -374,6 +376,7 @@ export const userByName = /* GraphQL */ `
           nextToken
           __typename
         }
+        expoPushToken
         createdAt
         updatedAt
         __typename

@@ -63,6 +63,18 @@ import { generateSong } from "./screens/MusicRec.js";
 import { generateFriendRequestsList } from "./screens/FriendRequestsList.js";
 import Home from "./screens/Home.js";
 import { SignIn } from "@aws-amplify/ui-react-native/dist/Authenticator/Defaults/index.js";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 Amplify.configure(awsExports);
 
 // SplashScreen.preventAutoHideAsync();
