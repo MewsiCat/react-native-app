@@ -18,14 +18,14 @@ export default function ShopItem({ itemName, itemDescription, itemImg, purchased
             <Image source={itemImg} style={styles.IMG} />
             <View style={styles.textContainer}>
 
-//export default function ShopItem({ itemName, itemDescription, imgURI, purchased }) {
+{/* // export default function ShopItem({ itemName, itemDescription, imgURI, purchased }) {
 
 //    return (!purchased) ? (
 //        <View style={styles.container}>
 //            <View>
 //  <Image source={{ uri: imgURI }} style={styles.IMG} />
 //            </View>
-//            <View style={{padding: 5}}>
+//            <View style={{padding: 5}}> */}
 
                 <Text style={styles.name}>
                     {itemName}
