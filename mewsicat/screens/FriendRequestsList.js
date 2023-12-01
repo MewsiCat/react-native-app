@@ -5,7 +5,7 @@ import { Amplify, Auth } from 'aws-amplify';
 import { API, graphqlOperation } from 'aws-amplify'
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import awsExports from '../src/aws-exports';
+import awsExports from '../src/amplifyconfiguration.json';
 import Loading from './Loading.js';
 import { Overlay } from 'react-native-elements';
 

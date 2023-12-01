@@ -127,8 +127,24 @@ export default function Shop() {
             
             <View style={{marginTop:'100%', height:"40%", borderColor:"#783621", borderRadius: 10, borderWidth: 2, padding: 2, backgroundColor: "rgba(0,0,0,0.2)"}}>
             <ScrollView>
+
                 <View style={{ padding: 0}}>
                     {renderRows(items)}
+
+//                <View style={{padding: 10}}>
+ //                   {items.map((item) => {
+//                        return (
+//                          <View style={{flexDirection: 'row', margin: 3}} >
+//                            <ShopItem
+//                                itemName = {item.id}
+//                                itemDescription = {item.desc}
+//                                imgURI = {item.img}
+//                                purchased = {item.purchased}
+//                            />
+//                          </View>
+ //                       );
+ //                     })}
+
                 </View>
             </ScrollView>
             </View>

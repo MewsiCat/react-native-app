@@ -8,6 +8,10 @@ import { refreshAsync } from 'expo-auth-session';
 import * as Linking from 'expo-linking';
 import GenerateCats from './GenerateCats';
 import { updateSpotifyConnected, getSpotifyConnected, updateUserAttributes, getNewToken, getToken } from '../backend/api/amplifyDBFunctions';
+import * as Font from 'expo-font';
+import Loading from './Loading';
+import { Overlay } from 'react-native-elements';
+import { makeRedirectUri } from 'expo-auth-session';
 
 const discovery = {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
@@ -17,6 +21,16 @@ const discovery = {
 const SpotifyLogin = ({ navigation }) => {
     const spotifyController = new SpotifyAPIController();
     const [token, setToken] = useState("");
+    const [loadVisible, setLoadVisible] = useState(false);
+
+    const toggleLoad = () => {
+        setLoadVisible(!loadVisible);
+    }
+
+    const toggleLoadFalse = () => {
+        setLoadVisible(loadVisible);
+    }
+
     const [spotifyConnected, setSpotifyConnected] = useState(false);
           const [request, response, promptAsync] = useAuthRequest(
       {
@@ -38,15 +52,26 @@ const SpotifyLogin = ({ navigation }) => {
         usePKCE: false,
         // In the future will do this: Linking.createURL("/spotify-auth-callback"), as it changes the IP address depending on your wifi, 
         // also be sure to check the warnings if there are issues before production
-        redirectUri: Linking.createURL("/spotify-auth-callback"),
+        redirectUri: makeRedirectUri({scheme: 'mewsicat'}),
   
       },
       discovery
   );
+  async function loadFont(){
+    try{
+      const fontRes = await Font.loadAsync({
+        'Creamy-Sugar': require('../assets/fonts/RustyHooks.ttf'),
+      });
+      console.log(fontRes);
+    } catch(err){
+      console.log(err);
+    }
+  }
 
 
     useEffect(() => {
         async function fetchData(){
+          await loadFont();
           const res = await getSpotifyConnected();
           if(res == true){
             setSpotifyConnected(!spotifyConnected);
@@ -72,23 +97,23 @@ const SpotifyLogin = ({ navigation }) => {
   console.log("spotifyConnected: " + spotifyConnected);
   return spotifyConnected == false ? (
     <View style={styles.container}>
-      <Text
-        style={{
-          fontSize: 30,
-          fontWeight: "bold",
-          color: "white",
-          marginBottom: "20%",
-        }}
-      >
-        top song player
-      </Text>
-      <Button
-        title="Login with Spotify"
-        style={styles.button}
-        onPress={() => {
-          promptAsync();
-        }}
-      />
+      <Overlay isVisible={loadVisible} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
+                <Loading />
+            </Overlay>
+        <View style={styles.stuff}>
+          <Image source={require('../assets/welcome.gif')} style={styles.img} />
+          <View style={styles.alertBox}>
+              <Text style={styles.alertText} >
+                    Mewsicat requires you to login to Spotify for its full capabilities.
+                    Please click on the button below to get started.
+              </Text>
+          </View>
+          <Pressable style={styles.button} onPress={async () => {toggleLoad(); await promptAsync(); toggleLoadFalse();}}>
+            <Text style={styles.spotifyText}>
+                Login with Spotify
+            </Text>
+          </Pressable>
+        </View>
     </View>
   ) : (<GenerateCats/>);
 };
@@ -100,11 +125,48 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "black",
+    backgroundColor: '#debf85',
+    justifyContent: "center",
+    width: '100%',
+    height: '100%',
   },
-
+  stuff: {
+    width: '90%',
+    height: '90%',
+    backgroundColor: '#f0d396',
+    justifyContent: 'center',
+    padding: 20,
+    borderRadius: 20
+  },
+  spotifyText: {
+    alignSelf: 'center',
+    color: 'white',
+    padding: 10,
+    fontFamily: 'Creamy-Sugar'
+  },
   button: {
-    width: 200,
-    marginTop: 50,
+    width: '70%',
+    backgroundColor: '#1ed760',
+    alignSelf: 'center',
+    borderRadius: 20
   },
+  alertBox: {
+    width: '100%',
+    borderRadius: 40,
+    alignSelf: 'center',
+    margin: 30
+  },
+  alertText: {
+    padding: 10,
+    color: '#783621',
+    fontSize: 25,
+    textAlign: 'center',
+    fontFamily: 'Creamy-Sugar'
+  },
+  img: {
+    width: '100%',
+    height: '30%',
+    padding: 50,
+    borderRadius: 30
+  }
 });

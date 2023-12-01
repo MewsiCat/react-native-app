@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import App from '../App';
 import { updateFirstTimeUser } from '../backend/api/amplifyDBFunctions';
 import { Auth } from 'aws-amplify';
-
+import { getUserCat } from './GrayScreen';
 import Loading from './Loading';
 import { createNewCat } from '../backend/api/amplifyDBFunctions';
 
@@ -100,7 +100,7 @@ export default function GenerateCats({ navigation }) {
                     }}>
                         <Text style={styles.buttonText}>Get Cat!</Text>
                     </Pressable>
-                    <Pressable style={styles.buttonContainer} onPress={async () => { toggleLoad();console.log("beginning update first time"); await updateFirstTimeUser(); console.log("ending update first time");toggleLoadFalse(); setGoHome(!goHome); }}>
+                    <Pressable style={styles.buttonContainer} onPress={async () => { toggleLoad();console.log("beginning update first time"); await updateFirstTimeUser(); await getUserCat(); console.log("ending update first time");toggleLoadFalse(); setGoHome(!goHome); }}>
                         <Text style={styles.buttonText}>Return Home</Text>
                     </Pressable>
                 </View>

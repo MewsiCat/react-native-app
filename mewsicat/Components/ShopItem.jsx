@@ -11,11 +11,22 @@ async function playSound() {
   await sound.playAsync();
 }
 
+
 export default function ShopItem({ itemName, itemDescription, itemImg, purchased }) {
     return (
         <View style={[styles.container, !purchased && styles.notPurchasedContainer]}>
             <Image source={itemImg} style={styles.IMG} />
             <View style={styles.textContainer}>
+
+//export default function ShopItem({ itemName, itemDescription, imgURI, purchased }) {
+
+//    return (!purchased) ? (
+//        <View style={styles.container}>
+//            <View>
+//  <Image source={{ uri: imgURI }} style={styles.IMG} />
+//            </View>
+//            <View style={{padding: 5}}>
+
                 <Text style={styles.name}>
                     {itemName}
                 </Text>
@@ -31,7 +42,32 @@ export default function ShopItem({ itemName, itemDescription, itemImg, purchased
                 </Pressable>
             )}
         </View>
+
     )
+
+//    ) : (
+//        <View style={styles.container}>
+//            <View>
+//                <Image source={{ uri: imgURI }} style={styles.IMG} />
+//            </View>
+//            <View style={{padding: 5}}>
+//                <Text style={styles.name}>
+//                    {itemName}
+//                </Text>
+//               <Text style={styles.desc}>
+//                    {itemDescription}
+//                </Text>
+//            </View>
+//            <View style={{marginLeft: 'auto', alignSelf: 'center'}}>
+//                <Pressable style={styles.buttonD} disabled={true}>
+//                    <Text style={styles.pur}>
+//                        Purchased
+//                    </Text>
+//                </Pressable>
+//            </View>
+ //       </View>
+//    );
+
 }
 
 const styles = StyleSheet.create({
