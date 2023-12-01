@@ -12,11 +12,25 @@ import { Overlay } from 'react-native-elements';
 import Loading from './Loading';
 
 const totalSpriteSheetNum = 5;
+
 const spriteSheet0 = require('../assets/black_0.png');
 const spriteSheet1 = require('../assets/blue_0.png');
 const spriteSheet2 = require('../assets/brown_0.png');
 const spriteSheet3 = require('../assets/calico_0.png');
 const spriteSheet4 = require('../assets/grey_0.png');
+const outfit_christmasHat = require('../assets/christmasHatForCat.png');
+const wife = require('../assets/wife.jpg');
+const directions = [
+  { x: 0, y: 1 },
+  { x: -1, y: 1 },
+  { x: -1, y: 0 },
+  { x: -1, y: -1 },
+  { x: 0, y: -1 },
+  { x: 1, y: -1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+];
+
 
 const imagetemp = [
   "https://upload.wikimedia.org/wikipedia/en/3/3d/New_Jeans_%28EP%29.jpg",
@@ -78,6 +92,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
   const frameDuration = 150;
 
   const [lastDirectionIndex, setLastDirectionIndex] = useState(0);
+  const [directionIndexs, setdirectionIndexs] = useState(0);
   const [spriteStartX, setSpriteStartX] = useState(384);
   const [spriteStartY, setSpriteStartY] = useState(32);
   const [frameCount, setFrameCount] = useState(4);
@@ -135,16 +150,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
     const minTravelDistance = 50;
     const halfScreenWidth = screenWidth / 2;
     const halfScreenHeight = screenHeight / 2;
-    const directions = [
-      { x: 0, y: 1 },
-      { x: -1, y: 1 },
-      { x: -1, y: 0 },
-      { x: -1, y: -1 },
-      { x: 0, y: -1 },
-      { x: 1, y: -1 },
-      { x: 1, y: 0 },
-      { x: 1, y: 1 },
-    ];
+
 
     let validDirection = false;
     while (!validDirection) {
@@ -179,6 +185,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
     }
 
     const chosenDirection = directions[directionIndex];
+    setdirectionIndexs(directionIndex);
     setSpriteStartY(32 + directionIndex * 64);
     distance = minTravelDistance + Math.random() * (maxDistance - minTravelDistance);
     setLastDirectionIndex(directionIndex);
@@ -234,16 +241,33 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
       }}
     >
       <TouchableOpacity onPress={handlePressCat}>
-        <SpriteAnimator
-          source={spriteSheetSource}
-          frameCount={frameCount}
-          frameDuration={frameDuration}
-          startX={spriteStartX}
-          startY={spriteStartY}
-          frameWidth={frameWidth}
-          frameHeight={frameHeight}
-        />
-      </TouchableOpacity>
+      <View >
+    <SpriteAnimator
+      // style={{ position: 'absolute' }}
+      source={spriteSheetSource}
+      frameCount={frameCount}
+      frameDuration={frameDuration}
+      startX={spriteStartX}
+      startY={spriteStartY}
+      frameWidth={frameWidth}
+      frameHeight={frameHeight}
+      directionIndexs={directionIndexs}
+    />
+    <View style={{ marginTop : frameHeight * scale * -1 }}>
+    <SpriteAnimator
+      source={outfit_christmasHat}
+      frameCount={frameCount}
+      frameDuration={frameDuration}
+      startX={spriteStartX}
+      startY={spriteStartY}
+      frameWidth={frameWidth}
+      frameHeight={frameHeight}
+      directionIndexs={directionIndexs}
+    />
+    </View>
+  </View>
+</TouchableOpacity>
+
     </Animated.View>
   );
 };
@@ -290,7 +314,7 @@ export async function generateFriendsList() {
   }
 }
 
-const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, frameWidth, frameHeight }) => {
+const SpriteAnimator = ({ source, frameCount, frameDuration, startX, startY, frameWidth, frameHeight, directionIndexs }) => {
   const animation = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
@@ -443,6 +467,7 @@ const toggleLoadFalse = () => {
         ))}
       </View>
       <CatInfoModal visible={isModalVisible} friend={modalContent} onClose={() => setIsModalVisible(false)} />
+      {/* <Button onPress={getSantaHat}> asd</Button> */}
     </ImageBackground>
   );
 }

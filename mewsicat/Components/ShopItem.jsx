@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, Dimensions } from 'react-native';
 import Loading from '../screens/Loading';
 import { Audio } from 'expo-av';
 
@@ -12,87 +12,75 @@ async function playSound() {
 }
 
 export default function ShopItem({ itemName, itemDescription, itemImg, purchased }) {
-
-    return (!purchased) ? (
-        <View style={styles.container}>
-            <View>
-                <Image source={{ uri: itemImg }} style={styles.IMG} />
-            </View>
-            <View style={{padding: 5}}>
+    return (
+        <View style={[styles.container, !purchased && styles.notPurchasedContainer]}>
+            <Image source={itemImg} style={styles.IMG} />
+            <View style={styles.textContainer}>
                 <Text style={styles.name}>
                     {itemName}
                 </Text>
-                <Text style={styles.desc}>
+                {/* <Text style={styles.desc}>
                     {itemDescription}
-                </Text>
+                </Text> */}
             </View>
-            <View style={{marginLeft: 'auto', alignSelf: 'center'}}>
+            {purchased && (
                 <Pressable style={styles.button} onPress={async() => {playSound()}}>
-                    <Text style={styles.pur}>
-                        Purchase
-                    </Text>
+                    <Text adjustsFontSizeToFit={true} style={styles.pur}>
+                        Equip
+                    </Text>   
                 </Pressable>
-            </View>
+            )}
         </View>
-    ) : (
-        <View style={styles.container}>
-            <View>
-                <Image source={{ uri: itemImg }} style={styles.IMG} />
-            </View>
-            <View style={{padding: 5}}>
-                <Text style={styles.name}>
-                    {itemName}
-                </Text>
-                <Text style={styles.desc}>
-                    {itemDescription}
-                </Text>
-            </View>
-            <View style={{marginLeft: 'auto', alignSelf: 'center'}}>
-                <Pressable style={styles.buttonD} disabled={true}>
-                    <Text style={styles.pur}>
-                        Purchased
-                    </Text>
-                </Pressable>
-            </View>
-        </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
     container: {
-        alignSelf: 'center',
         backgroundColor: '#f0d396',
         borderColor: '#783621',
-        paddingHorizontal: 8,
         borderWidth: 2,
         borderRadius: 10,
-        height: '100%',
-        width: '100%',
-        padding: 3,
-        flexDirection: 'row'
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: 4,
+        height:'100%'
+    },
+    notPurchasedContainer: {
+        opacity: 0.5, // Makes the component look darker
+    },
+    textContainer: {
+        padding: 5,
+        alignItems: 'center',
+        height:"35%"
+        
     },
     button: {
-        padding: 10,
-        paddingHorizontal: 14,
-        borderRadius: 20,
-        backgroundColor: '#ffffff'
-    },
-    buttonD:  {
-        padding: 10,
-        borderRadius: 20,
-        backgroundColor: 'gray'
+        backgroundColor: '#f0d396',
+        borderColor:'#d0a060',
+        width:"95%",
+        paddingHorizontal: 8,
+        alignItems: 'center',
+        borderWidth:2,
+        borderRadius: 10,
     },
     pur: {
-        fontSize: 10
+        
+        color: '#783621',
+        fontWeight: 'bold',    
+
     },
     name: {
-
+        fontSize: 16,
     },
     desc: {
-
+        fontSize: 14,
+        color: "gray"
     },
     IMG: {
-        height: 30,
-        width: 30
+        width: "100%",
+        height: undefined,
+        aspectRatio:1,
+        // aspectRatio: 0.1,
+        borderRadius: 10,
     }
 });
