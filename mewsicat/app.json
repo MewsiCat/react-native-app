@@ -2,14 +2,14 @@
   "expo": {
     "name": "mewsicat",
     "slug": "mewsicat",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "orientation": "portrait",
     "scheme": "mewsicat",
-    "icon": "./assets/loading.gif",
+    "icon": "./assets/cats/punkcat.png",
     "userInterfaceStyle": "light",
     "owner": "mewsicat",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/cats/punkcat.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -34,6 +34,17 @@
       "eas": {
         "projectId": "ed2bcf61-717e-41e7-b318-45dd75626a09"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            "./assets/travisnotifsound.wav",
+            "./assets/mewsound.mp3"
+          ]
+        }
+      ]
+    ]
   }
 }

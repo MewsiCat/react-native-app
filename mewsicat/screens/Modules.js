@@ -14,6 +14,12 @@ import GenerateCats from './GenerateCats';
 import { collectManifestSchemes } from 'expo-linking';
 import { createNewCat, increaseFishes, testNotifications } from '../backend/api/amplifyDBFunctions';
 import Shop from './Shop';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import { useRef } from "react";
+
+import { registerForPushNotificationsAsync } from "../backend/pushNotifications.js";
 
 var catFishes;
 
@@ -47,6 +53,10 @@ export default function Modules({ navigation }) {
     const [songsVisible, setSongsVisible] = useState(false);
     const [genCatVisible, setGenCatVisible] = useState(false);
     const [shopVisible, setShopVisible] = useState(false);
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
 
     const toggleGenerateCat = () => {
         setGenCatVisible(!genCatVisible);
@@ -84,8 +94,34 @@ export default function Modules({ navigation }) {
             const currentUserInfo = await Auth.currentUserInfo();
             const currentUser = currentUserInfo.username;
             console.log("fishes " + catFishes);
+            // toggleFriends();
         }
         fetchData();
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+          setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+          console.log(response.notification.request.content.data.responseType);
+          const responseType = response.notification.request.content.data.responseType;
+          if(responseType == 'send friend req'){
+            toggleFriends();
+          }
+          if(responseType == 'accept friend req'){
+            toggleFriends();
+          }
+          else{
+            console.log(responseType);
+          }
+        // const url = response.notification.request.content.data.url;
+        });
+
+        return () => {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+          Notifications.removeNotificationSubscription(responseListener.current);
+        };
     }, [])
 
     return (

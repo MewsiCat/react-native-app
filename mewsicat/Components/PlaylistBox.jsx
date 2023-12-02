@@ -178,7 +178,7 @@ export default function PlaylistBox({ friendlist }) {
               active={item.active}
             />
           )}
-          ListEmptyComponent={<Text style={styles.emptyText}>search up your friends name ro username</Text>}
+          ListEmptyComponent={<Text style={styles.emptyText}>search up your friends name or username</Text>}
         />
       case 'remove':
         return <FlatList
@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
     color: '#783621',
     textAlign: 'center',
     marginVertical: 20,
+    fontFamily: 'Creamy-Sugar'
   },
   inputContainer: {
     padding: 10,
@@ -347,6 +348,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#783621',
     fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'Creamy-Sugar'
   },
   buttonsContainer: {
     flexDirection: 'row',
