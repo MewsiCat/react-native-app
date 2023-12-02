@@ -131,19 +131,20 @@ export default function Shop() {
                 <View style={{ padding: 0}}>
                     {renderRows(items)}
 
-//                <View style={{padding: 10}}>
- //                   {items.map((item) => {
-//                        return (
-//                          <View style={{flexDirection: 'row', margin: 3}} >
-//                            <ShopItem
-//                                itemName = {item.id}
-//                                itemDescription = {item.desc}
-//                                imgURI = {item.img}
-//                                purchased = {item.purchased}
-//                            />
-//                          </View>
- //                       );
- //                     })}
+                < View style={{padding: 10}}>
+                    {items.map((item) => {
+                       return (
+                         <View style={{flexDirection: 'row', margin: 3}} >
+                           <ShopItem
+                               itemName = {item.id}
+                               itemDescription = {item.desc}
+                               imgURI = {item.img}
+                               purchased = {item.purchased}
+                           />
+                         </View>
+                       );
+                     })}
+                </View>     
 
                 </View>
             </ScrollView>

@@ -81,31 +81,6 @@ export default function Settings() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Settings</Text>
-            <View style={styles.stuff}>
-                <Text style={styles.description}>
-                    Volume
-                </Text>
-                <Slider
-                    style={{width: '80%', height: '80%', alignSelf:'center'}}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#d0a060"
-                    maximumTrackTintColor="#d0a060"
-                    thumbTintColor='#783621'
-                />
-
-                <Text style={styles.description}>
-                    Effects
-                </Text>
-                <Slider
-                    style={{width: '80%', height: '80%', alignSelf:'center'}}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#d0a060"
-                    maximumTrackTintColor="#d0a060"
-                    thumbTintColor='#783621'
-                />
-            </View>
             <View style={styles.toBottom}>
                 <Pressable style={styles.welcome} disabled={true}>
                   <Text style={styles.buttonText}>Logged in as: {user?.username}</Text>
