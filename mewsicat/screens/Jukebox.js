@@ -37,6 +37,9 @@ export default function Jukebox() {
         }
         setRecVisible(!recVisible);
     };
+
+    useEffect(() => {
+    }, []);
     
     return (
         <View style={styles.container}>
@@ -80,10 +83,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     title: {
-        fontSize: 40,
+        fontSize: 60,
         fontWeight: 'bold',
         color: '#783621',
-        alignSelf:'center'
+        alignSelf:'center',
+        fontFamily: 'Creamy-Sugar'
     },
     description: {
         fontSize: 20,
@@ -99,9 +103,10 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#783621',
         padding: 5,
-        fontSize: 20,
+        fontSize: 40,
         fontWeight: 'bold',
-        alignSelf:'center'
+        alignSelf:'center',
+        fontFamily: 'Creamy-Sugar'
     },
     img: {
         alignSelf:'center',

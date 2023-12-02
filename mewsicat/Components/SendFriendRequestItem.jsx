@@ -86,6 +86,5 @@ const styles = StyleSheet.create({
   sendMusicButtonText: {
     color: '#783621',
     fontWeight: '600',
-    
   },
 });

@@ -34,10 +34,11 @@ const styles = StyleSheet.create({
         height: 250,
     },
     text: {
-        fontSize: 20,
+        fontSize: 40,
         fontWeight: 'bold',
         alignSelf: 'center',
         padding: 10,
-        color: '#783621'
+        color: '#783621',
+        fontFamily: 'Creamy-Sugar'
     },
 })

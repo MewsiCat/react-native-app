@@ -71,13 +71,22 @@ import Constants from 'expo-constants';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
   }),
 });
-Amplify.configure(awsExports);
 
-// SplashScreen.preventAutoHideAsync();
+const trigger = new Date(Date.now() + 60 * 60 * 1000);
+trigger.setMinutes(0);
+trigger.setSeconds(0);
+
+Notifications.scheduleNotificationAsync({
+  content: {
+    title: 'Happy new hour!',
+  },
+  trigger,
+});
+Amplify.configure(awsExports);
 
 const spotifyController = new SpotifyAPIController();
 
@@ -162,7 +171,6 @@ const MySignUpHeader = () => {
 }
 
 // SplashScreen.preventAutoHideAsync();
-
 const App = () => {
 
   const [spotifyToken, setSpotifyToken] = useState("");
@@ -175,7 +183,7 @@ const App = () => {
     try{
       console.log("starting font res");
       const fontRes = await Font.loadAsync({
-        'Creamy-Sugar': require('./assets/fonts/RustyHooks.ttf'),
+        'Creamy-Sugar': require('./assets/fonts/SchofieldOutline.otf'),
       });
       console.log("result below: ");
       console.log(fontRes);
@@ -223,6 +231,7 @@ const App = () => {
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!
         //await new Promise(resolve => setTimeout(resolve, 10000));
+        await SplashScreen.preventAutoHideAsync();
       } catch (e) {
         console.warn(e);
       } finally {

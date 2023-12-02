@@ -16,12 +16,13 @@ Notifications.setNotificationHandler({
 
 // Can use this function below or use Expo's Push Notification Tool from: https://expo.dev/notifications
 export async function sendPushNotification(expoPushToken) {
+  try{
   const message = {
     to: expoPushToken,
     sound: 'default',
     title: 'Testing!',
     body: 'settings clicked!!',
-    data: { someData: 'goes here' },
+    data: { responseType: 'test' },
   };
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -33,6 +34,9 @@ export async function sendPushNotification(expoPushToken) {
     },
     body: JSON.stringify(message),
   });
+} catch(err){
+  console.log(err);
+}
 }
 
 export async function sendFriendReqPushNotification(expoPushToken, name) {
@@ -41,7 +45,7 @@ export async function sendFriendReqPushNotification(expoPushToken, name) {
       sound: 'default',
       title: `${name}`,
       body: `wants to be your friend!`,
-      data: { someData: 'goes here' },
+      data: { responseType: 'send friend req' },
     };
   
     await fetch('https://exp.host/--/api/v2/push/send', {
@@ -61,7 +65,7 @@ export async function acceptFriendReqPushNotification(expoPushToken, name) {
       sound: 'default',
       title: `${name}`,
       body: `accepted your friend request!`,
-      data: { someData: 'goes here' },
+      data: { responseType: 'accept friend req' },
     };
   
     await fetch('https://exp.host/--/api/v2/push/send', {

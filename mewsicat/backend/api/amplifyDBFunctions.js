@@ -610,7 +610,7 @@ export async function acceptFriendRequest(newFriend){
         }
         })
 
-        await acceptFriendReqPushNotification(newFriendsPushToken, newFriend);
+        await acceptFriendReqPushNotification(newFriendsPushToken, currentUser);
         await generateFriendsList();
   } catch(err){
     console.log(err);

@@ -221,7 +221,7 @@ export default function MusicRec() {
                 <Overlay isVisible={songFriendsVisible} onBackdropPress={toggleSongFriendsList} overlayStyle={{ backgroundColor: '#f0d396', height: '90%', borderRadius: 20 }}>
                     <SongFriendsList musicRecURI={musicRec} />
                 </Overlay>
-                <Slider
+                {/* <Slider
                     value={0.6}
                     minimumValue={0}
                     maximumValue={1}
@@ -229,7 +229,7 @@ export default function MusicRec() {
                     maximumTrackTintColor="#783621"
                     thumbTintColor='#783621'
                     disabled
-                />
+                /> */}
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
                     <Pressable>
                         <Image style={styles.icon} source={require('../assets/previous.png')}/>
@@ -312,7 +312,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#783621',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontFamily: 'Creamy-Sugar'
     },
     description: {
         fontSize: 20,
@@ -330,7 +331,8 @@ const styles = StyleSheet.create({
         padding: 5,
         fontSize: 20,
         fontWeight: 'bold',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontFamily: 'Creamy-Sugar'
     },
     img: {
         alignSelf: 'center',
