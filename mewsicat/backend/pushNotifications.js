@@ -22,7 +22,7 @@ export async function sendPushNotification(expoPushToken) {
     sound: 'default',
     title: 'Testing!',
     body: 'settings clicked!!',
-    data: { responseType: 'test' },
+    data: { responseType: 'test' }
   };
 
   await fetch('https://exp.host/--/api/v2/push/send', {
