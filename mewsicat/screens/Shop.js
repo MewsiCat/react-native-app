@@ -130,7 +130,6 @@ export default function Shop() {
 
                 <View style={{ padding: 0}}>
                     {renderRows(items)}
-
                 <View style={{padding: 10}}>
                     {items.map((item) => {
                        return (
@@ -144,7 +143,6 @@ export default function Shop() {
                          </View>
                        );
                      })}
-
                 </View>
                 </View>
             </ScrollView>
