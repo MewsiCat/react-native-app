@@ -106,11 +106,18 @@ export default function Modules({ navigation }) {
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
           console.log(response.notification.request.content.data.responseType);
           const responseType = response.notification.request.content.data.responseType;
+          console.log(responseType);
           if(responseType == 'send friend req'){
             toggleFriends();
+            console.log("send friend req function done!");
           }
           if(responseType == 'accept friend req'){
             toggleFriends();
+            console.log("accept friend req function done!");
+          }
+          if(responseType == 'song got'){
+            toggleSongs();
+            console.log("songs listener done!");
           }
           else{
             console.log(responseType);
@@ -118,10 +125,10 @@ export default function Modules({ navigation }) {
         // const url = response.notification.request.content.data.url;
         });
 
-        return () => {
-          Notifications.removeNotificationSubscription(notificationListener.current);
-          Notifications.removeNotificationSubscription(responseListener.current);
-        };
+        // return () => {
+        //   Notifications.removeNotificationSubscription(notificationListener.current);
+        //   Notifications.removeNotificationSubscription(responseListener.current);
+        // };
     }, [])
 
     return (

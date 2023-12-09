@@ -31,6 +31,12 @@ const imagetemp = [
 ];
 const artists = ["New Jeans", "abcdefghigklmnopqrstuvwxyz", "patrick", "addy ", "hajin", "albert", "random name", "long nameeeeeeeeeee", "micahel", "miguel", "tofulati", "jhba;sdf", "kajsbdjasd", "qphnda", "kjbasdubhkjqwn"];
 const songNames = [true, false, true, true, false, true, true, false, true, true, false, true];
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import { useRef } from "react";
+
+import { registerForPushNotificationsAsync } from "../backend/pushNotifications.js";
 
 export async function generateAllUsersList() {
   try {
@@ -95,6 +101,10 @@ export default function PlaylistBox({ friendlist }) {
   const [loadVisible, setLoadVisible] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [friendRequestsData, setFriendRequestsData] = useState([]);
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
 
   useEffect(() => {    
@@ -110,6 +120,29 @@ export default function PlaylistBox({ friendlist }) {
     };
 
     fetchFriendRequests();
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response.notification.request.content.data.responseType);
+      const responseType = response.notification.request.content.data.responseType;
+      console.log(responseType);
+      if(responseType == 'send friend req'){
+        toggleTab('add');
+        console.log("send friend req function in friends list done!");
+      }
+      else{
+        console.log(responseType);
+      }
+    // const url = response.notification.request.content.data.url;
+    });
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   const toggleAddOverlay = () => {
