@@ -27,6 +27,14 @@ async function playSound() {
   await sound.playAsync();
 }
 
+async function click() {
+  const { sound } = await Audio.Sound.createAsync(
+    require('../assets/pisseim-mund-online-audio-converter.mp3')
+  );
+
+  await sound.playAsync();
+}
+
 const userSelector = (context) => [context.user]
 
 const SignOutButton = () => {
@@ -86,7 +94,7 @@ export default function Settings() {
                   <Text style={styles.buttonText}>Logged in as: {user?.username}</Text>
                 </Pressable>
 
-                <SignOutButton style={styles.signout} onPress={() => {playSound();}}/>
+                <SignOutButton style={styles.signout} onPress={() => {playSound(); click()}}/>
               
             </View>
 

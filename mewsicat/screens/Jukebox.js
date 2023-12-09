@@ -16,6 +16,14 @@ async function playMeow() {
     await sound.playAsync();
 }
 
+async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+}
+
 export default function Jukebox() {
 
     const [recVisible, setRecVisible] = useState(false);
@@ -51,6 +59,7 @@ export default function Jukebox() {
                 toggleLoadFalse();
                 toggleRec(); 
                 playMeow();
+                click();
             }}>
                 <Text style={styles.buttonText}>Get Song</Text>
             </Pressable>

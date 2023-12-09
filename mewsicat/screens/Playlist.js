@@ -41,7 +41,7 @@ export default function PlaylistButton() {
             </View>
           </Modal>
         </TouchableWithoutFeedback>
-        <Button title="Open Playlists" onPress={() => setModalVisible(true)} />
+        <Button title="Open Playlists" onPress={() => {setModalVisible(true); click()}} />
       </View>
     );
 }

@@ -18,6 +18,14 @@ const discovery = {
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
 
+  async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
+
 const SpotifyLogin = ({ navigation }) => {
     const spotifyController = new SpotifyAPIController();
     const [token, setToken] = useState("");
@@ -108,7 +116,7 @@ const SpotifyLogin = ({ navigation }) => {
                     Please click on the button below to get started.
               </Text>
           </View>
-          <Pressable style={styles.button} onPress={async () => {toggleLoad(); await promptAsync(); toggleLoadFalse();}}>
+          <Pressable style={styles.button} onPress={async () => {toggleLoad(); await promptAsync(); toggleLoadFalse(); click()}}>
             <Text style={styles.spotifyText}>
                 Login with Spotify
             </Text>

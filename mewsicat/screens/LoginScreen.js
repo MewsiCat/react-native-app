@@ -8,11 +8,20 @@ import { Button, Image } from "react-native-elements";
 import { useEffect, useState } from "react";
 import { ResponseType, useAuthRequest } from "expo-auth-session";
 import { Amplify, Auth } from 'aws-amplify';
+import { Audio } from 'expo-av';
 
 // import { useSelector, useDispatch } from "react-redux";
 //import * as tokenAction from "../store/actions/token";
 // import axios from "axios";
 // import * as songAction from "../store/actions/topSongs";
+
+async function click() {
+  const { sound } = await Audio.Sound.createAsync(
+    require('../assets/pisseim-mund-online-audio-converter.mp3')
+  );
+
+  await sound.playAsync();
+}
 
 const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
@@ -118,6 +127,7 @@ const LoginScreen = ({ navigation }) => {
         style={styles.button}
         onPress={() => {
           promptAsync();
+          click();
         }}
       />
       <View style={{ height: 100 }} />

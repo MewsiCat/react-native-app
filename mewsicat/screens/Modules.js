@@ -18,10 +18,19 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { useRef } from "react";
+import { Audio } from 'expo-av';
 
 import { registerForPushNotificationsAsync } from "../backend/pushNotifications.js";
 
 var catFishes;
+
+async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
 
 export async function updateUserCat(){
     try{
@@ -60,33 +69,41 @@ export default function Modules({ navigation }) {
 
     const toggleGenerateCat = () => {
         setGenCatVisible(!genCatVisible);
+        click();
     }
 
     const toggleSongs = () => {
         setSongsVisible(!songsVisible)
+        click();
     }
 
     const toggleMusic = () => {
         setMusicVisible(!musicVisible);
+        click();
     };
     const toggleRec = () => {
         setRecVisible(!recVisible);
+        click();
     };
 
     const toggleSettings = () => {
         testNotifications();
         setSettingsVisible(!settingsVisible);
+        click();
     }
 
     const toggleFriends = () => {
         setFriendsVisible(!friendsVisible);
+        click();
     }
     const toggleFriendRequests = () => {
         setFriendRequestsVisible(!friendRequestsVisible);
+        click();
     }
 
     const toggleShop = () => {
         setShopVisible(!shopVisible);
+        click();
     }
 
     useEffect(()=> {
@@ -134,11 +151,12 @@ export default function Modules({ navigation }) {
 
     return (
     <View style={styles.container}>
-        {/* Music reccomend*/}
         <Pressable style={styles.currButton}>
             <Image source={require('../assets/tiff/fish.png')} style={styles.currImage}/>
             <Text>{catFishes}</Text>
         </Pressable>
+
+        {/* Music reccomend*/}
         <Pressable onPress={toggleMusic} style={styles.buttonContainer}>
             <Image source={require('../assets/musicIcon.jpg')} style={styles.img}/>
         </Pressable>
