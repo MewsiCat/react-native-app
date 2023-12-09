@@ -22,6 +22,14 @@ var catImage = require('../assets/blackcat.jpg');
 var catString
 var currentUser;
 
+async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
+
 export default function GenerateCats({ navigation }) {
     const [touches, setTouches] = useState([]);
     const [image, setImage] = useState();
@@ -97,10 +105,11 @@ export default function GenerateCats({ navigation }) {
                         toggleLoad();
                         await createNewCat();
                         toggleLoadFalse();
+                        click();
                     }}>
                         <Text style={styles.buttonText}>Get Cat!</Text>
                     </Pressable>
-                    <Pressable style={styles.buttonContainer} onPress={async () => { toggleLoad();console.log("beginning update first time"); await updateFirstTimeUser(); await getUserCat(); console.log("ending update first time");toggleLoadFalse(); setGoHome(!goHome); }}>
+                    <Pressable style={styles.buttonContainer} onPress={async () => { toggleLoad();console.log("beginning update first time"); await updateFirstTimeUser(); await getUserCat(); console.log("ending update first time");toggleLoadFalse(); setGoHome(!goHome); click()}}>
                         <Text style={styles.buttonText}>Return Home</Text>
                     </Pressable>
                 </View>
