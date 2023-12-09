@@ -160,7 +160,6 @@ const MySignUpHeader = () => {
   );
 }
 
-// SplashScreen.preventAutoHideAsync();
 const App = () => {
 
   const [spotifyToken, setSpotifyToken] = useState("");
@@ -168,6 +167,7 @@ const App = () => {
   const [sound, setSound] = React.useState();
   const [firstTimeUser, setFirstTimeUser] = useState(true);
   const colorMode = useColorScheme();
+  const [appIsReady, setAppIsReady] = useState(false);
 
   async function loadFont(){
     try{
@@ -195,12 +195,12 @@ const App = () => {
     tokens: { colors },
   } = useTheme();
 
-  const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
+        //SplashScreen.preventAutoHideAsync();
         await loadFont();
         await playSound();
         await getBGM();
@@ -212,7 +212,6 @@ const App = () => {
         await getSpotifyConnected();
         await checkTokenStatus();
         await getUserCat();
-        console.log("setup done!");
         //generateSong();
         // addFriend("bbbbbb");
         listFriends();
@@ -231,7 +230,7 @@ const App = () => {
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!
         //await new Promise(resolve => setTimeout(resolve, 10000));
-        await SplashScreen.preventAutoHideAsync();
+        console.log("setup done!");
       } catch (e) {
         console.warn(e);
       } finally {
@@ -270,14 +269,7 @@ const App = () => {
   // if (!fontsLoaded && !fontError) {
   //   return null;
   // }
-  
-  
-  // const [formState, setFormState] = useState(initialFormState);
-  //handleSignUp();
-  //console.log(currentUserInfo());
-  //getSpotifyToken();
-  //console.log("Spotify token!: " + spotifyToken);
-  //spotifyController.getUser(spotifyToken);
+   
   return(
     <ThemeProvider
       colorMode={colorMode}

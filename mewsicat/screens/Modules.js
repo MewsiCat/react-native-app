@@ -93,6 +93,7 @@ export default function Modules({ navigation }) {
         async function fetchData(){
             const currentUserInfo = await Auth.currentUserInfo();
             const currentUser = currentUserInfo.username;
+            await updateUserCat();
             console.log("fishes " + catFishes);
             // toggleFriends();
         }
