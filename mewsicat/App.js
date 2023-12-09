@@ -76,16 +76,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const trigger = new Date(Date.now() + 60 * 60 * 1000);
-trigger.setMinutes(0);
-trigger.setSeconds(0);
-
-Notifications.scheduleNotificationAsync({
-  content: {
-    title: 'Happy new hour!',
-  },
-  trigger,
-});
 Amplify.configure(awsExports);
 
 const spotifyController = new SpotifyAPIController();
@@ -227,6 +217,16 @@ const App = () => {
         // addFriend("bbbbbb");
         listFriends();
         checkFriend("bbbbbb");
+        const trigger = new Date(Date.now() + 60 * 60 * 1000);
+        trigger.setMinutes(0);
+        trigger.setSeconds(0);
+
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Happy new hour!',
+          },
+          trigger,
+        });
         //updateFriends();
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!

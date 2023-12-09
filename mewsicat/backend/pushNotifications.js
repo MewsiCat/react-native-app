@@ -40,11 +40,12 @@ export async function sendPushNotification(expoPushToken) {
 }
 
 export async function sendFriendReqPushNotification(expoPushToken, name) {
+  try{
     const message = {
       to: expoPushToken,
       sound: 'default',
       title: `${name}`,
-      body: `wants to be your friend!`,
+      body: 'wants to be your friend!',
       data: { responseType: 'send friend req' },
     };
   
@@ -57,9 +58,13 @@ export async function sendFriendReqPushNotification(expoPushToken, name) {
       },
       body: JSON.stringify(message),
     });
+  } catch(err){
+    console.log(err);
+  }
   }
 
 export async function acceptFriendReqPushNotification(expoPushToken, name) {
+  try{
     const message = {
       to: expoPushToken,
       sound: 'default',
@@ -77,6 +82,9 @@ export async function acceptFriendReqPushNotification(expoPushToken, name) {
       },
       body: JSON.stringify(message),
     });
+  } catch(err){
+    console.log(err);
+  }
   }
 
   export async function sendSongPushNotification(expoPushToken, name) {
@@ -85,7 +93,7 @@ export async function acceptFriendReqPushNotification(expoPushToken, name) {
       sound: 'default',
       title: `${name}`,
       body: `sent you a song!`,
-      data: { someData: 'goes here' },
+      data: { responseType: 'song got' },
     };
   
     await fetch('https://exp.host/--/api/v2/push/send', {

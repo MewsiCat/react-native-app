@@ -20,9 +20,9 @@ export default function SongItemInList({ profilePicture, name, active }) {
     const toggleLoadFalse = () => {
         setLoadVisible(loadVisible);
     }
-    const sendRequest = async () => {
+    const sendRequest = () => {
         toggleLoad();
-        await sendFriendRequest(name);
+        sendFriendRequest(name);
         toggleLoadFalse();
       };
 

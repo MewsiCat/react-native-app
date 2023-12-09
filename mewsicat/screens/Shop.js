@@ -130,8 +130,7 @@ export default function Shop() {
 
                 <View style={{ padding: 0}}>
                     {renderRows(items)}
-
-                < View style={{padding: 10}}>
+                <View style={{padding: 10}}>
                     {items.map((item) => {
                        return (
                          <View style={{flexDirection: 'row', margin: 3}} >
@@ -144,8 +143,7 @@ export default function Shop() {
                          </View>
                        );
                      })}
-                </View>     
-
+                </View>
                 </View>
             </ScrollView>
             </View>
