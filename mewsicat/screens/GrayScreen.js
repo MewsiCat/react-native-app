@@ -121,6 +121,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
     setIsModalVisible(true);
     stopAnimationAndListeners();
 
+    //this part of animation is making them sit down
     setSpriteStartX(32);
     setSpriteStartY(64 + lastDirectionIndex * 64);
     setFrameCount(1);
@@ -202,6 +203,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
     ]).start(({ finished }) => {
       if (finished) {
         setIsMoving(false);
+            //this part of animation is making them sit down
         setSpriteStartX(0);
         setSpriteStartY(32 + directionIndex * 64);
         setFrameCount(6);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, ScrollView, Dimensions, Animated } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Overlay } from 'react-native-elements';
 import MusicRec from './MusicRec';
@@ -8,62 +8,88 @@ import { generateSong, stopMusic } from './MusicRec';
 import Loading from './Loading';
 import { playBGM, toggleBGM } from '../App';
 import ShopItem from '../Components/ShopItem.jsx';
+import { decreaseFishes } from '../backend/api/amplifyDBFunctions';
+
+const spriteSheet0 = require('../assets/black_0.png');
+const spriteSheet1 = require('../assets/blue_0.png');
+const spriteSheet2 = require('../assets/brown_0.png');
+const spriteSheet3 = require('../assets/calico_0.png');
+const spriteSheet4 = require('../assets/grey_0.png');
+
 
 
 const items = [
     {
         id: "hat",
         desc: "wear a hat",
-        img: require("../assets/wife.jpg"),
-        purchased: true
+        img: require("../assets/purchasables/santaHatForCatFrame.png"),
+        purchased: false,
+        equipped: false,
+        price: 5,
     },
     {
         id: "shoe",
         desc: "wear a shoe",
         img: require("../assets/wife.jpg"),
-        purchased: false
+        purchased: false,
+        equipped: false,
+        price: 10,
     },
     {
         id: "wife",
         desc: "your wife",
         img: require("../assets/wife.jpg"),
-        purchased: true
+        purchased: false,
+        equipped: false,
+        price: 5,
     },
     {
-        id: "hat",
+        id: "hat1",
         desc: "wear a hat",
         img: require("../assets/wife.jpg"),
-        purchased: false
+        purchased: false,
+        equipped: false,
+        price: 10,
     },
     {
-        id: "shoe",
+        id: "shoe1",
         desc: "wear a shoe",
         img: require("../assets/wife.jpg"),
-        purchased: true
+        purchased: false,
+        equipped: false,
+        price: 5,
     },
     {
         id: "test",
         desc: "test",
         img: require("../assets/wife.jpg"),
-        purchased: true
+        purchased: false,
+        equipped: false,
+        price: 15,
     },
     {
-        id: "hat",
+        id: "hat2",
         desc: "wear a hat",
         img: require("../assets/wife.jpg"),
-        purchased: false
+        purchased: false,
+        equipped: false,
+        price: 5,
     },
     {
-        id: "shoe",
+        id: "shoe2",
         desc: "wear a shoe",
         img: require("../assets/wife.jpg"),
-        purchased: true
+        purchased: true,
+        equipped: false,
+        price: 5,
     },
     {
-        id: "test",
+        id: "test1",
         desc: "test",
         img: require("../assets/wife.jpg"),
-        purchased: true
+        purchased: true,
+        equipped: false,
+        price: 15,
     }
 ];
 
@@ -77,8 +103,47 @@ async function playMeow() {
 
 export default function Shop() {
 
+    const spriteSheets = [spriteSheet0, spriteSheet1, spriteSheet2, spriteSheet3, spriteSheet4];
+    const [spriteSheetSource, setSpriteSheetSource] = useState(spriteSheets[Math.floor(Math.random() * spriteSheets.length)]);
+
+    const [spriteStartX, setSpriteStartX] = useState(384);
+    const [spriteStartY, setSpriteStartY] = useState(32);
+
+
     const [recVisible, setRecVisible] = useState(false);
     const [loadVisible, setLoadVisible] = useState(false);
+    const [shopItems, setShopItems] = useState(items);
+
+    const handlePurchase = async (itemId) => {
+        // Find the item
+        const itemToPurchase = shopItems.find(item => item.id === itemId);
+        if (!itemToPurchase) return; // Exit if item not found
+    
+        // Perform the async operation
+        await decreaseFishes(itemToPurchase.price);
+    
+        // Update the items
+        const updatedItems = shopItems.map(item => {
+            if (item.id === itemId) {
+                return { ...item, purchased: !item.purchased };
+            }
+            return item;
+        });
+    
+        // Update the state
+        setShopItems(updatedItems);
+    };
+    
+
+    const handleEquip = (itemId) => {
+        const updatedItems = shopItems.map( item => {
+            if (item.id === itemId) {
+                return { ...item, equipped: !item.equipped };
+            }
+            return item;
+        });
+        setShopItems(updatedItems);
+    };
 
     const toggleLoad = () => {
         setLoadVisible(!loadVisible);
@@ -97,18 +162,22 @@ export default function Shop() {
         setRecVisible(!recVisible);
     };
 
-    const renderRows = (items) => {
+    const renderRows = () => {
         let rows = [];
-        for (let i = 0; i < items.length; i += 3) {
+        for (let i = 0; i < shopItems.length; i += 3) {
             rows.push(
-                <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    {items.slice(i, i + 3).map((item, index) => (
-                        <View key={index} style={{ width: '32%', margin: '0.5%', height:200 }}>
+                <View key={"row-" + i} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    {shopItems.slice(i, i + 3).map((item, index) => (
+                        <View key={item.id + "-" + index} style={{ width: '32%', margin: '0.5%', height: 160 }}>
                             <ShopItem
                                 itemName={item.id}
                                 itemDescription={item.desc}
                                 itemImg={item.img}
                                 purchased={item.purchased}
+                                equipped={item.equipped}
+                                onPurchase={() => handlePurchase(item.id)}
+                                onEquip={() => handleEquip(item.id)}
+                                price={item.price}
                             />
                         </View>
                     ))}
@@ -117,6 +186,8 @@ export default function Shop() {
         }
         return rows;
     };
+    
+    
 
     return (
         <View style={styles.container}>
@@ -124,26 +195,18 @@ export default function Shop() {
                 <Text style={styles.title}>Cat Shack</Text>
                 <Image source={require('../assets/shopKeepingCat.png')} style={styles.img} />
             </View>
+
+            <SpriteDisplay
+                source={spriteSheetSource}
+                startX={spriteStartX}
+                startY={spriteStartY}
+            />
             
             <View style={{marginTop:'100%', height:"40%", borderColor:"#783621", borderRadius: 10, borderWidth: 2, padding: 2, backgroundColor: "rgba(0,0,0,0.2)"}}>
             <ScrollView>
 
                 <View style={{ padding: 0}}>
                     {renderRows(items)}
-                <View style={{padding: 10}}>
-                    {items.map((item) => {
-                       return (
-                         <View style={{flexDirection: 'row', margin: 3}} >
-                           <ShopItem
-                               itemName = {item.id}
-                               itemDescription = {item.desc}
-                               imgURI = {item.img}
-                               purchased = {item.purchased}
-                           />
-                         </View>
-                       );
-                     })}
-                </View>
                 </View>
             </ScrollView>
             </View>
@@ -156,6 +219,77 @@ export default function Shop() {
         </View>
     );
 }
+
+const SpriteDisplay = ({ source,  startX, startY}) => {
+    // const animation = useState(new Animated.Value(0))[0];
+    // const frameCount = 1;
+    // const frameWidth = 32;
+    // const frameHeight = 32;
+  
+    // useEffect(() => {
+    //   animation.setValue(0);
+    // }, [startX, startY]);
+  
+    // const inputRange = Array.from({ length: frameCount }, (_, i) => i);
+    // const translateXOutputRange = inputRange.map(index => -(startX + (index % 4) * frameWidth));
+    // const translateYOutputRange = inputRange.map(index => -(startY + Math.floor(index / 4) * frameHeight));
+  
+    // useEffect(() => {
+    //   let currentFrame = 0;
+    //   if (frameCount > 1) {
+    //     const frameUpdateInterval = setInterval(() => {
+    //       currentFrame = (currentFrame + 1) % frameCount;
+    //       animation.setValue(currentFrame);
+    //     }, frameDuration);
+    //     return () => clearInterval(frameUpdateInterval);
+    //   } else {
+    //     animation.setValue(frameCount - 1);
+    //   }
+  
+    // }, [animation, frameCount, frameDuration]);
+  
+  
+    // const adjustedInputRange = frameCount > 1 ? inputRange : [0, 1];
+  
+    // const adjustedTranslateXOutputRange = frameCount > 1 ? translateXOutputRange : [translateXOutputRange[0], translateXOutputRange[0]];
+    // const adjustedTranslateYOutputRange = frameCount > 1 ? translateYOutputRange : [translateYOutputRange[0], translateYOutputRange[0]];
+  
+  
+    // const frameStyle = {
+    //   height: frameHeight * scale,
+    //   width: frameWidth * scale,
+  
+    //   overflow: 'hidden',
+    // };
+  
+    // const imageStyle = {
+    //   width: 1024 * scale,
+    //   height: 544 * scale,
+    //   position: 'absolute',
+    //   transform: [
+    //     {
+    //       translateX: animation.interpolate({
+    //         inputRange: adjustedInputRange,
+    //         outputRange: adjustedTranslateXOutputRange.map(value => value * scale),
+    //         extrapolate: 'clamp'
+    //       }),
+    //     },
+    //     {
+    //       translateY: animation.interpolate({
+    //         inputRange: adjustedInputRange,
+    //         outputRange: adjustedTranslateYOutputRange.map(value => value * scale),
+    //         extrapolate: 'clamp'
+    //       }),
+    //     },
+    //   ],
+    // };
+  
+    // return (
+    //   <Animated.View style={frameStyle}>
+    //     <Animated.Image source={source} style={imageStyle} />
+    //   </Animated.View>
+    // );
+  };
 
 const styles = StyleSheet.create({
     buttonContainer: {
