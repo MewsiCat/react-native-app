@@ -35,6 +35,7 @@ export default function GenerateCats({ navigation }) {
     const [image, setImage] = useState();
     const [goHome, setGoHome] = useState(false);
     const [loadVisible, setLoadVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
 
     const toggleLoad = () => {
         setLoadVisible(!loadVisible);
@@ -44,7 +45,9 @@ export default function GenerateCats({ navigation }) {
         setLoadVisible(loadVisible);
     }
 
-
+    const toggleVisible = () => {
+        setIsVisible(false);
+    }
   
     useEffect(() => {
         async function fetchData(){
@@ -101,14 +104,22 @@ export default function GenerateCats({ navigation }) {
                     <Image source={image} style={styles.img} />
                 </View>
                 <View style={{marginTop:'auto', margin: 30}}>
-                    <Pressable style={styles.buttonContainer} onPress={async () => {
-                        toggleLoad();
-                        await createNewCat();
-                        toggleLoadFalse();
-                        click();
-                    }}>
-                        <Text style={styles.buttonText}>Get Cat!</Text>
-                    </Pressable>
+                    {isVisible && (
+                        <Pressable style={styles.buttonContainer} onPress={async () => {
+                            toggleLoad();
+                            await createNewCat();
+                            toggleLoadFalse();
+                            toggleVisible();
+                            click();
+                        }}>
+                            <Text style={styles.buttonText}>Get Cat!</Text>
+                        </Pressable>
+                    )}
+
+                    {!isVisible && (
+                        <Text style={styles.buttonText}>Cat Generated!</Text>
+                    )}
+
                     <Pressable style={styles.buttonContainer} onPress={async () => { toggleLoad();console.log("beginning update first time"); await updateFirstTimeUser(); await getUserCat(); console.log("ending update first time");toggleLoadFalse(); setGoHome(!goHome); click()}}>
                         <Text style={styles.buttonText}>Return Home</Text>
                     </Pressable>
