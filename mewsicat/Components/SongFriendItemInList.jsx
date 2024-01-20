@@ -37,6 +37,13 @@ export default function SongFriendItemInList({ profilePicture, name, active, mus
     });
   };
 
+  async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
 
   return (
     <View style={styles.container}>
@@ -55,7 +62,7 @@ export default function SongFriendItemInList({ profilePicture, name, active, mus
 
       {/* Send Music Button */}
       <TouchableOpacity style={styles.sendMusicButton}>
-        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await sendSong(name, musicRecURI); setSentSong(true), toggleLoadFalse();}}>{isSentSong ? "Sent ✓" :"Send"}</Text>
+        <Text style={styles.sendMusicButtonText} onPress={async () =>{toggleLoad(); await sendSong(name, musicRecURI); setSentSong(true), toggleLoadFalse(); click()}}>{isSentSong ? "Sent ✓" :"Send"}</Text>
       </TouchableOpacity>
     </View>
   );

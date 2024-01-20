@@ -22,7 +22,7 @@ export async function sendPushNotification(expoPushToken) {
     sound: 'default',
     title: 'Testing!',
     body: 'settings clicked!!',
-    data: { responseType: 'test' },
+    data: { responseType: 'test' }
   };
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -39,16 +39,35 @@ export async function sendPushNotification(expoPushToken) {
 }
 }
 
+//Accept friend request pulldown not working, fix later
 export async function sendFriendReqPushNotification(expoPushToken, name) {
-  try{
+  try {
+    await Notifications.setNotificationCategoryAsync('friendRequest', [
+      {
+        identifier: 'accept',
+        buttonTitle: 'Accept',
+        options: {
+          opensAppToForeground: true, // Opens the app when clicked
+        },
+      },
+      {
+        identifier: 'reject',
+        buttonTitle: 'Reject',
+        options: {
+          opensAppToForeground: true, // Opens the app when clicked
+        },
+      },
+    ]);
+
     const message = {
       to: expoPushToken,
       sound: 'default',
       title: `${name}`,
       body: 'wants to be your friend!',
+      categoryIde: 'friendRequest', // Assign the category identifier here
       data: { responseType: 'send friend req' },
     };
-  
+
     await fetch('https://exp.host/--/api/v2/push/send', {
       method: 'POST',
       headers: {
@@ -58,10 +77,10 @@ export async function sendFriendReqPushNotification(expoPushToken, name) {
       },
       body: JSON.stringify(message),
     });
-  } catch(err){
+  } catch (err) {
     console.log(err);
   }
-  }
+}
 
 export async function acceptFriendReqPushNotification(expoPushToken, name) {
   try{

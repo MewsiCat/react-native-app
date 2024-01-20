@@ -6,11 +6,10 @@ import GrayScreen from './GrayScreen.js';
 import LoginScreen from './LoginScreen.js';
 import CustomHeader from '../Components/CustomHeader.jsx'
 import SpotifyLogin from './SpotifyLogin.js';
-import Modules from './Modules.js';
+import Modules, { updateUserCat } from './Modules.js';
 import { Amplify} from 'aws-amplify';
 import awsExports from '../src/amplifyconfiguration.json';
 import { Dimensions } from 'react-native';
-import { getUserCat } from './GrayScreen.js';
 
 
 import React, {useEffect, useState, useCallback} from 'react';
@@ -27,6 +26,7 @@ import {
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser, deleteUser } from '../src/graphql/mutations'
 import { listUsers, getUser, userByName } from '../src/graphql/queries'
+import { getUserCat } from './GrayScreen.js';
 
 import { currentUserInfo, getSpotifyToken, addFriend, createUserInDB, checkUser, checkFriend, listFriends, checkFirstTimeUser } from '../backend/api/amplifyDBFunctions'
 

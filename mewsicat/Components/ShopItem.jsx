@@ -12,6 +12,14 @@ async function playSound() {
   await sound.playAsync();
 }
 
+async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
+
 
 export default function ShopItem({ itemName, itemDescription, itemImg, purchased, equipped, onEquip, price, onPurchase}) {
     return (
@@ -22,6 +30,7 @@ export default function ShopItem({ itemName, itemDescription, itemImg, purchased
                     {itemName}
                 </Text>
             </View>
+
         
         {purchased ? (
         <Pressable style={styles.button} onPress={() => { playSound(); onEquip(); }}>
@@ -39,6 +48,7 @@ export default function ShopItem({ itemName, itemDescription, itemImg, purchased
             </View>  
         </Pressable>
         }
+
         </View>
         
 

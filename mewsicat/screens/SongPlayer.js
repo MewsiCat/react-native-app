@@ -43,6 +43,14 @@ import { Audio } from 'expo-av';
 import SongFriendsList from './SongFriendsList';
 import { increaseFishes } from '../backend/api/amplifyDBFunctions';
 
+async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
+
 async function getTopTracks() {
     try {
         const currentUserInfo = await Auth.currentUserInfo();
@@ -232,7 +240,7 @@ export default function SongPlayer({musicRecURI}) {
                     disabled
                 />
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
-                    <Pressable onPress={() => { playPauseSong() }}>
+                    <Pressable onPress={() => { playPauseSong(); click() }}>
                         <Image style={styles.icon} source={require('../assets/play.png')}/>
                     </Pressable>
                     {/* <Pressable onPress={async () => {
@@ -249,7 +257,7 @@ export default function SongPlayer({musicRecURI}) {
 
             <View style={styles.containerB}>
                 <Pressable style={styles.buttonContainer} onPress={async ()=> {
-                    toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();
+                    toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse(); click()
                 }}>
                     <Text style={styles.buttonText} adjustsFontSizeToFit={true}>Send to a Friend</Text>
                 </Pressable>

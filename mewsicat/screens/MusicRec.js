@@ -41,6 +41,14 @@ import { pauseBGM, toggleBGM } from '../App';
 import SongFriendsList from './SongFriendsList';
 import { increaseFishes } from '../backend/api/amplifyDBFunctions';
 
+async function click() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/pisseim-mund-online-audio-converter.mp3')
+    );
+  
+    await sound.playAsync();
+  }
+
 async function getTopTracks() {
     try {
         const currentUserInfo = await Auth.currentUserInfo();
@@ -251,7 +259,7 @@ export default function MusicRec() {
 
             <View style={styles.containerB}>
                 <Pressable style={styles.buttonContainer} onPress={async ()=> {
-                    toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();
+                    toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse(); click();
                 }}>
                     <Text style={styles.buttonText} adjustsFontSizeToFit={true}>Send to a Friend</Text>
                 </Pressable>
@@ -270,6 +278,7 @@ export default function MusicRec() {
                     toggleLoadFalse();
                     toggleRec(); 
                     playMeow();
+                    click();
                     }}>
                     <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Get a Song</Text>
                 </Pressable>
