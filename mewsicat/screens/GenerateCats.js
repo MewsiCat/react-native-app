@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createRef } from 'react';
 import { StyleSheet, View, Animated, Button, ImageBackground, TouchableOpacity, Dimensions, Easing } from 'react-native';
 const scale = 3;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -8,7 +8,7 @@ import { generateFriendRequestsList } from './FriendRequestsList';
 import Home from './Home';
 
 import { Text, Image, Overlay } from 'react-native-elements';
-import { Pressable } from 'react-native';
+import { Pressable, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import App from '../App';
 import { updateFirstTimeUser } from '../backend/api/amplifyDBFunctions';
@@ -18,11 +18,77 @@ import Loading from './Loading';
 import { createNewCat } from '../backend/api/amplifyDBFunctions';
 
 const listOfCats = ["classicalcat.png", "countrycat.png", "edmcat.png", "hiphopcat.png", "kpopcat.png", "mysterycat.png", "punkcat.png", "rockandrollcat.png"];
-var catImage = require('../assets/blackcat.jpg');
-var catString
+var catString;
 var currentUser;
 
-async function click() {
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
+
+const AnimatedCarousel = () => {
+    const CatImages = [
+      require('../assets/cats/classicalcat.png'),
+      require('../assets/cats/countrycat.png'),
+      require('../assets/cats/edmcat.png'),
+      require('../assets/cats/hiphopcat.png'),
+      require('../assets/cats/kpopcat.png'),
+      require('../assets/cats/mysterycat.png'),
+      require('../assets/cats/punkcat.png'),
+      require('../assets/cats/rockandrollcat.png'),
+    ];
+  
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const windowWidth = Dimensions.get('window').width;
+    const numItems = CatImages.length;
+  
+    const animateCarousel = () => {
+      Animated.sequence(
+        CatImages.map((image, index) => {
+          return Animated.timing(scrollX, {
+            toValue: windowWidth * (index + 1),
+            duration: 500, // 0.5 seconds between each image
+            useNativeDriver: false,
+          });
+        })
+      ).start(() => {
+        // Reset scrollX value when the animation completes
+        scrollX.setValue(0);
+        animateCarousel();
+      });
+    };
+  
+    useEffect(() => {
+      animateCarousel();
+  
+      // Clean up animation on component unmount
+      return () => {
+        scrollX.removeAllListeners();
+      };
+    }, [scrollX, windowWidth, numItems]);
+  
+    return (
+      <View style={styles.ccontainer}>
+        <AnimatedScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onTouchStart={() => {}} // Disable touch events
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
+        >
+          {/* Duplicate the first images to create the infinite loop */}
+          {CatImages.map((image, index) => (
+            <View key={index} style={styles.cimageContainer}>
+              <Image source={image} style={styles.cimage} />
+            </View>
+          ))}
+        </AnimatedScrollView>
+      </View>
+    );
+  };
+  
+  async function click() {
     const { sound } = await Audio.Sound.createAsync(
       require('../assets/pisseim-mund-online-audio-converter.mp3')
     );
@@ -100,9 +166,7 @@ export default function GenerateCats({ navigation }) {
             </Overlay>
             <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
                 <Text adjustsFontSizeToFit={true} style={styles.title}>Cat Lottery</Text>
-                <View style={{alignSelf:'center'}} >
-                    <Image source={image} style={styles.img} />
-                </View>
+                <AnimatedCarousel />
                 <View style={{marginTop:'auto', margin: 30}}>
                     {isVisible && (
                         <Pressable style={styles.buttonContainer} onPress={async () => {
@@ -130,6 +194,17 @@ export default function GenerateCats({ navigation }) {
   }
 
   const styles = StyleSheet.create({
+    ccontainer: {
+        height: '50%'
+      },
+    cimageContainer: {
+        width: Dimensions.get('window').width,
+    },
+    cimage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
     container: {
         backgroundColor: '#f0d396',
         width: Dimensions.get('window').width,
