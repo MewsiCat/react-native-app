@@ -2,6 +2,7 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+# newest currently working on model
 type User @model {
   id: ID!
   name: String! @index(name: "byName", queryField: "userByName")
@@ -20,6 +21,9 @@ type Cat @model {
 	pic: String
 	fishes: Int
 	type: String
+	catSprite: String
+	availableAccessories: [String]
+  equippedAccessories: [String]
 }
 
 type Friend @model {

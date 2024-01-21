@@ -173,7 +173,7 @@ const App = () => {
     try{
       console.log("starting font res");
       const fontRes = await Font.loadAsync({
-        'Creamy-Sugar': require('./assets/fonts/SchofieldOutline.otf'),
+        'Creamy-Sugar': require('./assets/fonts/KiddosyfreeRegular-GOEag.otf'),
       });
       console.log("result below: ");
       console.log(fontRes);

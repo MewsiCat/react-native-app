@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "eas-build-pre-install": "echo $AMPLIFY_CONFIG_AGAIN | base64 --decode > ./src/amplifyconfiguration.json && echo $GOOGLE_SERVICES_AGAIN | base64 --decode > ./google-services.json",
+    "eas-build-pre-install": "echo $AMPLIFY_CONFIG_AGAIN_SECOND | base64 --decode > ./src/amplifyconfiguration.json && echo $GOOGLE_SERVICES_AGAIN | base64 --decode > ./google-services.json",
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
