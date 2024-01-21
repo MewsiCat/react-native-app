@@ -13,11 +13,11 @@ import Loading from './Loading';
 
 const totalSpriteSheetNum = 5;
 
-const spriteSheet0 = require('../assets/black_0.png');
-const spriteSheet1 = require('../assets/blue_0.png');
-const spriteSheet2 = require('../assets/brown_0.png');
-const spriteSheet3 = require('../assets/calico_0.png');
-const spriteSheet4 = require('../assets/grey_0.png');
+const spriteSheet_black = require('../assets/black_0.png');
+const spriteSheet_blue = require('../assets/blue_0.png');
+const spriteSheet_brown = require('../assets/brown_0.png');
+const spriteSheet_calico = require('../assets/calico_0.png');
+const spriteSheet_gray = require('../assets/grey_0.png');
 const outfit_christmasHat = require('../assets/christmasHatForCat.png');
 const wife = require('../assets/wife.jpg');
 const directions = [
@@ -73,13 +73,16 @@ export async function getUserCat(){
   const userCatName = userCatResult.data.catByName.items[0].name;
   const userCatType = userCatResult.data.catByName.items[0].type;
   const userCatFishes = userCatResult.data.catByName.items[0].fishes;
+  const userCatSprite = userCatResult.data.catByName.items[0].catSprite;
   console.log("user cat name: " + userCatName);
   console.log("user cat fishes: " + userCatFishes);
+  console.log("user cat color: " + userCatSprite);
 
   user = {
     name: userCatName,
     type: userCatType,
     fishes: userCatFishes,
+    catSprite: userCatSprite,
   }
 
 }
@@ -109,11 +112,24 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
   const sittingStartX = 0;
   const sittingStartY = 32;
   const sittingFrameCount = 6
+  let spritesheetcolor = null;
 
-
-  const spriteSheets = [spriteSheet0, spriteSheet1, spriteSheet2, spriteSheet3, spriteSheet4];
-  const [spriteSheetSource, setSpriteSheetSource] = useState(spriteSheets[Math.floor(Math.random() * spriteSheets.length)]);
-
+  if (friend.catSprite[0] = "gray"){
+    spritesheetcolor = spriteSheet_gray;
+  }
+  if (friend.catSprite[0] = "black"){
+    spritesheetcolor = spriteSheet_black;
+  }
+  if (friend.catSprite[0] = "brown"){
+    spritesheetcolor = spriteSheet_brown;
+  }
+  if (friend.catSprite[0] = "calico"){
+    spritesheetcolor = spriteSheet_calico;
+  }
+  if (friend.catSprite[0] = "blue"){
+    spritesheetcolor = spriteSheet_blue;
+  }
+  const [spriteSheetSource, setSpriteSheetSource] = useState(spritesheetcolor);
 
   const handlePressCat = () => {
     playSound();
