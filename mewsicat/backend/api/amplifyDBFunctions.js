@@ -748,7 +748,7 @@ export async function createNewCat(){
   const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
   const currUserID = currUserResult.data.userByName.items[0].id;
 
-  const newCatSprite = Math.floor(Math.random() * catSprites.length);
+  const newCatSprite = catSprites[Math.floor(Math.random() * catSprites.length)];
   // creating cat object
   const catRes = await API.graphql({
     query: createCat, 
