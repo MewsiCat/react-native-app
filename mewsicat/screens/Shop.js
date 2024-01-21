@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, ScrollView, Dimensions, Animated } from 'react-native';
+import React, { useState, useEffect,useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, Image, ScrollView, Dimensions, Animated, PanResponder } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Overlay } from 'react-native-elements';
 import MusicRec from './MusicRec';
@@ -9,12 +9,15 @@ import Loading from './Loading';
 import { playBGM, toggleBGM } from '../App';
 import ShopItem from '../Components/ShopItem.jsx';
 import { decreaseFishes } from '../backend/api/amplifyDBFunctions';
+import { parse } from 'expo-linking';
 
 const spriteSheet0 = require('../assets/black_0.png');
 const spriteSheet1 = require('../assets/blue_0.png');
 const spriteSheet2 = require('../assets/brown_0.png');
 const spriteSheet3 = require('../assets/calico_0.png');
 const spriteSheet4 = require('../assets/grey_0.png');
+const outfit_christmasHat = require('../assets/christmasHatForCat.png');
+
 
 
 
@@ -113,6 +116,53 @@ export default function Shop() {
     const [recVisible, setRecVisible] = useState(false);
     const [loadVisible, setLoadVisible] = useState(false);
     const [shopItems, setShopItems] = useState(items);
+    const [equipmentChanged, setEquipmentChanged] = useState(false);
+    let directionIndex = 0;
+    let sumvx = 0;
+
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onPanResponderMove: (event, gestureState) => {
+                // Check the movement to determine the swipe direction
+                const { vx } = gestureState;
+                const velocityThreshold = 0.5; 
+                console.log(vx+"           "+sumvx);
+                if (Math.abs(vx) > velocityThreshold) {
+                    const rotationAmount = parseInt(vx *2); 
+                    console.log(rotationAmount);
+
+                    directionIndex -= rotationAmount;
+                    if (directionIndex > 7){
+                        directionIndex -=8;
+                    }
+                    if (directionIndex < 0){
+                        directionIndex +=8;
+                    }
+                    setSpriteStartY(32 + directionIndex * 64);
+                }
+                else {
+                    sumvx += vx;
+                    if (Math.abs(sumvx)>2){
+                        directionIndex -= parseInt(sumvx/2);
+                        if (directionIndex > 7){
+                            directionIndex -=8;
+                        }
+                        if (directionIndex < 0){
+                            directionIndex +=8;
+                        }
+                        setSpriteStartY(32 + directionIndex * 64);
+                        sumvx = 0;
+                    }
+                }
+                
+            },
+            onPanResponderRelease: () => {
+                // Handle the end of the touch event
+            },
+        })
+    ).current;
+
 
     const handlePurchase = async (itemId) => {
         // Find the item
@@ -143,6 +193,7 @@ export default function Shop() {
             return item;
         });
         setShopItems(updatedItems);
+        setEquipmentChanged(prev => !prev); 
     };
 
     const toggleLoad = () => {
@@ -196,13 +247,27 @@ export default function Shop() {
                 <Image source={require('../assets/shopKeepingCat.png')} style={styles.img} />
             </View>
 
-            <SpriteDisplay
+            
+            <View style={{height:"40%", borderColor:"#783621", borderRadius: 10, borderWidth: 2, backgroundColor: "rgba(0,0,0,0.2)", alignItems: "center"}} 
+            {...panResponder.panHandlers}
+            >
+                <SpriteDisplay
                 source={spriteSheetSource}
                 startX={spriteStartX}
                 startY={spriteStartY}
+                resetAnimation={equipmentChanged}
             />
-            
-            <View style={{marginTop:'100%', height:"40%", borderColor:"#783621", borderRadius: 10, borderWidth: 2, padding: 2, backgroundColor: "rgba(0,0,0,0.2)"}}>
+            {shopItems[0] && shopItems[0].equipped && (
+            <SpriteDisplay
+                source={outfit_christmasHat}
+                startX={spriteStartX}
+                startY={spriteStartY}
+                resetAnimation={equipmentChanged}
+            />
+        )}
+            </View>
+
+            <View style={{marginTop:'10%', height:"40%", borderColor:"#783621", borderRadius: 10, borderWidth: 2, padding: 2, backgroundColor: "rgba(0,0,0,0.2)"}}>
             <ScrollView>
 
                 <View style={{ padding: 0}}>
@@ -220,75 +285,79 @@ export default function Shop() {
     );
 }
 
-const SpriteDisplay = ({ source,  startX, startY}) => {
-    // const animation = useState(new Animated.Value(0))[0];
-    // const frameCount = 1;
-    // const frameWidth = 32;
-    // const frameHeight = 32;
+const SpriteDisplay = ({ source,  startX, startY, resetAnimation }) => {
+    const animation = useState(new Animated.Value(0))[0];
+    const frameCount = 4;
+    const frameWidth = 32;
+    const frameHeight = 32;
+    const frameDuration = 150;
+    const scale =8;
   
-    // useEffect(() => {
-    //   animation.setValue(0);
-    // }, [startX, startY]);
+    useEffect(() => {
+      animation.setValue(0);
+    }, [startX, startY]); //reset animation when these 3 change
   
-    // const inputRange = Array.from({ length: frameCount }, (_, i) => i);
-    // const translateXOutputRange = inputRange.map(index => -(startX + (index % 4) * frameWidth));
-    // const translateYOutputRange = inputRange.map(index => -(startY + Math.floor(index / 4) * frameHeight));
+    const inputRange = Array.from({ length: frameCount }, (_, i) => i);
+    const translateXOutputRange = inputRange.map(index => -(startX + (index % 4) * frameWidth));
+    const translateYOutputRange = inputRange.map(index => -(startY + Math.floor(index / 4) * frameHeight));
   
-    // useEffect(() => {
-    //   let currentFrame = 0;
-    //   if (frameCount > 1) {
-    //     const frameUpdateInterval = setInterval(() => {
-    //       currentFrame = (currentFrame + 1) % frameCount;
-    //       animation.setValue(currentFrame);
-    //     }, frameDuration);
-    //     return () => clearInterval(frameUpdateInterval);
-    //   } else {
-    //     animation.setValue(frameCount - 1);
-    //   }
+    useEffect(() => {
+      let currentFrame = 0;
+      if (frameCount > 1) {
+        const frameUpdateInterval = setInterval(() => {
+          currentFrame = (currentFrame + 1) % frameCount;
+          animation.setValue(currentFrame);
+        }, frameDuration);
+        return () => clearInterval(frameUpdateInterval);
+      } else {
+        animation.setValue(frameCount - 1);
+      }
   
-    // }, [animation, frameCount, frameDuration]);
-  
-  
-    // const adjustedInputRange = frameCount > 1 ? inputRange : [0, 1];
-  
-    // const adjustedTranslateXOutputRange = frameCount > 1 ? translateXOutputRange : [translateXOutputRange[0], translateXOutputRange[0]];
-    // const adjustedTranslateYOutputRange = frameCount > 1 ? translateYOutputRange : [translateYOutputRange[0], translateYOutputRange[0]];
+    }, [animation, frameCount, frameDuration, resetAnimation]);
   
   
-    // const frameStyle = {
-    //   height: frameHeight * scale,
-    //   width: frameWidth * scale,
+    const adjustedInputRange = frameCount > 1 ? inputRange : [0, 1];
   
-    //   overflow: 'hidden',
-    // };
+    const adjustedTranslateXOutputRange = frameCount > 1 ? translateXOutputRange : [translateXOutputRange[0], translateXOutputRange[0]];
+    const adjustedTranslateYOutputRange = frameCount > 1 ? translateYOutputRange : [translateYOutputRange[0], translateYOutputRange[0]];
   
-    // const imageStyle = {
-    //   width: 1024 * scale,
-    //   height: 544 * scale,
-    //   position: 'absolute',
-    //   transform: [
-    //     {
-    //       translateX: animation.interpolate({
-    //         inputRange: adjustedInputRange,
-    //         outputRange: adjustedTranslateXOutputRange.map(value => value * scale),
-    //         extrapolate: 'clamp'
-    //       }),
-    //     },
-    //     {
-    //       translateY: animation.interpolate({
-    //         inputRange: adjustedInputRange,
-    //         outputRange: adjustedTranslateYOutputRange.map(value => value * scale),
-    //         extrapolate: 'clamp'
-    //       }),
-    //     },
-    //   ],
-    // };
   
-    // return (
-    //   <Animated.View style={frameStyle}>
-    //     <Animated.Image source={source} style={imageStyle} />
-    //   </Animated.View>
-    // );
+    const frameStyle = {
+      height: frameHeight * scale,
+      width: frameWidth * scale,
+      marginTop: '10%',
+      position: 'absolute',
+      overflow: 'hidden',
+    };
+  
+    const imageStyle = {
+        width: 1024 * scale,
+        height: 544 * scale,
+        marginTop:-5,
+      position: 'absolute',
+      transform: [
+        {
+          translateX: animation.interpolate({
+            inputRange: adjustedInputRange,
+            outputRange: adjustedTranslateXOutputRange.map(value => value * scale),
+            extrapolate: 'clamp'
+          }),
+        },
+        {
+          translateY: animation.interpolate({
+            inputRange: adjustedInputRange,
+            outputRange: adjustedTranslateYOutputRange.map(value => value * scale),
+            extrapolate: 'clamp'
+          }),
+        },
+      ],
+    };
+  
+    return (
+      <Animated.View style={frameStyle}>
+        <Animated.Image source={source} style={imageStyle} />
+      </Animated.View>
+    );
   };
 
 const styles = StyleSheet.create({
