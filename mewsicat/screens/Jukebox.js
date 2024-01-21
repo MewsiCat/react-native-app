@@ -54,12 +54,12 @@ export default function Jukebox() {
             <Text style={styles.title}>Jukebox</Text>
             <Image source={require('../assets/judebox.gif')} style={styles.img} />
             <Pressable style={styles.buttonContainer} onPress={async () => {
+                click();
                 toggleLoad();
                 await generateSong();
                 toggleLoadFalse();
                 toggleRec(); 
                 playMeow();
-                click();
             }}>
                 <Text style={styles.buttonText}>Get Song</Text>
             </Pressable>

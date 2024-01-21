@@ -19,6 +19,9 @@ export const onCreateUser = /* GraphQL */ `
             pic
             fishes
             type
+            catSprite
+            availableAccessories
+            equippedAccessories
             createdAt
             updatedAt
             userCatId
@@ -41,6 +44,9 @@ export const onCreateUser = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId
@@ -92,6 +98,9 @@ export const onUpdateUser = /* GraphQL */ `
             pic
             fishes
             type
+            catSprite
+            availableAccessories
+            equippedAccessories
             createdAt
             updatedAt
             userCatId
@@ -114,6 +123,9 @@ export const onUpdateUser = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId
@@ -165,6 +177,9 @@ export const onDeleteUser = /* GraphQL */ `
             pic
             fishes
             type
+            catSprite
+            availableAccessories
+            equippedAccessories
             createdAt
             updatedAt
             userCatId
@@ -187,6 +202,9 @@ export const onDeleteUser = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId
@@ -229,6 +247,9 @@ export const onCreateCat = /* GraphQL */ `
       pic
       fishes
       type
+      catSprite
+      availableAccessories
+      equippedAccessories
       createdAt
       updatedAt
       userCatId
@@ -245,6 +266,9 @@ export const onUpdateCat = /* GraphQL */ `
       pic
       fishes
       type
+      catSprite
+      availableAccessories
+      equippedAccessories
       createdAt
       updatedAt
       userCatId
@@ -261,6 +285,9 @@ export const onDeleteCat = /* GraphQL */ `
       pic
       fishes
       type
+      catSprite
+      availableAccessories
+      equippedAccessories
       createdAt
       updatedAt
       userCatId
@@ -282,6 +309,9 @@ export const onCreateFriend = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId
@@ -309,6 +339,9 @@ export const onUpdateFriend = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId
@@ -336,6 +369,9 @@ export const onDeleteFriend = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId

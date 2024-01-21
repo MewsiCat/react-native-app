@@ -19,6 +19,9 @@ export const getUser = /* GraphQL */ `
             pic
             fishes
             type
+            catSprite
+            availableAccessories
+            equippedAccessories
             createdAt
             updatedAt
             userCatId
@@ -41,6 +44,9 @@ export const getUser = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId
@@ -97,6 +103,9 @@ export const listUsers = /* GraphQL */ `
               pic
               fishes
               type
+              catSprite
+              availableAccessories
+              equippedAccessories
               createdAt
               updatedAt
               userCatId
@@ -119,6 +128,9 @@ export const listUsers = /* GraphQL */ `
             pic
             fishes
             type
+            catSprite
+            availableAccessories
+            equippedAccessories
             createdAt
             updatedAt
             userCatId
@@ -164,6 +176,9 @@ export const getCat = /* GraphQL */ `
       pic
       fishes
       type
+      catSprite
+      availableAccessories
+      equippedAccessories
       createdAt
       updatedAt
       userCatId
@@ -185,6 +200,9 @@ export const listCats = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId
@@ -209,6 +227,9 @@ export const getFriend = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId
@@ -241,6 +262,9 @@ export const listFriends = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId
@@ -328,6 +352,9 @@ export const userByName = /* GraphQL */ `
               pic
               fishes
               type
+              catSprite
+              availableAccessories
+              equippedAccessories
               createdAt
               updatedAt
               userCatId
@@ -350,6 +377,9 @@ export const userByName = /* GraphQL */ `
             pic
             fishes
             type
+            catSprite
+            availableAccessories
+            equippedAccessories
             createdAt
             updatedAt
             userCatId
@@ -408,6 +438,9 @@ export const catsByCatID = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId
@@ -440,6 +473,9 @@ export const catByName = /* GraphQL */ `
         pic
         fishes
         type
+        catSprite
+        availableAccessories
+        equippedAccessories
         createdAt
         updatedAt
         userCatId
@@ -477,6 +513,9 @@ export const friendsByFriendID = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId
@@ -520,6 +559,9 @@ export const friendByName = /* GraphQL */ `
           pic
           fishes
           type
+          catSprite
+          availableAccessories
+          equippedAccessories
           createdAt
           updatedAt
           userCatId

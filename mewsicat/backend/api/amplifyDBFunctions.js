@@ -26,11 +26,106 @@ const client_secret = "55c8fe6737b44bf39b7671aec4572402";
 // for production: makeRedirectUri({scheme: 'mewsicat'})
 const redirect_uri = makeRedirectUri({scheme: 'mewsicat'}); // for expo go: Linking.createURL("/spotify-auth-callback")
 
+const catSprites = ["black", "blue", "brown", "gray", "calico"];
+
 
 const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
   tokenEndpoint: "https://accounts.spotify.com/api/token",
 };
+
+export async function addAccessory(accessory){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  
+    const catResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+    const catResultID = catResult.data.catByName.items[0].id;
+    var newAccessories = catResult.data.catByName.items[0].availableAccessories;
+
+    newAccessories.push(accessory);
+
+    const res = await API.graphql({
+    query: updateCat, 
+    variables: {
+      input: {
+        id: catResultID,
+        availableAccessories: newAccessories,
+      }
+    }
+    })
+}
+
+export async function equipAccessory(accessory){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  
+    const catResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+    const catResultID = catResult.data.catByName.items[0].id;
+    var newEquippedAccessories = catResult.data.catByName.items[0].equippedAccessories;
+
+    newEquippedAccessories.push(accessory);
+
+    const res = await API.graphql({
+    query: updateCat, 
+    variables: {
+      input: {
+        id: catResultID,
+        equippedAccessories: newEquippedAccessories,
+      }
+    }
+    })
+}
+
+export async function dequipAccessory(accessory){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  
+    const catResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+    const catResultID = catResult.data.catByName.items[0].id;
+    var newEquippedAccessories = catResult.data.catByName.items[0].equippedAccessories;
+
+    for(let i = 0; i < newEquippedAccessories.length; i++){
+      if(newEquippedAccessories[i] == accessory){
+        newEquippedAccessories.splice(i, 1);
+      }
+    }
+
+    const res = await API.graphql({
+    query: updateCat, 
+    variables: {
+      input: {
+        id: catResultID,
+        equippedAccessories: newEquippedAccessories,
+      }
+    }
+    })
+}
+
+
+export async function getCatSprite(){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const params = {
+    name: currentUser
+    };
+    const result = await API.graphql(graphqlOperation(userByName, params));
+    const catSprite = result.data.userByName.items[0].cat.items[0].catSprite;
+    console.log("cat sprite: " + catSprite);
+    return catSprite;
+}
 
 
 
@@ -502,6 +597,7 @@ export async function acceptFriendRequest(newFriend){
       const currUserCatName = currUserResult.data.userByName.items[0].cat.items[0].name;
       const currUserCatFishes = currUserResult.data.userByName.items[0].cat.items[0].fishes;
       const currUserCatType = currUserResult.data.userByName.items[0].cat.items[0].type;
+      const currUserCatSprite = currUserResult.data.userByName.items[0].cat.items[0].catSprite;
       const friends = currUserResult.data.userByName.items[0].friends;
       const currUserFriendRequests = currUserResult.data.userByName.items[0].friendRequests;
       var newCurrUserFriendRequests = [];
@@ -522,6 +618,7 @@ export async function acceptFriendRequest(newFriend){
         const newFriendsCatName = newFriendResult.data.userByName.items[0].cat.items[0].name;
         const newFriendsCatFishes = newFriendResult.data.userByName.items[0].cat.items[0].fishes;
         const newFriendsCatType = newFriendResult.data.userByName.items[0].cat.items[0].type;
+        const newFriendsCatSprite = newFriendResult.data.userByName.items[0].cat.items[0].catSprite;
         const newFriendsPushToken = newFriendResult.data.userByName.items[0].expoPushToken;
       
         // create friend cat object
@@ -533,6 +630,7 @@ export async function acceptFriendRequest(newFriend){
             name: newFriend,
             type: newFriendsCatType,
             fishes: newFriendsCatFishes,
+            catSprite: newFriendsCatSprite
           }
         }
       });
@@ -567,8 +665,9 @@ export async function acceptFriendRequest(newFriend){
           input: {
             catID: currUserID,
             name: currentUser,
-            type: newFriendsCatType,
-            fishes: newFriendsCatFishes
+            type: currUserCatType,
+            fishes: currUserCatFishes,
+            catSprite: currUserCatSprite
           }
         }
       });
@@ -649,6 +748,7 @@ export async function createNewCat(){
   const currUserResult = await API.graphql(graphqlOperation(userByName, currUserParams));
   const currUserID = currUserResult.data.userByName.items[0].id;
 
+  const newCatSprite = Math.floor(Math.random() * catSprites.length);
   // creating cat object
   const catRes = await API.graphql({
     query: createCat, 
@@ -658,6 +758,7 @@ export async function createNewCat(){
         name: currentUser,
         type: topArtistsGenre,
         fishes: 0,
+        catSprite: newCatSprite
       }
     }
   });

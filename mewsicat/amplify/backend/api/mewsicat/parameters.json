@@ -1,6 +1,5 @@
 {
   "AppSyncApiName": "mewsicat",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2023-12-09T04:53:21.723Z"
+  "DynamoDBEnableServerSideEncryption": false
 }

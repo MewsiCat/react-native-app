@@ -125,8 +125,10 @@ export async function generateSong() {
                 // console.log(data.tracks[0].artists[0].name)
                 // console.log(data.tracks[0].album.images[0].url)
                 // console.log(data.tracks[0].preview_url)
+                console.log(data);
                 songID = data.tracks[0].id;
                 songPrev = data.tracks[0].preview_url;
+                console.log("song prev:" + songPrev);
                 songName = data.tracks[0].name;
                 musicRec = data.tracks[0].id;
                 console.log("spotify id: " + data.tracks[0].id);
@@ -242,10 +244,11 @@ export default function MusicRec() {
                     <Pressable>
                         <Image style={styles.icon} source={require('../assets/previous.png')}/>
                     </Pressable>
-                    <Pressable onPress={() => { playPauseSong() }}>
+                    <Pressable onPress={() => { click(); playPauseSong() }}>
                         <Image style={styles.icon} source={require('../assets/play.png')}/>
                     </Pressable>
                     <Pressable onPress={async () => {
+                        click();
                         toggleLoad();
                         await generateSong();
                         toggleLoadFalse();
@@ -259,7 +262,7 @@ export default function MusicRec() {
 
             <View style={styles.containerB}>
                 <Pressable style={styles.buttonContainer} onPress={async ()=> {
-                    toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse(); click();
+                    click(); toggleLoad(); await toggleSongFriendsList(); toggleLoadFalse();
                 }}>
                     <Text style={styles.buttonText} adjustsFontSizeToFit={true}>Send to a Friend</Text>
                 </Pressable>
@@ -273,6 +276,7 @@ export default function MusicRec() {
                     </Text>
                 </Pressable>
                 <Pressable style={styles.buttonContainer} onPress={async () => {
+                    click();
                     toggleLoad();
                     await generateSong();
                     toggleLoadFalse();
