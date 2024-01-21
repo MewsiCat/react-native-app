@@ -691,6 +691,32 @@ export async function increaseFishes(){
     await updateUserCat();
 }
 
+export async function decreaseFishes(decreaseBy){
+  const currentUserInfo = await Auth.currentUserInfo();
+  const currentUser = currentUserInfo.username;
+
+  const currUserParams = {
+    name: currentUser
+    };
+  
+    const catResult = await API.graphql(graphqlOperation(catByName, currUserParams));
+    const catResultID = catResult.data.catByName.items[0].id;
+    var fishes = catResult.data.catByName.items[0].fishes;
+    fishes -= decreaseBy;
+
+    const updateCatRes = await API.graphql({
+      query: updateCat, 
+      variables: {
+        input: {
+          id: catResultID,
+          fishes: fishes,
+        }
+      }
+    });
+    await updateUserCat();
+}
+
+
 
 export async function addFriend(newFriend){
     try{
