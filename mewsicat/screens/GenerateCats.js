@@ -24,70 +24,91 @@ var currentUser;
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 const AnimatedCarousel = () => {
-    const CatImages = [
-      require('../assets/cats/classicalcat.png'),
-      require('../assets/cats/countrycat.png'),
-      require('../assets/cats/edmcat.png'),
-      require('../assets/cats/hiphopcat.png'),
-      require('../assets/cats/kpopcat.png'),
-      require('../assets/cats/mysterycat.png'),
-      require('../assets/cats/punkcat.png'),
-      require('../assets/cats/rockandrollcat.png'),
-    ];
-  
-    const scrollX = useRef(new Animated.Value(0)).current;
-    const windowWidth = Dimensions.get('window').width;
-    const numItems = CatImages.length;
-  
-    const animateCarousel = () => {
-      Animated.sequence(
-        CatImages.map((image, index) => {
-          return Animated.timing(scrollX, {
-            toValue: windowWidth * (index + 1),
-            duration: 500, // 0.5 seconds between each image
-            useNativeDriver: false,
-          });
-        })
-      ).start(() => {
-        // Reset scrollX value when the animation completes
-        scrollX.setValue(0);
-        animateCarousel();
+  const CatImages = [
+    require('../assets/cats/classicalcat.png'),
+    require('../assets/cats/countrycat.png'),
+    require('../assets/cats/edmcat.png'),
+    require('../assets/cats/hiphopcat.png'),
+    require('../assets/cats/kpopcat.png'),
+    require('../assets/cats/mysterycat.png'),
+    require('../assets/cats/punkcat.png'),
+    require('../assets/cats/rockandrollcat.png'),
+  ];
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const windowWidth = Dimensions.get('window').width;
+  const numItems = CatImages.length;
+  const scrollViewRef = useRef(null);
+
+  const [carouselItems, setCarouselItems] = useState([...CatImages, ...CatImages, ...CatImages]);
+  const currentIndex = useRef(1);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      currentIndex.current = (currentIndex.current + 1) % (2 * numItems);
+
+      // Animate the scroll without abrupt changes
+      scrollViewRef.current.scrollTo({
+        x: windowWidth * currentIndex.current,
+        animated: true,
       });
+    }, 300); // Adjust the interval duration to control the speed
+
+    return () => {
+      clearInterval(intervalId);
     };
-  
-    useEffect(() => {
-      animateCarousel();
-  
-      // Clean up animation on component unmount
-      return () => {
-        scrollX.removeAllListeners();
-      };
-    }, [scrollX, windowWidth, numItems]);
-  
-    return (
-      <View style={styles.ccontainer}>
-        <AnimatedScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onTouchStart={() => {}} // Disable touch events
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false }
-          )}
-          scrollEventThrottle={16}
-        >
-          {/* Duplicate the first images to create the infinite loop */}
-          {CatImages.map((image, index) => (
-            <View key={index} style={styles.cimageContainer}>
-              <Image source={image} style={styles.cimage} />
-            </View>
-          ))}
-        </AnimatedScrollView>
-      </View>
-    );
+  }, [windowWidth]);
+
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+    { useNativeDriver: false }
+  );
+
+  const handleScrollEndDrag = (event) => {
+    const offset = event.nativeEvent.contentOffset.x;
+
+    if (offset >= windowWidth * (2 * numItems - 1)) {
+      // Smoothly update the content offset to continue scrolling to the right and loop around
+      Animated.timing(scrollX, {
+        toValue: windowWidth * (currentIndex.current + 1),
+        duration: 0, // No animation
+        useNativeDriver: false,
+      }).start(() => {
+        // Update the current index
+        currentIndex.current += 1;
+        // Check if the current index exceeds the number of items
+        if (currentIndex.current >= numItems) {
+          scrollViewRef.current.scrollToEnd({ animated: false });
+          currentIndex.current = 0;
+        }
+      });
+    }
   };
-  
+
+  return (
+    <View style={styles.ccontainer}>
+      <AnimatedScrollView
+        ref={scrollViewRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onTouchStart={() => {}}
+        onTouchMove={() => {}}
+        onTouchEnd={() => {}}
+        onScroll={handleScroll}
+        onScrollEndDrag={handleScrollEndDrag}
+        scrollEventThrottle={16}
+      >
+        {carouselItems.map((image, index) => (
+          <View key={index} style={styles.cimageContainer}>
+            <Image source={image} style={styles.cimage} />
+          </View>
+        ))}
+      </AnimatedScrollView>
+    </View>
+  );
+};
+
   async function click() {
     const { sound } = await Audio.Sound.createAsync(
       require('../assets/pisseim-mund-online-audio-converter.mp3')
