@@ -185,7 +185,7 @@ export default function GenerateCats({ navigation }) {
             <Overlay isVisible={loadVisible} overlayStyle={{backgroundColor:'#f0d396', height:'90%', width:'80%', borderRadius: 20}}>
                 <Loading />
             </Overlay>
-            <ImageBackground source={require('../assets/catgenbg.jpeg')} style={styles.bg}>
+            <ImageBackground source={require('../assets/catbg.png')} style={styles.bg}>
                 <Text adjustsFontSizeToFit={true} style={styles.title}>Cat Lottery</Text>
                 <AnimatedCarousel />
                 <View style={{marginTop:'auto', margin: 30}}>
