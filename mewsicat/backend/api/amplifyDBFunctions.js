@@ -758,7 +758,9 @@ export async function createNewCat(){
         name: currentUser,
         type: topArtistsGenre,
         fishes: 0,
-        catSprite: newCatSprite
+        catSprite: newCatSprite,
+        availableAccessories : [],
+        equippedAccessories: []
       }
     }
   });
