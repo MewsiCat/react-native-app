@@ -74,15 +74,18 @@ export async function getUserCat(){
   const userCatType = userCatResult.data.catByName.items[0].type;
   const userCatFishes = userCatResult.data.catByName.items[0].fishes;
   const userCatSprite = userCatResult.data.catByName.items[0].catSprite;
+  const userEquippedAccessories = userCatResult.data.catByName.items[0].equippedAccessories;
   console.log("user cat name: " + userCatName);
   console.log("user cat fishes: " + userCatFishes);
   console.log("user cat color: " + userCatSprite);
+  console.log(userCatResult.data.catByName.items[0])
 
   user = {
     name: userCatName,
     type: userCatType,
     fishes: userCatFishes,
     catSprite: userCatSprite,
+    accessories: userEquippedAccessories
   }
 
 }
@@ -272,7 +275,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
       directionIndexs={directionIndexs}
     />
     <View style={{ marginTop : frameHeight * scale * -1 }}>
-    <SpriteAnimator
+    {friend.accessories.includes("hat") && <SpriteAnimator
       source={outfit_christmasHat}
       frameCount={frameCount}
       frameDuration={frameDuration}
@@ -281,7 +284,7 @@ const Cat = ({ onMoveEnd, setIsModalVisible, friend, setModalContent }) => {
       frameWidth={frameWidth}
       frameHeight={frameHeight}
       directionIndexs={directionIndexs}
-    />
+    />}
     </View>
   </View>
 </TouchableOpacity>
@@ -461,6 +464,7 @@ const toggleLoadFalse = () => {
       <Overlay isVisible={loadVisible} onBackdropPress={toggleLoad} overlayStyle={{ backgroundColor: '#f0d396', height: '50%', width: '50%', borderRadius: 20 }}>
                 <Loading />
             </Overlay>
+        {/* this cat is for the user itself */}
         <Cat
             friend={user}
             setIsModalVisible={async () => {
@@ -474,6 +478,8 @@ const toggleLoadFalse = () => {
           />
       </View>
       <View style={styles.catsContainer}>
+                {/* this cat is for the user's friends */}
+
         {friends.map((friend, index) => (
           <Cat
             key={index}
